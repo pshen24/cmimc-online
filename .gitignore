@@ -1,3 +1,10 @@
+problem_graders/
+
+
+
+
+# ===== Default gitignore below =====
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
