@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+Here is a list of contests:
+<ul>
+    {% for contest in all_contests %}
+        <li>
+            {{ contest.name }}, Team size: {{ contest.min_team_size }} - {{ contest.max_team_size }}
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

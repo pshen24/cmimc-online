@@ -135,7 +135,7 @@ class Submission(models.Model):
     text = models.TextField(help_text=_('The string that the competitor submitted. \
             Its format depends on the exam (can be an integer, source code, \
             program output, etc)'))
-    submit_time = models.DateTimeField()
+    submit_time = models.DateTimeField(db_index=True)
     # add something for errors? (if they submit something invalid)
 
     def __str__(self):
