@@ -1,9 +1,11 @@
 from django.contrib.auth.base_user import BaseUserManager
 from django.utils.translation import ugettext_lazy as _
+from django.db import models
 
 
 class UserManager(BaseUserManager):
     def create_user(self, email, password, **extra_fields):
+        print("creating user")
         if not email:
             raise ValueError(_('The Email must be set'))
         email = self.normalize_email(email)
@@ -13,6 +15,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **extra_fields):
+        print("creating user")
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
@@ -22,3 +25,13 @@ class UserManager(BaseUserManager):
         if extra_fields.get('is_superuser') is not True:
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
+
+class ScoreManager(models.Manager):
+    def getScore(self, problem, competitor):
+        score = self.filter(problem=problem, competitor=competitor).first()
+        if score:
+            return score
+        else:
+            new_score = self.create(problem=problem, competitor=competitor)
+            return new_score
+
