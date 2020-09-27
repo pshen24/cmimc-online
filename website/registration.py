@@ -1,4 +1,4 @@
-from .models import Competitor
+from website.models import Competitor
 
 # Creates Competitors for this exam
 def register_team(team):

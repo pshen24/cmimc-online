@@ -45,9 +45,7 @@ class Problem(models.Model):
             problem's grader to use. The format depends on the type of grader"))
     # add problem number?
     
-
     # returns an instance of the grader class defined by grader_name
-    # I'm not sure if this is the best way to do it
     @cached_property
     def grader(self):
         class_ = getattr(problem_graders, self.grader_name)
@@ -62,7 +60,17 @@ class Problem(models.Model):
 class User(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    name = models.CharField(max_length=100)
+    full_name = models.CharField(max_length=100, help_text=_('full name'))
+    alias = models.CharField(max_length=100, blank=True, help_text=_('preferred name'))
+
+    MATHLETE = 'ML'
+    STAFF = 'ST'
+    role_CHOICES = [
+        (MATHLETE, 'Contestant'),
+        (STAFF, 'CMU Student'),
+        # (COACH, 'Coach'),     # coaches not implemented yet
+    ]
+    role = models.CharField(max_length=2, choices=role_CHOICES, default=MATHLETE)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
@@ -70,7 +78,14 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.name
+        return self.preferred_name
+
+    @property
+    def preferred_name(self):
+        if self.alias:
+            return self.alias
+        return self.full_name
+
 
 
 class Mathlete(models.Model):

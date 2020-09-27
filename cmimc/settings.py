@@ -1,6 +1,5 @@
 from pathlib import Path
 from environs import Env
-import os
 
 env = Env()
 env.read_env()
@@ -31,6 +30,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'website',
+    'crispy_forms',
 ]
 
 MIDDLEWARE = [
@@ -49,7 +49,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [
-            os.path.join(BASE_DIR, 'templates')
+            str(BASE_DIR.joinpath('templates'))
         ],
         'APP_DIRS': True,
         'OPTIONS': {
@@ -119,3 +119,11 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
 
 AUTH_USER_MODEL = 'website.User'
+
+
+LOGIN_URL = 'login'
+LOGIN_REDIRECT_URL = 'home'
+LOGOUT_REDIRECT_URL = 'home'
+
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
