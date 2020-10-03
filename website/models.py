@@ -93,7 +93,6 @@ class User(AbstractUser):
         return self.full_name
 
 
-
 class Mathlete(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='mathlete', \
             unique=True, on_delete=models.CASCADE)
@@ -148,7 +147,6 @@ class Competitor(models.Model):
         for s in self.scores.all():
             self.total_score += s.points
         self.save()
-
 
 
 class Submission(models.Model):

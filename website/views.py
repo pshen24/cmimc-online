@@ -25,7 +25,9 @@ def problem_info(request, exam_id, problem_number):
     return render(request, 'problem_info.html', context)
 
 
+@login_required
 def submit(request, exam_id, problem_number):
+    # TODO: check whether they have access to the submission page
     exam = get_object_or_404(Exam, pk=exam_id)
     problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
     competitor = Competitor.objects.mathleteToCompetitor(exam, request.user.mathlete)
@@ -33,12 +35,23 @@ def submit(request, exam_id, problem_number):
         submission = Submission(problem=problem, competitor=competitor, text=request.POST['submission'])
         submission.save()
         submission.grade()
-        return redirect('problems', exam=exam)
+        return redirect('exam_problems', exam=exam)
     elif request.method == 'GET':
         context = {
             'problem': problem,
         }
         return render(request, 'submit.html', context)
+
+@login_required
+def exam_problems(request, exam_id):
+    exam = get_object_or_404(Exam, pk=exam_id)
+    problems = exam.problems.order_by('problem_number')
+    competitor = Competitor.objects.mathleteToCompetitor(exam, request.user.mathlete)
+    scores = competitor.scores.order_by('problem__problem_number')
+    context = {
+        'scores': scores,
+    }
+    return render(request, 'exam_problems.html', context)
 
 
 # User Account Signup

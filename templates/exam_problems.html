@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+Problem list:</br>
+{% for score in scores %}
+    {% with problem=score.problem %}
+        Problem {{ problem.problem_number }}, Score = {{ score.points }}</br>
+    {% endwith %}
+{% endfor %}
+{% endblock %}
