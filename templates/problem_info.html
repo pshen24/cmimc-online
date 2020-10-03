@@ -2,5 +2,7 @@
 
 {% block content %}
 Problem {{ problem.problem_number }}</br>
-{{ problem.problem_text }}
+{{ problem.problem_text }}</br>
+<a href="{% url 'submit' problem.exam_id problem.problem_number %}"> Submit Here</a>
 {% endblock %}
+

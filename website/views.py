@@ -2,12 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from website.models import Contest, Problem, Competitor, Exam
+from website.models import Contest, Problem, Competitor, Exam, Submission
 from website.forms import UserCreationForm
 
 
 def home(request):
     return render(request, 'home.html')
+
 
 def contest_list(request):
     all_contests = Contest.objects.all()
