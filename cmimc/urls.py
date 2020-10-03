@@ -15,7 +15,8 @@ urlpatterns = [
     path('change-password/done/', auth_views.PasswordChangeDoneView.as_view(template_name='change_password_done.html'), name='change_password_done'),
 #    path('reset-password/', auth_views.PasswordResetView.as_view(template_name='reset_password.html'), name='reset_password'),
 
-    path('exam/<int:exam_id>/problem/<str:problem_number>/', views.problem_info, name='problem_info')
+    path('exam/<int:exam_id>/problem/<str:problem_number>/', views.problem_info, name='problem_info'),
+    path('exam/<int:exam_id>/problem/<str:problem_number>/submit/', views.submit, name='submit'),
 ]
 
 

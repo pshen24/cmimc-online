@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from website.models import Contest, Problem
+from website.models import Contest, Problem, Competitor, Exam
 from website.forms import UserCreationForm
 
 
@@ -23,6 +23,22 @@ def problem_info(request, exam_id, problem_number):
         'problem': problem,
     }
     return render(request, 'problem_info.html', context)
+
+
+def submit(request, exam_id, problem_number):
+    exam = get_object_or_404(Exam, pk=exam_id)
+    problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
+    competitor = Competitor.objects.mathleteToCompetitor(exam, request.user.mathlete)
+    if request.method == 'POST':
+        submission = Submission(problem=problem, competitor=competitor, text=request.POST['submission'])
+        submission.save()
+        submission.grade()
+        return redirect('problems', exam=exam)
+    elif request.method == 'GET':
+        context = {
+            'problem': problem,
+        }
+        return render(request, 'submit.html', context)
 
 
 # User Account Signup

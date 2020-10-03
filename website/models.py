@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from website import problem_graders
-from website.managers import UserManager, ScoreManager
+from website.managers import UserManager, ScoreManager, CompetitorManager
 
 
 class Contest(models.Model):
@@ -128,6 +128,8 @@ class Competitor(models.Model):
             corresponding mathlete. If the exam is a team exam, this is null'))
     total_score = models.IntegerField(default=True, db_index=True)
 
+    objects = CompetitorManager()
+
     class Meta:
         unique_together = ['exam', 'team', 'mathlete']
 
@@ -156,7 +158,7 @@ class Submission(models.Model):
     text = models.TextField(help_text=_('The string that the competitor submitted. \
             Its format depends on the exam (can be an integer, source code, \
             program output, etc)'))
-    submit_time = models.DateTimeField(db_index=True)
+    submit_time = models.DateTimeField(auto_now_add=True, db_index=True)
     # add something for errors? (if they submit something invalid)
 
     def __str__(self):
