@@ -3,6 +3,6 @@
 {% block content %}
 Problem {{ problem.problem_number }}</br>
 {{ problem.problem_text }}</br>
-<a href="{% url 'submit' problem.exam_id problem.problem_number %}"> Submit Here</a>
+<a href="{% url 'submit' problem.exam_id problem.problem_number %}" class="btn btn-primary"> Submit Here</a>
 {% endblock %}
 
