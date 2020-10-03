@@ -86,6 +86,9 @@ class User(AbstractUser):
             return self.alias
         return self.full_name
 
+    @property
+    def is_mathlete(self):
+        return self.role == self.MATHLETE
 
 
 class Mathlete(models.Model):
