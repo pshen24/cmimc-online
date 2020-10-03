@@ -3,6 +3,7 @@ from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from website import problem_graders
 from website.managers import UserManager, ScoreManager
 
@@ -43,7 +44,9 @@ class Problem(models.Model):
     grader_name = models.CharField(max_length=50) # add choices?
     grader_data = models.JSONField(null=True, blank=True, help_text=_("Data for the \
             problem's grader to use. The format depends on the type of grader"))
-    # add problem number?
+    problem_number = models.CharField(max_length=2, help_text=_("For most exams, \
+            problems are numbered 1, 2, 3, ..., but for the optimization round, \
+            they are numbered 1a, 1b, 1c, 2a, 2b, ... (each problem has multiple test cases"))
     
     # returns an instance of the grader class defined by grader_name
     @cached_property
@@ -55,6 +58,9 @@ class Problem(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        unique_together = ['exam', 'problem_number']
 
 
 class User(AbstractUser):

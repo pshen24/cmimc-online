@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from website.models import Contest
+from website.models import Contest, Problem
 from website.forms import UserCreationForm
 
 
@@ -15,6 +15,14 @@ def contest_list(request):
         'all_contests': all_contests
     }
     return render(request, 'contest_list.html', context)
+
+
+def problem_info(request, exam_id, problem_number):
+    problem = get_object_or_404(Problem, exam=exam_id, problem_number=problem_number)
+    context = {
+        'problem': problem,
+    }
+    return render(request, 'problem_info.html', context)
 
 
 # User Account Signup
