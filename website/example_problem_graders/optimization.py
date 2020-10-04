@@ -1,3 +1,11 @@
+'''Sample problem:
+Find a graph with n vertices and m edges which minimizes the number of
+triangles.
+Output: m lines, each with two space-separated integers "a b", where
+a and b denote an edge between vertices a and b (1 <= a, b <= n, a != b)
+Scoring formula: (n choose 3) - (# of triangles)'
+'''
+
 class BaseGrader:
     def __init__(self, problem):
         self.problem = problem
