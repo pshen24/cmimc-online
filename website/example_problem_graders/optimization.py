@@ -1,5 +1,5 @@
 from website.problem_graders.base import BaseGrader
-from website.problem_graders.base import IntegerGrader
+from website.problem_graders.integer import IntegerGrader
 
 '''
 Sample problem:
@@ -18,7 +18,8 @@ Expects initial grader_data to be formatted as
 class OptGrader(BaseGrader):
     def __init__(self, problem):
         self.problem = problem
-        self.n = int(problem.grader_data["n"])
+        #self.n = int(problem.grader_data["n"])
+        self.n = 4
 
     def grade(self, submission):
         '''
@@ -30,18 +31,30 @@ class OptGrader(BaseGrader):
         raise NotImplementedError()
 
     def validate(self, user_input):
+        '''
+        Checks if the user input is a
+        '''
         lines = user_input.split("\n")
+        noDupes = set()
         for line in lines:
             parts = line.split()
             if len(parts) != 2:
                 return False
-            for part in parts:
+            for part in parts: # Checks if it's actually integer
                 try: 
                     int(part)
                 except ValueError:
                     return False
-            if (1 > parts[0]) or (parts[0] >= parts[1]) or (parts[1] > self.n):
+            a = int(parts[0])
+            b = int(parts[1])
+            if (1 > a) or (a >= b) or (b > self.n):
                 return False
+            # Checking for dupes
+            # Note that n(a - 1) + b - 1 is a bijective mapping
+            x = self.n * (a - 1) + b - 1
+            if x in noDupes:
+                return False
+            noDupes.add(x)
         return True
 
     # Assumes the validity of user_input
