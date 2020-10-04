@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
+from django.utils import timezone
 from django.conf import settings
 from django.core.validators import MinValueValidator
 from website import problem_graders
@@ -21,6 +22,15 @@ class Contest(models.Model):
     def __str__(self):
         return self.name
 
+    def is_registered(self, user):
+        if not user.is_authenticated:
+            return False
+        if not user.is_mathlete:
+            return False
+        if user.mathlete.teams.filter(contest=self).count() == 1:
+            return True
+        return False
+
 
 class Exam(models.Model):
     contest = models.ForeignKey(Contest, related_name='exams', on_delete=models.CASCADE)
@@ -31,10 +41,60 @@ class Exam(models.Model):
     show_leaderboard = models.BooleanField(help_text=_('Whether to allow contestants \
             to see the leaderboard during the exam'))
     show_own_scores = models.BooleanField(help_text=_('Whether to allow contestants \
-            to see the score of a submission immediately after they submit')) 
+            to see their scores during the exam')) 
 
     def __str__(self):
         return self.name
+
+    @cached_property
+    def _now(self):
+        return timezone.now()
+
+    @cached_property
+    def ended(self):
+        return self._now > self.end_time
+
+    @cached_property
+    def started(self):
+        return self._now <= self.start_time
+
+    @cached_property
+    def ongoing(self):
+        return self.started and not self.ended
+
+    @cached_property
+    def time_until_start(self):
+        if not self.started:
+            return self.start_time - self._now
+        else:
+            return None
+
+    @cached_property
+    def time_remaining(self):
+        if not self.ended:
+            return self.end_time - self._now
+        else:
+            return None
+
+    def can_see_leaderboard(self, user):
+        if user.is_staff:
+            return True
+        if not self.ended and not self.contest.is_registered(user):
+            return False
+        if self.show_leaderboard:
+            return True
+        return False
+
+    def can_see_own_scores(self, user):
+        if user.is_staff: # they have access to the status page, but no scores are shown
+            return True
+        if not self.contest.is_registered(user):
+            return False
+        if self.ended:
+            return True
+        if not self.started:
+            return False
+        return self.show_own_scores
 
 
 class Problem(models.Model):
@@ -91,6 +151,10 @@ class User(AbstractUser):
         if self.alias:
             return self.alias
         return self.full_name
+    
+    @property
+    def is_mathlete(self):
+        return self.role == self.MATHLETE
 
 
 class Mathlete(models.Model):
