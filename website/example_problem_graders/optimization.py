@@ -19,7 +19,7 @@ class OptGrader(BaseGrader):
     def __init__(self, problem):
         self.problem = problem
         #self.n = int(problem.grader_data["n"])
-        self.n = 4
+        self.n = int(problem.grader_data["n"])
 
     def grade(self, submission):
         '''
@@ -28,7 +28,19 @@ class OptGrader(BaseGrader):
 
         Returns: None
         '''
-        raise NotImplementedError()
+        from website.models import Score
+        competitor = submission.competitor
+        score = Score.objects.getScore(self.problem, competitor)
+
+        if not self.validate(submission.text):
+            points = 0 # TODO: notify the competitor that the submission format was invalid
+        else:
+            edges = self.parse(submission.text)
+            points = self.n * (self.n - 1) * (self.n - 2) / 6 -  self.calc(edges)
+
+        score.points = points
+        score.save()
+        competitor.update_total_score()
 
     def validate(self, user_input):
         '''
