@@ -59,9 +59,9 @@ class OptGrader(BaseGrader):
 	'''
 	EdgeSet, ans = set(), 0
 	for x in edges:
-	    EdgeSet.add(nodes*(x[0]-1)+x[1]-1)
+	    EdgeSet.add(nodes * (x[0] - 1) + x[1] - 1)
 	for x in edges:
 	    for y in edges:
-		if x[1] == y[0] and nodes*(x[0]-1)+y[1]-1 in EdgeSet:
-		    ans+=1
+		if x[1] == y[0] and nodes * (x[0] - 1) + y[1] - 1 in EdgeSet:
+		    ans += 1
 	return ans
