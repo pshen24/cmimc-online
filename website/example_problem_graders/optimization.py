@@ -43,5 +43,12 @@ class OptGrader(BaseGrader):
                 return False
         return true
 
+    # Assumes the validity of user_input
     def parse(self, user_input):
+        edges = []
+        lines = user_input.split("\n")
+        for line in lines:
+            parts = line.split()
+            edges.append(parts)
+        return edges
 
