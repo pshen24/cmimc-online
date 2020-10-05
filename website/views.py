@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -26,7 +27,9 @@ def problem_info(request, exam_id, problem_number):
     return render(request, 'problem_info.html', context)
 
 
+@login_required
 def submit(request, exam_id, problem_number):
+    # TODO: check whether they have access to the submission page
     exam = get_object_or_404(Exam, pk=exam_id)
     problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
     competitor = Competitor.objects.mathleteToCompetitor(exam, request.user.mathlete)
@@ -34,12 +37,31 @@ def submit(request, exam_id, problem_number):
         submission = Submission(problem=problem, competitor=competitor, text=request.POST['submission'])
         submission.save()
         submission.grade()
-        return redirect('problems', exam=exam)
+        return redirect('exam_status', exam=exam)
     elif request.method == 'GET':
         context = {
             'problem': problem,
         }
         return render(request, 'submit.html', context)
+
+@login_required
+def exam_status(request, exam_id):
+    user = request.user
+    exam = get_object_or_404(Exam, pk=exam_id)
+    if not exam.can_see_own_scores(user):
+        raise PermissionDenied('You do not have access to this page')
+    problems = exam.problems.order_by('problem_number')
+    if user.is_mathlete:
+        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        scores = competitor.scores.order_by('problem__problem_number')
+    else:
+        scores = None
+    context = {
+        'exam': exam,
+        'problems': problems,
+        'scores': scores,
+    }
+    return render(request, 'exam_status.html', context)
 
 
 # User Account Signup

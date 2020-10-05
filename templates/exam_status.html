@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+Exam = {{ exam.name }}</br>
+Time remaining: {{ exam.time_remaining }}</br>
+Problem list:</br>
+{% for score in scores %}
+    {% with problem=score.problem %}
+        Problem {{ problem.problem_number }}, Score = {{ score.points }}</br>
+    {% endwith %}
+{% endfor %}
+{% endblock %}
