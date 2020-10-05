@@ -22,10 +22,6 @@ def contest_list(request):
 def problem_info(request, exam_id, problem_number):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
-    print(exam.contest.is_registered(user))
-    print(exam.ended)
-    print(exam.started)
-    print(exam.can_see_problems(user))
     if not exam.can_see_problems(user):
         raise PermissionDenied("You must be registered for the contest to access \
                 the submission page")
