@@ -15,7 +15,13 @@
         <tr>
             <td scope = "row">{{problem.problem_number}}</td>
             <td scope = "row"><a href="{% url 'problem_info' exam.id problem.problem_number %}"> {{ problem.name }}</a></td>
-            <td scope = "row">{{ score.points }}</td>
+            <td scope = "row">
+                {% if score != None %}
+                    {{ score.points }}
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
       </tbody>

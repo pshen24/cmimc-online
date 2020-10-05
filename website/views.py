@@ -3,7 +3,7 @@ from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
-from website.models import Contest, Problem, Competitor, Exam, Submission
+from website.models import Contest, Problem, Competitor, Exam, Submission, Score
 from website.forms import UserCreationForm
 
 
@@ -68,9 +68,13 @@ def exam_status(request, exam_id):
     problems = exam.problems.order_by('problem_number')
     if user.is_mathlete:
         competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
-        scores = competitor.scores.order_by('problem__problem_number')
+        scores = []
+        for problem in problems:
+            scores.append(Score.objects.getScore(problem, competitor))
     else:
-        scores = None
+        scores = []
+        for problem in problems:
+            scores.append(None)
 
     context = {
         'exam': exam,
