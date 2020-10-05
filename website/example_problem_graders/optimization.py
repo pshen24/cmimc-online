@@ -12,6 +12,7 @@ Scoring formula: (n choose 3) - (# of triangles)'
 Expects initial grader_data to be formatted as
 {
     "n": n,
+    "m": m
 }
 '''
 
@@ -20,6 +21,7 @@ class OptGrader(BaseGrader):
         self.problem = problem
         #self.n = int(problem.grader_data["n"])
         self.n = int(problem.grader_data["n"])
+        self.m = int(problem.grader_data["m"])
 
     def grade(self, submission):
         '''
@@ -67,7 +69,8 @@ class OptGrader(BaseGrader):
             if x in noDupes:
                 return False
             noDupes.add(x)
-        return True
+        # Checking for size
+        return len(noDupes) == self.m
 
     # Assumes the validity of user_input
     def parse(self, user_input):
