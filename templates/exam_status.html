@@ -1,12 +1,24 @@
 {% extends 'base.html' %}
-
 {% block content %}
-Exam = {{ exam.name }}</br>
-Time remaining: {{ exam.time_remaining }}</br>
-Problem list:</br>
-{% for score in scores %}
-    {% with problem=score.problem %}
-        Problem {{ problem.problem_number }}, Score = {{ score.points }}</br>
-    {% endwith %}
-{% endfor %}
+    <h1>{{ exam.name }} </br></h1>
+    <h2 class = "text-info">Time remaining: {{ exam.time_remaining }}   </h2>
+    <table class="table table-striped">
+      <thead class = "thead-dark">
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for problem, score in all_problems_scores %}
+        <tr>
+            <td scope = "row">{{problem.problem_number}}</td>
+            <td scope = "row"><a href="{% url 'problem_info' exam.id problem.problem_number %}"> {{ problem.name }}</a></td>
+            <td scope = "row">{{ score.points }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
 {% endblock %}

@@ -71,10 +71,10 @@ def exam_status(request, exam_id):
         scores = competitor.scores.order_by('problem__problem_number')
     else:
         scores = None
+
     context = {
         'exam': exam,
-        'problems': problems,
-        'scores': scores,
+        'all_problems_scores': zip(problems, scores),
     }
     return render(request, 'exam_status.html', context)
 
