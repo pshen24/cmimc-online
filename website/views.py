@@ -19,8 +19,15 @@ def contest_list(request):
     return render(request, 'contest_list.html', context)
 
 
+@login_required
 def problem_info(request, exam_id, problem_number):
-    problem = get_object_or_404(Problem, exam=exam_id, problem_number=problem_number)
+    user = request.user
+    exam = get_object_or_404(Exam, pk=exam_id)
+    if not exam.can_see_problems(user):
+        raise PermissionDenied("You must be registered for the contest to access \
+                the submission page")
+
+    problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
     context = {
         'problem': problem,
     }
@@ -29,12 +36,20 @@ def problem_info(request, exam_id, problem_number):
 
 @login_required
 def submit(request, exam_id, problem_number):
-    # TODO: check whether they have access to the submission page
+    user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
+    if not exam.is_in_exam(user):
+        raise PermissionDenied("You must be registered for the contest to access \
+                the submission page")
+
     problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
-    competitor = Competitor.objects.mathleteToCompetitor(exam, request.user.mathlete)
     if request.method == 'POST':
-        submission = Submission(problem=problem, competitor=competitor, text=request.POST['submission'])
+        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        submission = Submission(
+            problem=problem,
+            competitor=competitor,
+            text=request.POST['submission']
+        )
         submission.save()
         submission.grade()
         return redirect('exam_status', exam=exam)
@@ -48,7 +63,7 @@ def submit(request, exam_id, problem_number):
 def exam_status(request, exam_id):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
-    if not exam.can_see_own_scores(user):
+    if not exam.can_see_status(user):
         raise PermissionDenied('You do not have access to this page')
     problems = exam.problems.order_by('problem_number')
     if user.is_mathlete:

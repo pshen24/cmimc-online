@@ -22,14 +22,13 @@ class Contest(models.Model):
     def __str__(self):
         return self.name
 
+    # whether the user is registered for this contest
     def is_registered(self, user):
         if not user.is_authenticated:
             return False
         if not user.is_mathlete:
             return False
-        if user.mathlete.teams.filter(contest=self).count() == 1:
-            return True
-        return False
+        return user.mathlete.teams.filter(contest=self).count() == 1
 
 
 class Exam(models.Model):
@@ -56,7 +55,7 @@ class Exam(models.Model):
 
     @cached_property
     def started(self):
-        return self._now <= self.start_time
+        return self._now >= self.start_time
 
     @cached_property
     def ongoing(self):
@@ -76,16 +75,20 @@ class Exam(models.Model):
         else:
             return None
 
+    # whether the user is currently doing the exam
+    def is_in_exam(self, user):
+        return self.ongoing and self.contest.is_registered(user)
+
+    # whether the user has access to the leaderboard page
     def can_see_leaderboard(self, user):
         if user.is_staff:
             return True
         if not self.ended and not self.contest.is_registered(user):
             return False
-        if self.show_leaderboard:
-            return True
-        return False
+        return self.show_leaderboard
 
-    def can_see_own_scores(self, user):
+    # whether the user has access to the status page
+    def can_see_status(self, user):
         if user.is_staff: # they have access to the status page, but no scores are shown
             return True
         if not self.contest.is_registered(user):
@@ -95,6 +98,16 @@ class Exam(models.Model):
         if not self.started:
             return False
         return self.show_own_scores
+
+    # whether the user has access to the problem pages
+    def can_see_problems(self, user):
+        if user.is_staff:
+            return True
+        if self.ended:
+            return True
+        if not self.started:
+            return False
+        return self.contest.is_registered(user)
 
 
 class Problem(models.Model):
