@@ -28,8 +28,15 @@ def problem_info(request, exam_id, problem_number):
                 the submission page")
 
     problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
+    try:
+        get_object_or_404(Problem, exam=exam, problem_number=str(int(problem_number) + 1))
+        next_problem_number = str(int(problem_number)+1)
+    except:
+        next_problem_number = None
+
     context = {
         'problem': problem,
+        'next_problem_number': next_problem_number,
     }
     return render(request, 'problem_info.html', context)
 
