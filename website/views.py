@@ -5,6 +5,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from website.models import Contest, Problem, Competitor, Exam, Submission, Score
 from website.forms import UserCreationForm
+from tika import parser
 
 
 def home(request):
@@ -52,11 +53,18 @@ def submit(request, exam_id, problem_number):
     problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
     if request.method == 'POST':
         competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
-        submission = Submission(
-            problem=problem,
-            competitor=competitor,
-            text=request.POST['submission']
-        )
+        if(str(request.POST['codeText'])==""):
+            submission = Submission(
+                problem=problem,
+                competitor=competitor,
+                text=request.FILES['codeFile'].read().decode('utf-8')
+            )
+        else:
+            submission = Submission(
+                problem=problem,
+                competitor=competitor,
+                text=str(request.POST['codeText'])
+            )
         submission.save()
         submission.grade()
         return redirect('exam_status', exam=exam)

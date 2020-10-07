@@ -4,14 +4,15 @@
     <div class="row justify-content-between">
       <div class = "col-10">
           <h1>Submission For Problem {{ problem.problem_number }}</h1> </br>
-          <form>
+          <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
               <div class="form-group">
                 <label for="codeText">Paste Code Here</label>
-                <textarea class="form-control" id="codeText" rows="3" wrap = "off"></textarea>
+                <textarea class="form-control" name="codeText" rows="3" wrap = "off"></textarea>
               </div>
               <div class="form-group">
-                <label for="exampleFormControlFile1">Example file input</label>
-                <input type="file" class="form-control-file" id="exampleFormControlFile1">
+                <label for="codeFile">Example file input</label>
+                <input type="file" class="form-control-file" name="codeFile">
               </div>
               <button type="submit" class="btn btn-primary">Submit</button>
           </form>
