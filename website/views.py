@@ -5,7 +5,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from website.models import Contest, Problem, Competitor, Exam, Submission, Score
 from website.forms import UserCreationForm
-from tika import parser
+#from tika import parser
 
 
 def home(request):
@@ -52,23 +52,22 @@ def submit(request, exam_id, problem_number):
 
     problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
     if request.method == 'POST':
-        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
-        if(str(request.POST['codeText'])==""):
-            submission = Submission(
-                problem=problem,
-                competitor=competitor,
-                text=request.FILES['codeFile'].read().decode('utf-8')
-            )
+        # TODO: Make sure that exactly one of the two inputs is submitted
+        # Need a javascript event listener for when the form gets submitted
+        if 'codeFile' in request.FILES:
+            text = request.FILES['codeFile'].read().decode('utf-8')
         else:
-            submission = Submission(
-                problem=problem,
-                competitor=competitor,
-                text=str(request.POST['codeText'])
-            )
+            text = request.POST['codeText']
+        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        submission = Submission(
+            problem=problem,
+            competitor=competitor,
+            text=text
+        )
         submission.save()
         submission.grade()
-        return redirect('exam_status', exam=exam)
-    elif request.method == 'GET':
+        return redirect('exam_status', exam_id=exam_id)
+    else: # request.method == 'GET'
         context = {
             'problem': problem,
         }
