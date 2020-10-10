@@ -20,8 +20,8 @@ class OptGrader(BaseGrader):
     def __init__(self, problem):
         self.problem = problem
         #self.n = int(problem.grader_data["n"])
-        self.n = int(problem.grader_data["n"])
-        self.m = int(problem.grader_data["m"])
+        self.n = problem.grader_data["n"]
+        self.m = problem.grader_data["m"]
 
     def grade(self, submission):
         '''
@@ -35,6 +35,7 @@ class OptGrader(BaseGrader):
         score = Score.objects.getScore(self.problem, competitor)
 
         if not self.validate(submission.text):
+            print("Invalid submission format!")
             points = 0 # TODO: notify the competitor that the submission format was invalid
         else:
             edges = self.parse(submission.text)
@@ -48,7 +49,8 @@ class OptGrader(BaseGrader):
         '''
         Checks if the user input is a
         '''
-        lines = user_input.split("\n")
+        lines = user_input.splitlines()
+        print(lines)
         noDupes = set()
         for line in lines:
             parts = line.split()
@@ -65,7 +67,7 @@ class OptGrader(BaseGrader):
                 return False
             # Checking for dupes
             # Note that n(a - 1) + b - 1 is a bijective mapping
-            x = self.n * (a - 1) + b - 1
+            x = (a,b)
             if x in noDupes:
                 return False
             noDupes.add(x)
@@ -78,21 +80,21 @@ class OptGrader(BaseGrader):
         Returns an array of 2-element arrays
         '''
         edges = []
-        lines = user_input.split("\n")
+        lines = user_input.splitlines()
         for line in lines:
             parts = line.split()
-            edges.append(parts)
+            a = int(parts[0])
+            b = int(parts[1])
+            edges.append((a,b))
         return edges
     
     def calc(self, edges):
         '''
         Calculates the number of triangles in a given graph
         '''
-        EdgeSet, ans = set(), 0
-        for x in edges:
-            EdgeSet.add(self.n * (x[0] - 1) + x[1] - 1)
+        ans = 0
         for x in edges:
             for y in edges: 
-                if x[1] == y[0] and self.n * (x[0] - 1) + y[1] - 1 in EdgeSet:
+                if x[1] == y[0] and (x[0],y[1]) in edges:
                     ans += 1
         return ans
