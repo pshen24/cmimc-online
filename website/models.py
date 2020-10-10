@@ -2,9 +2,11 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
+from django.utils import timezone
 from django.conf import settings
+from django.core.validators import MinValueValidator
 from website import problem_graders
-from website.managers import UserManager, ScoreManager
+from website.managers import UserManager, ScoreManager, CompetitorManager
 
 
 class Contest(models.Model):
@@ -20,6 +22,14 @@ class Contest(models.Model):
     def __str__(self):
         return self.name
 
+    # whether the user is registered for this contest
+    def is_registered(self, user):
+        if not user.is_authenticated:
+            return False
+        if not user.is_mathlete:
+            return False
+        return user.mathlete.teams.filter(contest=self).count() == 1
+
 
 class Exam(models.Model):
     contest = models.ForeignKey(Contest, related_name='exams', on_delete=models.CASCADE)
@@ -30,10 +40,74 @@ class Exam(models.Model):
     show_leaderboard = models.BooleanField(help_text=_('Whether to allow contestants \
             to see the leaderboard during the exam'))
     show_own_scores = models.BooleanField(help_text=_('Whether to allow contestants \
-            to see the score of a submission immediately after they submit')) 
+            to see their scores during the exam')) 
 
     def __str__(self):
         return self.name
+
+    @cached_property
+    def _now(self):
+        return timezone.now()
+
+    @cached_property
+    def ended(self):
+        return self._now > self.end_time
+
+    @cached_property
+    def started(self):
+        return self._now >= self.start_time
+
+    @cached_property
+    def ongoing(self):
+        return self.started and not self.ended
+
+    @cached_property
+    def time_until_start(self):
+        if not self.started:
+            return self.start_time - self._now
+        else:
+            return None
+
+    @cached_property
+    def time_remaining(self):
+        if not self.ended:
+            return self.end_time - self._now
+        else:
+            return None
+
+    # whether the user is currently doing the exam
+    def is_in_exam(self, user):
+        return self.ongoing and self.contest.is_registered(user)
+
+    # whether the user has access to the leaderboard page
+    def can_see_leaderboard(self, user):
+        if user.is_staff:
+            return True
+        if not self.ended and not self.contest.is_registered(user):
+            return False
+        return self.show_leaderboard
+
+    # whether the user has access to the status page
+    def can_see_status(self, user):
+        if user.is_staff: # they have access to the status page, but no scores are shown
+            return True
+        if not self.contest.is_registered(user):
+            return False
+        if self.ended:
+            return True
+        if not self.started:
+            return False
+        return self.show_own_scores
+
+    # whether the user has access to the problem pages
+    def can_see_problems(self, user):
+        if user.is_staff:
+            return True
+        if self.ended:
+            return True
+        if not self.started:
+            return False
+        return self.contest.is_registered(user)
 
 
 class Problem(models.Model):
@@ -43,7 +117,9 @@ class Problem(models.Model):
     grader_name = models.CharField(max_length=50) # add choices?
     grader_data = models.JSONField(null=True, blank=True, help_text=_("Data for the \
             problem's grader to use. The format depends on the type of grader"))
-    # add problem number?
+    problem_number = models.CharField(max_length=2, help_text=_("For most exams, \
+            problems are numbered 1, 2, 3, ..., but for the optimization round, \
+            they are numbered 1a, 1b, 1c, 2a, 2b, ... (each problem has multiple test cases"))
     
     # returns an instance of the grader class defined by grader_name
     @cached_property
@@ -55,6 +131,9 @@ class Problem(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        unique_together = ['exam', 'problem_number']
 
 
 class User(AbstractUser):
@@ -125,6 +204,8 @@ class Competitor(models.Model):
             corresponding mathlete. If the exam is a team exam, this is null'))
     total_score = models.IntegerField(default=True, db_index=True)
 
+    objects = CompetitorManager()
+
     class Meta:
         unique_together = ['exam', 'team', 'mathlete']
 
@@ -145,7 +226,6 @@ class Competitor(models.Model):
         self.save()
 
 
-
 class Submission(models.Model):
     problem = models.ForeignKey(Problem, related_name='submissions', on_delete=models.CASCADE)
     competitor = models.ForeignKey(Competitor, related_name='submissions', \
@@ -153,7 +233,7 @@ class Submission(models.Model):
     text = models.TextField(help_text=_('The string that the competitor submitted. \
             Its format depends on the exam (can be an integer, source code, \
             program output, etc)'))
-    submit_time = models.DateTimeField(db_index=True)
+    submit_time = models.DateTimeField(auto_now_add=True, db_index=True)
     # add something for errors? (if they submit something invalid)
 
     def __str__(self):
