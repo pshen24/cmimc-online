@@ -7,27 +7,25 @@ Negative integers are allowed.
 
 Expects initial grader_data to be formatted as
 {
-    "answer": "ANSWER",
-    "keep_best": "KEEP_BEST"
+    "answer": <integer>,
+    "keep_best": <boolean>
 }
-where ANSWER is the integer answer to the problem,
-and KEEP_BEST is a boolean that indicates whether to keep the best
-submission's score, instead of overriding it with the most recent submission.
+keep_best indicates whether to keep the best submission's score,
+instead of overriding it with the most recent submission.
+Note: <boolean> should be lowercase (JSON format)
 '''
 
 class IntegerGrader(BaseGrader):
     def __init__(self, problem):
         super().__init__(problem)
-        self.answer = int(problem.grader_data["answer"])
-        self.keep_best = bool(problem.grader_data["keep_best"])
+        self.answer = problem.grader_data["answer"]
+        self.keep_best = problem.grader_data["keep_best"]
 
     def grade(self, submission):
         from website.models import Score
         competitor = submission.competitor
         score = Score.objects.getScore(self.problem, competitor)
 
-        # the submission should've been validated before they submit,
-        # but this is just a precaution
         if not self.validate(submission.text):
             points = 0 # TODO: notify the competitor that the submission format was invalid
         elif int(submission.text) == self.answer:

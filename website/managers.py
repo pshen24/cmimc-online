@@ -35,3 +35,10 @@ class ScoreManager(models.Manager):
             new_score = self.create(problem=problem, competitor=competitor)
             return new_score
 
+class CompetitorManager(models.Manager):
+    def mathleteToCompetitor(self, exam, mathlete):
+        team = mathlete.teams.filter(contest=exam.contest).first()
+        if exam.is_team_exam:
+            return self.get(exam=exam, team=team, mathlete=None)
+        else:
+            return self.get(exam=exam, team=team, mathlete=mathlete)

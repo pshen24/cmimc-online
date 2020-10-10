@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="row justify-content-between">
+      <div class = "col-10">
+          <h1>Problem {{ problem.problem_number }}</h1> </br>
+          {{ problem.problem_text }}</br>
+      </div>
+
+
+
+      <div class = "col-2">
+        {% if next_problem_number %}
+        <a href="{% url 'problem_info' problem.exam_id next_problem_number %}" class="btn btn-secondary"> Next Problem</a>
+        {% endif %}
+        </br>
+        <h2><a href="{% url 'submit' problem.exam_id problem.problem_number %}" class="btn btn-primary"> Submit Here</a> </h2>
+        </br>
+        <h2><a href="{% url 'exam_status' problem.exam_id %}" class="btn btn-info"> Back To Exam</a> </h2>
+      </div>
+    </div>
+
+
+
+
+{% endblock %}
+
