@@ -188,6 +188,10 @@ class Team(models.Model):
     team_name = models.CharField(max_length=100,unique=true)
     invite_code = models.IntegerField()
 
+    def create_team(cls, contest, mathletes, team_name, invite_code):
+        new_team = cls(contest=contest,mathletes=mathletes,is_registered=False,invited_code=invite_code)
+        return new_team
+
     def __str__(self):
         name = "Team: ["
         for m in self.mathletes.all():
@@ -195,6 +199,13 @@ class Team(models.Model):
         name += "]"
         return name
 
+    def add_mathlete(mathlete):
+        self.mathletes.add(mathlete)
+
+    def remove_mathlete(mathlete):
+        if not mathlete in self.mathletes:
+            #error: not in team
+        self.mathletes.remove(mathlete)
 
 class Competitor(models.Model):
     exam = models.ForeignKey(Exam, related_name='competitors', on_delete=models.CASCADE)
