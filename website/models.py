@@ -185,7 +185,7 @@ class Team(models.Model):
             registered team are finalized and cannot be edited'))
     team_leader = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, \
             on_delete=models.SET_NULL)
-    team_name = models.CharField(max_length=100,unique=true)
+    team_name = models.CharField(max_length=100, unique=True)
     invite_code = models.IntegerField()
 
     def __str__(self):
