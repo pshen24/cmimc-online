@@ -5,7 +5,7 @@ from django.utils.functional import cached_property
 from django.utils import timezone
 from django.conf import settings
 from django.core.validators import MinValueValidator
-from website import problem_graders
+#from website import problem_graders
 from website.managers import UserManager, ScoreManager, CompetitorManager
 
 
@@ -203,7 +203,7 @@ class Team(models.Model):
         self.mathletes.add(mathlete)
 
     def remove_mathlete(mathlete):
-        if not mathlete in self.mathletes:
+        #if not mathlete in self.mathletes:
             #error: not in team
         self.mathletes.remove(mathlete)
 
