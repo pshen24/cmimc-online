@@ -7,9 +7,11 @@
 
 	<div class="collapse navbar-collapse" id="mainMenu">
 	    {% url 'contest_list' as url_contests %}
+	    {% url 'general_info' as url_general_info %}
 		<ul class="navbar-nav mr-auto ml-md-3">
 	      <li class="nav-item">
 			<a class="nav-link {% if request.get_full_path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
+			<a class="nav-link {% if request.get_full_path == url_general_info %}active{% endif %}" href="{% url 'general_info' %}">Information</a>
 		  </li>
 		</ul>
 
