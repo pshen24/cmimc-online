@@ -5,6 +5,7 @@ from website import views
 
 urlpatterns = [
     path('', views.home, name='home'),
+    path('info', views.general_info, name='general_info'),
     path('contests', views.contest_list, name='contest_list'),
     path('admin/', admin.site.urls),
     

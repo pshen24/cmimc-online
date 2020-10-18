@@ -11,6 +11,8 @@ from website.forms import UserCreationForm
 def home(request):
     return render(request, 'home.html')
 
+def general_info(request):
+    return render(request, 'general_info.html')
 
 def contest_list(request):
     all_contests = Contest.objects.all()
@@ -95,7 +97,6 @@ def exam_status(request, exam_id):
         'all_problems_scores': zip(problems, scores),
     }
     return render(request, 'exam_status.html', context)
-
 
 # User Account Signup
 def signup(request):
