@@ -230,7 +230,7 @@ class Submission(models.Model):
     problem = models.ForeignKey(Problem, related_name='submissions', on_delete=models.CASCADE)
     competitor = models.ForeignKey(Competitor, related_name='submissions', \
             on_delete=models.CASCADE)
-    models.floatField(null=True, blank=True)
+    #points = models.floatField(null=True, blank=True)
     is_graded = models.BooleanField(default=False)
     text = models.TextField(help_text=_('The string that the competitor submitted. \
             Its format depends on the exam (can be an integer, source code, \
