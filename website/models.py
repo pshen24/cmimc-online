@@ -188,8 +188,11 @@ class Team(models.Model):
     team_name = models.CharField(max_length=100, unique=True)
     invite_code = models.IntegerField()
 
-    def create_team(cls, contest, mathletes, team_name, invite_code):
-        new_team = cls(contest=contest,mathletes=mathletes,is_registered=False,invited_code=invite_code)
+    def create_team(cls, contest, mathletes, team_name):
+        invite_code = random.randint(1000000,9999999) #might want better generation function
+        while not invite_code in [x.invite_code for x in Team.objects.all()]:
+            invite_code = random.randint(1000000,9999999)
+        new_team = cls(contest=contest,mathletes=mathletes,team_name=team_name,is_registered=False,invite_code=invite_code)
         return new_team
 
     def __str__(self):
@@ -200,11 +203,11 @@ class Team(models.Model):
         return name
 
     def add_mathlete(mathlete):
+        assert(not mathlete in self.mathletes)
         self.mathletes.add(mathlete)
 
     def remove_mathlete(mathlete):
-        #if not mathlete in self.mathletes:
-            #error: not in team
+        assert(mathlete in self.mathletes)
         self.mathletes.remove(mathlete)
 
 class Competitor(models.Model):
