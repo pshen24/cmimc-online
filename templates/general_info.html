@@ -1,6 +1,65 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    Welcome to CMIMC 2020!
 
+    <div>
+    <p class="display-3">Information</p>
+        <hr class=""/>
+    <div class="row justify-content-between">
+      <div class = "col-9">
+          <p>
+              CMIMC 2020 is going ONLINE.
+          </p>
+      </div>
+    <div class = "col-3">
+    <h2>Important Dates </h2>
+  </div>
+    </div>
+
+
+  <div class="accordion" id="accordionExample">
+  <div class="card">
+    <div class="card-header" id="headingOne">
+      <h2 class="mb-0">
+        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+          Individual Round
+        </button>
+      </h2>
+    </div>
+
+    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+      <div class="card-body">
+        Algebra is the best round.
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingTwo">
+      <h2 class="mb-0">
+        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+          Team Round
+        </button>
+      </h2>
+    </div>
+    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample">
+      <div class="card-body">
+        Work with your team, collaborate on your solutions.
+      </div>
+    </div>
+  </div>
+  <div class="card">
+    <div class="card-header" id="headingThree">
+      <h2 class="mb-0">
+        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+          Programming Round
+        </button>
+      </h2>
+    </div>
+    <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+      <div class="card-body">
+        Java is the best language.
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
