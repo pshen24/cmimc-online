@@ -14,6 +14,21 @@ def home(request):
 def general_info(request):
     return render(request, 'general_info.html')
 
+def schedule(request):
+    return render(request, 'schedule.html')
+
+def reg_info(request):
+    return render(request, 'reg_info.html')
+
+def rules(request):
+    return render(request, 'rules.html')
+
+def faq(request):
+    return render(request, 'faq.html')
+
+def contact(request):
+    return render(request, 'contact.html')
+
 def contest_list(request):
     all_contests = Contest.objects.all()
     context = {
