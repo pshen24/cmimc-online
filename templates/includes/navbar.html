@@ -32,6 +32,9 @@
 	      <li class="nav-item">
 			<a class="nav-link {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a>
 		  </li>
+	      <li class="nav-item">
+			<a class="nav-link {% if request.get_full_path == url_contact %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
+		  </li>
 		</ul>
 
       {% if user.is_authenticated %}
