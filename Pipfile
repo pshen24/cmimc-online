@@ -10,7 +10,6 @@ django = "*"
 mysqlclient = "*"
 environs = "*"
 django-crispy-forms = "*"
-awsebcli = "*"
 
 [requires]
 python_version = "3.7"
