@@ -3,12 +3,23 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from website.models import Contest, Exam, Problem, Competitor, Submission, Score
+from website.models import Contest, Exam, Problem, Competitor, Submission, Score, Team
 from website.forms import UserCreationForm
 
 
 def home(request):
     return render(request, 'home.html')
+
+
+def new_team(request, contest_id):
+    user = request.user
+    # check if user is mathlete
+    mathlete = user.mathlete
+    contest = get_object_or_404(Contest, pk=contest_id)
+    team = Team(contest=contest, team_name="new team")
+    team.save()
+    team.add_mathlete()
+    return redirect('team_info', team_id=team.id)
 
 
 def contest_list(request):
@@ -43,7 +54,7 @@ def team_info(request, team_id):
         # add info here
         'team': team,
     }
-    return render(request, 'join_contest.html', context)
+    return render(request, 'team.html', context)
 
 
 def problem_info(request, exam_id, problem_number):

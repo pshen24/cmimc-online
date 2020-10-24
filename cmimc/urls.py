@@ -20,6 +20,8 @@ urlpatterns = [
     path('exam/<int:exam_id>/problem/<str:problem_number>', views.problem_info, name='problem_info'),
     path('exam/<int:exam_id>/problem/<str:problem_number>/submit', views.submit, name='submit'),
     path('exam/<int:exam_id>', views.exam_status, name='exam_status'),
+
+    path('contest/<int:contest_id>/new_team', views.new_team, name='new_team'),
 ]
 
 

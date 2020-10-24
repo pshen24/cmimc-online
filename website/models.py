@@ -205,10 +205,12 @@ class Team(models.Model):
     def add_mathlete(mathlete):
         assert(not mathlete in self.mathletes)
         self.mathletes.add(mathlete)
+        self.save()
 
     def remove_mathlete(mathlete):
         assert(mathlete in self.mathletes)
         self.mathletes.remove(mathlete)
+        self.save()
 
 class Competitor(models.Model):
     exam = models.ForeignKey(Exam, related_name='competitors', on_delete=models.CASCADE)
