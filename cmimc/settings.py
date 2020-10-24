@@ -17,7 +17,10 @@ SECRET_KEY = 'fkld*a&%$9jnyw4g926-1vbgm$gnzq31%r5-kw!a3!c!gmb7yc'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'cmimc-test-env.eba-psmubjfj.us-east-1.elasticbeanstalk.com',
+    '127.0.0.1',
+]
 
 
 # Application definition
@@ -119,6 +122,7 @@ APPEND_SLASH = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
+STATIC_ROOT = 'staticfiles'
 
 AUTH_USER_MODEL = 'website.User'
 
