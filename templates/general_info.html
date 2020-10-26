@@ -2,92 +2,99 @@
 
 {% block content %}
 
-    <div>
     <p class="display-3">Information</p>
         <hr class="red_line"/>
 
+        <div class="row justify-content-between">
+            <div class="col-9">
+                <p>
+                    CMIMC 2020 is going ONLINE.
+                </p>
+                <div class="accordion" id="accordionExample" style="margin-top: 10px">
+                    <div class="card">
+                        <div class="card-header" id="headingOne">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse"
+                                        data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne"
+                                        style="color: darkblue; font-weight: bold">
+                                    Individual Round
+                                </button>
+                            </h2>
+                        </div>
+
+                        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne"
+                             data-parent="#accordionExample">
+                            <div class="card-body">
+                                Algebra is the best round.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingTwo">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left collapsed" type="button"
+                                        data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false"
+                                        aria-controls="collapseTwo" style="color: darkblue; font-weight: bold">
+                                    Team Round
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo"
+                             data-parent="#accordionExample">
+                            <div class="card-body">
+                                Work with your team, collaborate on your solutions.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header" id="headingThree">
+                            <h2 class="mb-0">
+                                <button class="btn btn-link btn-block text-left collapsed" type="button"
+                                        data-toggle="collapse" data-target="#collapseThree" aria-expanded="false"
+                                        aria-controls="collapseThree" style="color: darkblue; font-weight: bold">
+                                    Programming Round
+                                </button>
+                            </h2>
+                        </div>
+                        <div id="collapseThree" class="collapse show" aria-labelledby="headingThree"
+                             data-parent="#accordionExample">
+                            <div class="card-body">
+                                Java is the best language.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
-    <div class="row justify-content-between">
-      <div class = "col-9">
-          <p>
-              CMIMC 2020 is going ONLINE.
-          </p>
-          <div class="accordion" id="accordionExample" style="margin-top: 10px">
-  <div class="card">
-    <div class="card-header" id="headingOne">
-      <h2 class="mb-0">
-        <button class="btn btn-link btn-block text-left" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne" style="color: darkblue; font-weight: bold">
-          Individual Round
-        </button>
-      </h2>
-    </div>
-
-        <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
-          <div class="card-body">
-            Algebra is the best round.
-          </div>
+            <div class="col-3" style="border:1px solid black; border-radius: 20px; background-color: #8888FF">
+                <h2 style="color: black; margin-top: 10px">Important Dates </h2>
+                <div class="card"
+                     style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: darkred">Registration Deadline</h5>
+                        <h6 class="card-subtitle mb-2" style="color: darkred">November 20th 2020</h6>
+                        <a href="#" class="card-link">Register Here</a>
+                    </div>
+                </div>
+                <div class="card"
+                     style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
+                    <div class="card-body">
+                        <h5 class="card-title">Programming Contest</h5>
+                        <h6 class="card-subtitle mb-2">December 16th 2020</h6>
+                        <a href="#" class="card-link">Start Here</a>
+                    </div>
+                </div>
+                <div class="card"
+                     style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: darkred">Another Deadline</h5>
+                        <h6 class="card-subtitle mb-2" style="color: darkred">December 16th 2020</h6>
+                        <a href="#" class="card-link"> Do Here</a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="card">
-        <div class="card-header" id="headingTwo">
-          <h2 class="mb-0">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo" style="color: darkblue; font-weight: bold">
-              Team Round
-            </button>
-          </h2>
-        </div>
-        <div id="collapseTwo" class="collapse show" aria-labelledby="headingTwo" data-parent="#accordionExample">
-          <div class="card-body">
-            Work with your team, collaborate on your solutions.
-          </div>
-        </div>
-      </div>
-      <div class="card">
-        <div class="card-header" id="headingThree">
-          <h2 class="mb-0">
-            <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree" style="color: darkblue; font-weight: bold">
-              Programming Round
-            </button>
-          </h2>
-        </div>
-        <div id="collapseThree" class="collapse show" aria-labelledby="headingThree" data-parent="#accordionExample">
-          <div class="card-body">
-            Java is the best language.
-          </div>
-        </div>
-      </div>
-    </div>
-</div>
-
-
-
-
-    <div class = "col-3" style="border:1px solid black; border-radius: 20px; background-color: #8888FF">
-    <h2 style="color: black; margin-top: 10px">Important Dates </h2>
-    <div class="card" style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
-      <div class="card-body">
-        <h5 class="card-title" style="color: darkred">Registration Deadline</h5>
-        <h6 class="card-subtitle mb-2" style="color: darkred">November 20th 2020</h6>
-        <a href="#" class="card-link" >Register Here</a>
-      </div>
-    </div>
-    <div class="card" style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
-      <div class="card-body">
-        <h5 class="card-title">Programming Contest</h5>
-        <h6 class="card-subtitle mb-2">December 16th 2020</h6>
-        <a href="#" class="card-link">Start Here</a>
-      </div>
-    </div>
-    <div class="card" style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
-      <div class="card-body">
-        <h5 class="card-title" style="color: darkred">Another Deadline</h5>
-        <h6 class="card-subtitle mb-2" style="color: darkred">December 16th 2020</h6>
-        <a href="#" class="card-link" > Do Here</a>
-      </div>
-    </div>
-  </div>
-    </div>
 
 
 

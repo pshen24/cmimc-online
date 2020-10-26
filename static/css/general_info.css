@@ -1,5 +1,8 @@
 .red_line{
-        height: 1px;
-        background-color: darkblue;
-        border: none;
+  height: 1px;
+  background-color: darkblue;
+  border: none;
+}
+.bg-darkred {
+  background-color: darkred;
 }
