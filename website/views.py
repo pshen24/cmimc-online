@@ -1,4 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404
+from django.urls import reverse
 from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
@@ -10,16 +11,39 @@ from website.forms import UserCreationForm
 def home(request):
     return render(request, 'home.html')
 
-
+@login_required
 def new_team(request, contest_id):
     user = request.user
-    # check if user is mathlete
-    mathlete = user.mathlete
     contest = get_object_or_404(Contest, pk=contest_id)
-    team = Team(contest=contest, team_name="new team")
-    team.save()
-    team.add_mathlete()
-    return redirect('team_info', team_id=team.id)
+    if user.is_mathlete:
+        mathlete = user.mathlete
+        if mathlete.has_team(contest):
+            team = mathlete.get_team(contest)
+            return redirect('team_info', team_id=team.id)
+        elif request.method == 'GET':
+            return render(request, 'new_team.html')
+        else:
+            print('calling contructor')
+            team = Team.create(contest=contest, team_name=request.POST['teamName'])
+            print(' contructor done')
+            team.save()
+            team.mathletes.add(mathlete)
+            return redirect('team_info', team_id=team.id)
+
+
+@login_required
+def join_team(request, team_id, invite_code):
+    user = request.user
+    team = get_object_or_404(Team, pk=team_id, invite_code=invite_code)
+    contest = team.contest
+    if user.is_mathlete:
+        mathlete = user.mathlete
+        if mathlete.has_team(contest):
+            team = mathlete.get_team(contest)
+            return redirect('team_info', team_id=team.id)
+        else:
+            team.mathletes.add(mathlete)
+            return redirect('team_info', team_id=team.id)
 
 
 def contest_list(request):
@@ -51,8 +75,8 @@ def join_contest(request, contest_id):
 def team_info(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
     context = {
-        # add info here
         'team': team,
+        'invite_link': request.build_absolute_uri(reverse('join_team', args=[team_id, team.invite_code]))
     }
     return render(request, 'team.html', context)
 

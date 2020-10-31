@@ -3,10 +3,12 @@
 {% block content %}
     <div class="row justify-content-center">
       <div class = "col-10">
-          <h1>Team {{ team.team_name }}</h1> </br>
-          {% for mathlete in team.mathletes.all() %} 
+          <h2>Team Name: {{ team.team_name }}</h2>
+          To invite new team members, send them this link: <a href="{{ invite_link }}">{{ invite_link }}</a>
+          <h2>Members</h2>
+          {% for mathlete in team.mathletes.all %} 
 			<li>
-				{{ mathlete }}
+				{{ mathlete.user.preferred_name }}
 		  	</li>
 		  {% endfor %}
       </div>

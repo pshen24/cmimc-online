@@ -4,9 +4,10 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.utils import timezone
 from django.conf import settings
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 #from website import problem_graders
 from website.managers import UserManager, ScoreManager, CompetitorManager
+import random
 
 
 class Contest(models.Model):
@@ -22,13 +23,14 @@ class Contest(models.Model):
     def __str__(self):
         return self.name
 
+    # TODO: update for coaches
     # whether the user is registered for this contest
     def is_registered(self, user):
         if not user.is_authenticated:
             return False
         if not user.is_mathlete:
             return False
-        return user.mathlete.teams.filter(contest=self).count() == 1
+        return self.mathlete.has_team(self)
 
 
 class Exam(models.Model):
@@ -144,10 +146,11 @@ class User(AbstractUser):
 
     MATHLETE = 'ML'
     STAFF = 'ST'
+    COACH = 'CO'
     role_CHOICES = [
         (MATHLETE, 'Contestant'),
         (STAFF, 'CMU Student'),
-        # (COACH, 'Coach'),     # coaches not implemented yet
+        (COACH, 'Coach'),     # coaches not implemented yet
     ]
     role = models.CharField(max_length=2, choices=role_CHOICES, default=MATHLETE)
 
@@ -169,6 +172,10 @@ class User(AbstractUser):
     def is_mathlete(self):
         return self.role == self.MATHLETE
 
+    @property
+    def is_coach(self):
+        return self.role == self.COACH
+
 
 class Mathlete(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='mathlete', \
@@ -176,6 +183,13 @@ class Mathlete(models.Model):
 
     def __str__(self):
         return "Mathlete: " + str(self.user)
+
+    def has_team(self, contest):
+        return self.teams.filter(contest=contest).exists()
+
+    def get_team(self, contest):
+        return self.teams.filter(contest=contest).first()
+
 
 
 class Team(models.Model):
@@ -186,14 +200,25 @@ class Team(models.Model):
     team_leader = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, \
             on_delete=models.SET_NULL)
     team_name = models.CharField(max_length=100, unique=True)
-    invite_code = models.IntegerField()
+    MIN_CODE = 100000
+    MAX_CODE = 999999
+    invite_code = models.IntegerField(unique=True,
+        validators=[
+            MinValueValidator(MIN_CODE),
+            MaxValueValidator(MAX_CODE)
+        ])
 
-    def create_team(cls, contest, mathletes, team_name):
-        invite_code = random.randint(1000000,9999999) #might want better generation function
-        while not invite_code in [x.invite_code for x in Team.objects.all()]:
-            invite_code = random.randint(1000000,9999999)
-        new_team = cls(contest=contest,mathletes=mathletes,team_name=team_name,is_registered=False,invite_code=invite_code)
-        return new_team
+    @classmethod
+    def create(cls, contest, team_name):
+        invite_code = Team.generate_code()
+        return cls(contest=contest,team_name=team_name,invite_code=invite_code)
+
+    @staticmethod
+    def generate_code():
+        code = random.randint(Team.MIN_CODE, Team.MAX_CODE)
+        while Team.objects.filter(invite_code=code).exists():
+            code = random.randint(Team.MIN_CODE, Team.MAX_CODE)
+        return code
 
     def __str__(self):
         name = "Team: ["
@@ -202,15 +227,6 @@ class Team(models.Model):
         name += "]"
         return name
 
-    def add_mathlete(mathlete):
-        assert(not mathlete in self.mathletes)
-        self.mathletes.add(mathlete)
-        self.save()
-
-    def remove_mathlete(mathlete):
-        assert(mathlete in self.mathletes)
-        self.mathletes.remove(mathlete)
-        self.save()
 
 class Competitor(models.Model):
     exam = models.ForeignKey(Exam, related_name='competitors', on_delete=models.CASCADE)
