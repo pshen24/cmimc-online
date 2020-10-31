@@ -30,7 +30,7 @@ class Contest(models.Model):
             return False
         if not user.is_mathlete:
             return False
-        return self.mathlete.has_team(self)
+        return user.mathlete.has_team(self)
 
 
 class Exam(models.Model):
@@ -199,7 +199,7 @@ class Team(models.Model):
             registered team are finalized and cannot be edited'))
     team_leader = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, \
             on_delete=models.SET_NULL)
-    team_name = models.CharField(max_length=100, unique=True)
+    team_name = models.CharField(max_length=100)
     MIN_CODE = 100000
     MAX_CODE = 999999
     invite_code = models.IntegerField(unique=True,
@@ -226,6 +226,43 @@ class Team(models.Model):
             name += str(m) + ", "
         name += "]"
         return name
+
+    class Meta:
+        unique_together = ['team_name', 'contest']
+
+    def register(self):
+        # TODO: check if this is during the contest registration period
+        assert(not self.is_registered)
+        size = self.mathletes.count()
+        assert(size >= self.contest.min_team_size and size <= self.contest.max_team_size)
+        for exam in self.contest.exams.all():
+            if exam.is_team_exam:
+                c = Competitor(exam=exam, team=self, mathlete=None)
+                c.save()
+            else:
+                for m in self.mathletes.all():
+                    c = Competitor(exam=exam, team=self, mathlete=m)
+                    c.save()
+        self.is_registered = True
+        self.save()
+
+    def unregister(self):
+        assert(self.is_registered)
+        for c in self.competitors.all():
+            c.delete()
+        self.is_registered = False
+        self.save()
+
+    # whether the user has access to the team info page
+    def can_see_info(self, user):
+        if user.is_staff:
+            return True
+        if user.is_mathlete:
+            return user.mathlete.teams.filter(pk=self.id).exists()
+        if user.is_staff:
+            return True # TODO: change this
+
+
 
 
 class Competitor(models.Model):

@@ -11,6 +11,7 @@ from website.forms import UserCreationForm
 def home(request):
     return render(request, 'home.html')
 
+# TODO: handle error when user submits a duplicate team name
 @login_required
 def new_team(request, contest_id):
     user = request.user
@@ -23,14 +24,13 @@ def new_team(request, contest_id):
         elif request.method == 'GET':
             return render(request, 'new_team.html')
         else:
-            print('calling contructor')
             team = Team.create(contest=contest, team_name=request.POST['teamName'])
-            print(' contructor done')
             team.save()
             team.mathletes.add(mathlete)
             return redirect('team_info', team_id=team.id)
 
 
+# TODO: prevent joining after team is registered
 @login_required
 def join_team(request, team_id, invite_code):
     user = request.user
@@ -55,28 +55,24 @@ def contest_list(request):
 
 
 @login_required
-def join_contest(request, contest_id):
-    contest = get_object_or_404(Contest, pk=contest_id)
-    assert(request.user.is_mathlete)
-    mathlete = request.user.mathlete
-
-    team = mathlete.teams.filter(contest=contest).first()
-    if team:
-        # this mathlete already has a team for this contest
-        return redirect('team_info', team_id=team.id)
-    
-    context = {
-        # add info here
-    }
-    return render(request, 'join_contest.html', context)
-
-
-@login_required
 def team_info(request, team_id):
+    user = request.user
     team = get_object_or_404(Team, pk=team_id)
+    if not team.can_see_info(user):
+        return redirect('home')
+
+    if request.method == 'POST':
+        if request.POST['submit'] == 'leaveTeam' and user.is_mathlete:
+            mathlete = user.mathlete
+            team.mathletes.remove(mathlete)
+        elif request.POST['submit'] == 'register':
+            team.register()
+
     context = {
         'team': team,
-        'invite_link': request.build_absolute_uri(reverse('join_team', args=[team_id, team.invite_code]))
+        'invite_link': request.build_absolute_uri(
+            reverse('join_team', args=[team_id, team.invite_code])
+        ),
     }
     return render(request, 'team.html', context)
 
