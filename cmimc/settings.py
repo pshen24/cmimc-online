@@ -1,5 +1,6 @@
 from pathlib import Path
 from environs import Env
+import os
 
 env = Env()
 env.read_env()
@@ -11,13 +12,22 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'fkld*a&%$9jnyw4g926-1vbgm$gnzq31%r5-kw!a3!c!gmb7yc'
-
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = env('DEBUG')
+DEBUG = (os.environ['DEBUG'] == 'true')
 
-ALLOWED_HOSTS = []
+
+# SECURITY WARNING: keep the secret key used in production secret!
+if DEBUG:
+    SECRET_KEY = 'fkld*a&%$9jnyw4g926-1vbgm$gnzq31%r5-kw!a3!c!gmb7yc'
+else:
+    SECRET_KEY = os.environ['SECRET_KEY']
+
+
+ALLOWED_HOSTS = [
+    'cmimconline.com',
+    'cmimc-online-env.eba-yug9gsp2.us-east-1.elasticbeanstalk.com',
+    '127.0.0.1',
+]
 
 
 # Application definition
@@ -68,15 +78,26 @@ WSGI_APPLICATION = 'cmimc.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('DB_NAME'),
-        'USER': env('DB_USERNAME'),
-        'PASSWORD': env('DB_PASSWORD'),
+if 'RDS_HOSTNAME' in os.environ:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ['RDS_DB_NAME'],
+            'USER': os.environ['RDS_USERNAME'],
+            'PASSWORD': os.environ['RDS_PASSWORD'],
+            'HOST': os.environ['RDS_HOSTNAME'],
+            'PORT': os.environ['RDS_PORT'],
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': env('DB_NAME'),
+            'USER': env('DB_USERNAME'),
+            'PASSWORD': env('DB_PASSWORD'),
+        }
+    }
 
 
 # Password validation
@@ -119,6 +140,7 @@ APPEND_SLASH = False
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = (str(BASE_DIR.joinpath('static')),)
+STATIC_ROOT = 'staticfiles'
 
 AUTH_USER_MODEL = 'website.User'
 
@@ -132,3 +154,13 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
 
+# https security
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+SECURE_REFERRER_POLICY = 'same-origin'
+SECURE_HSTS_SECONDS = 10
+SECURE_HSTS_PRELOAD = True
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
