@@ -9,9 +9,7 @@ urlpatterns = [
     path('info', views.general_info, name='general_info'),
     path('schedule', views.schedule, name='schedule'),
     path('reg_info', views.reg_info, name='reg_info'),
-    path('rules', views.rules, name='rules'),
     path('faq', views.faq, name='faq'),
-    path('contact', views.contact, name='contact'),
 
     path('admin/', admin.site.urls),
     

@@ -10,13 +10,13 @@
 	    {% url 'general_info' as url_general_info %}
 	    {% url 'schedule' as url_schedule %}
 	    {% url 'reg_info' as url_reg_info %}
-	    {% url 'rules' as url_rules %}
 	    {% url 'faq' as url_faq %}
-	    {% url 'contact' as url_contact %}
 		<ul class="navbar-nav mr-auto ml-md-3">
+        {% if user.is_authenticated %}
 	      <li class="nav-item">
 			<a class="nav-link {% if request.get_full_path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
 		  </li>
+        {% endif %}
 	      <li class="nav-item">
 			<a class="nav-link {% if request.get_full_path == url_general_info %}active{% endif %}" href="{% url 'general_info' %}">Information</a>
 		  </li>
@@ -27,13 +27,7 @@
 			<a class="nav-link {% if request.get_full_path == url_reg_info %}active{% endif %}" href="{% url 'reg_info' %}">Registration</a>
 		  </li>
 	      <li class="nav-item">
-			<a class="nav-link {% if request.get_full_path == url_rules %}active{% endif %}" href="{% url 'rules' %}">Rules</a>
-		  </li>
-	      <li class="nav-item">
 			<a class="nav-link {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a>
-		  </li>
-	      <li class="nav-item">
-			<a class="nav-link {% if request.get_full_path == url_contact %}active{% endif %}" href="{% url 'contact' %}">Contact</a>
 		  </li>
 		</ul>
 

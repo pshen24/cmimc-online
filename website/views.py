@@ -20,14 +20,8 @@ def schedule(request):
 def reg_info(request):
     return render(request, 'reg_info.html')
 
-def rules(request):
-    return render(request, 'rules.html')
-
 def faq(request):
     return render(request, 'faq.html')
-
-def contact(request):
-    return render(request, 'contact.html')
 
 def contest_list(request):
     all_contests = Contest.objects.all()
