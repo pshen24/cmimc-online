@@ -5,6 +5,8 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from website.models import Contest, Problem, Competitor, Exam, Submission, Score
 from website.forms import UserCreationForm
+from website.forms import SnippetForm
+from website.models import Snippet
 #from tika import parser
 
 
@@ -66,10 +68,16 @@ def submit(request, exam_id, problem_number):
         )
         submission.save()
         submission.grade()
+        form = SnippetForm(request.POST)
+        if (form.is_valid()):
+            form.save()
         return redirect('exam_status', exam_id=exam_id)
     else: # request.method == 'GET'
+        form = SnippetForm()
         context = {
             'problem': problem,
+            'form': form,
+            'snippets': Snippet.objects.all()
         }
         return render(request, 'submit.html', context)
 
