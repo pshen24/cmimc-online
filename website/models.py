@@ -212,9 +212,9 @@ class Team(models.Model):
     invite_code = models.CharField(unique=True, max_length=15)
 
     @classmethod
-    def create(cls, contest, team_name):
+    def create(cls, contest, team_name, coach):
         invite_code = Team.generate_code()
-        return cls(contest=contest,team_name=team_name,invite_code=invite_code)
+        return cls(contest=contest,team_name=team_name,invite_code=invite_code,coach=coach)
 
     @staticmethod
     def generate_code():
@@ -263,8 +263,8 @@ class Team(models.Model):
             return True
         if user.is_mathlete:
             return user.mathlete.teams.filter(pk=self.id).exists()
-        if user.is_staff:
-            return True # TODO: change this
+        if user.is_coach:
+            return self.coach == user
 
 
 

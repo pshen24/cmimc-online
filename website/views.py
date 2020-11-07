@@ -11,7 +11,9 @@ from website.forms import UserCreationForm
 def home(request):
     return render(request, 'home.html')
 
+
 # TODO: handle error when user submits a duplicate team name
+# TODO: check registration period to see if new teams can still be made
 @login_required
 def new_team(request, contest_id):
     user = request.user
@@ -24,10 +26,19 @@ def new_team(request, contest_id):
         elif request.method == 'GET':
             return render(request, 'new_team.html')
         else:
-            team = Team.create(contest=contest, team_name=request.POST['teamName'])
+            team = Team.create(contest=contest, team_name=request.POST['teamName'], coach=None)
             team.save()
             team.mathletes.add(mathlete)
             return redirect('team_info', team_id=team.id)
+    elif user.is_coach:
+        if request.method == 'GET':
+            return render(request, 'new_team.html')
+        else:
+            team = Team.create(contest=contest, team_name=request.POST['teamName'], coach=user)
+            team.save()
+            return redirect('team_info', team_id=team.id)
+
+        
 
 
 # TODO: prevent joining after team is registered
@@ -44,6 +55,7 @@ def join_team(request, team_id, invite_code):
         else:
             team.mathletes.add(mathlete)
             return redirect('team_info', team_id=team.id)
+
 
 @login_required
 def contest_list(request):
@@ -87,6 +99,20 @@ def team_info(request, team_id):
         ),
     }
     return render(request, 'team.html', context)
+
+
+@login_required
+def coach_teams(request, contest_id):
+    user = request.user
+    contest = get_object_or_404(Contest, pk=contest_id)
+    if not user.is_coach:
+        return redirect('home')
+
+    teams = Team.objects.filter(contest=contest, coach=user)
+    context = {
+        'teams': teams
+    }
+    return render(request, 'coach_teams.html', context)
 
 
 def problem_info(request, exam_id, problem_number):

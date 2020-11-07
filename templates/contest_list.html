@@ -25,13 +25,14 @@
               {% endif %}
             {% else %}
              {% if t.has_team %}
-                <a href="{% url 'team_info' t.team.id %}" class="btn btn-primary stretched-link">
+                <a href="{% url 'coach_teams' t.contest.id %}" class="btn btn-primary stretched-link">
                   Your Teams
                 </a>
+              {% else %}
+                <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
+                  Create Team
+                </a>
               {% endif %}
-              <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
-                Create Team
-              </a>
             {% endif %}
           </div>
         </div>
