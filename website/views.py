@@ -18,7 +18,7 @@ def new_team(request, contest_id):
     contest = get_object_or_404(Contest, pk=contest_id)
     if user.is_mathlete:
         mathlete = user.mathlete
-        if mathlete.has_team(contest):
+        if user.has_team(contest):
             team = mathlete.get_team(contest)
             return redirect('team_info', team_id=team.id)
         elif request.method == 'GET':
@@ -38,18 +38,30 @@ def join_team(request, team_id, invite_code):
     contest = team.contest
     if user.is_mathlete:
         mathlete = user.mathlete
-        if mathlete.has_team(contest):
+        if user.has_team(contest):
             team = mathlete.get_team(contest)
             return redirect('team_info', team_id=team.id)
         else:
             team.mathletes.add(mathlete)
             return redirect('team_info', team_id=team.id)
 
-
+@login_required
 def contest_list(request):
+    user = request.user
     all_contests = Contest.objects.all()
+    tuples = []
+    for contest in all_contests:
+        if user.is_mathlete:
+            if user.has_team(contest):
+                team = user.mathlete.get_team(contest)
+                tuples.append({'contest':contest, 'has_team':True, 'team':team})
+            else:
+                tuples.append({'contest':contest, 'has_team':False, 'team':None})
+        else:
+            tuples.append({'contest':contest, 'has_team':user.has_team(contest), 'team':None})
+    print(tuples)
     context = {
-        'all_contests': all_contests
+        'tuples': tuples
     }
     return render(request, 'contest_list.html', context)
 

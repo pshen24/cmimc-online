@@ -8,6 +8,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 #from website import problem_graders
 from website.managers import UserManager, ScoreManager, CompetitorManager
 import random
+import string
 
 
 class Contest(models.Model):
@@ -30,7 +31,7 @@ class Contest(models.Model):
             return False
         if not user.is_mathlete:
             return False
-        return user.mathlete.has_team(self)
+        return user.has_team(self)
 
 
 class Exam(models.Model):
@@ -176,6 +177,15 @@ class User(AbstractUser):
     def is_coach(self):
         return self.role == self.COACH
 
+    def has_team(self, contest):
+        if self.is_staff:
+            return false
+        elif self.is_mathlete:
+            return self.mathlete.teams.filter(contest=contest).exists()
+        else:
+            return self.teams.filter(contest=contest).exists()
+
+
 
 class Mathlete(models.Model):
     user = models.OneToOneField(settings.AUTH_USER_MODEL, related_name='mathlete', \
@@ -183,9 +193,6 @@ class Mathlete(models.Model):
 
     def __str__(self):
         return "Mathlete: " + str(self.user)
-
-    def has_team(self, contest):
-        return self.teams.filter(contest=contest).exists()
 
     def get_team(self, contest):
         return self.teams.filter(contest=contest).first()
@@ -197,16 +204,12 @@ class Team(models.Model):
     mathletes = models.ManyToManyField(Mathlete, related_name='teams')
     is_registered = models.BooleanField(default=False, help_text=_('The members of a \
             registered team are finalized and cannot be edited'))
-    team_leader = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, \
-            on_delete=models.SET_NULL)
+    coach = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, \
+                              related_name='teams', on_delete=models.CASCADE)
     team_name = models.CharField(max_length=100)
     MIN_CODE = 100000
     MAX_CODE = 999999
-    invite_code = models.IntegerField(unique=True,
-        validators=[
-            MinValueValidator(MIN_CODE),
-            MaxValueValidator(MAX_CODE)
-        ])
+    invite_code = models.CharField(unique=True, max_length=15)
 
     @classmethod
     def create(cls, contest, team_name):
@@ -215,9 +218,10 @@ class Team(models.Model):
 
     @staticmethod
     def generate_code():
-        code = random.randint(Team.MIN_CODE, Team.MAX_CODE)
+        digits = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        code = ''.join(random.choice(digits) for _ in range(15))
         while Team.objects.filter(invite_code=code).exists():
-            code = random.randint(Team.MIN_CODE, Team.MAX_CODE)
+            code = ''.join(random.choice(digits) for _ in range(15))
         return code
 
     def __str__(self):
