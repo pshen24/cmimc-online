@@ -10,6 +10,7 @@ urlpatterns = [
     path('schedule', views.schedule, name='schedule'),
     path('reg_info', views.reg_info, name='reg_info'),
     path('faq', views.faq, name='faq'),
+    path('resources', views.resources, name='resources'),
 
     path('admin/', admin.site.urls),
     

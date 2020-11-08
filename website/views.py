@@ -23,6 +23,9 @@ def reg_info(request):
 def faq(request):
     return render(request, 'faq.html')
 
+def resources(request):
+    return render(request, 'resources.html')
+
 def contest_list(request):
     all_contests = Contest.objects.all()
     context = {
