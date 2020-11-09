@@ -39,24 +39,24 @@ body {
 
 
 /* Links (copied from CMU's CSS) */
-a {
+a:not(.btn, .no-color) {
   color: #b00;
   border-bottom: 1px solid #faa;
   text-decoration: none;
   padding-bottom: 1px;
   transition: border-color .3s ease, color .3s ease;
 }
-a:visited {
+a:visited:not(.btn, .no-color) {
  color: #800;
  border-bottom-color: #c99;
 }
-a:focus,
-a:hover {
+a:focus:not(.btn, .no-color),
+a:hover:not(.btn, .no-color) {
  color: red;
  border-bottom-color: red;
  text-decoration: none;
 }
-.navbar a:not(.btn) {
+.navbar a:not(.btn, .no-color) {
   border-bottom-color: transparent;
 }
 
