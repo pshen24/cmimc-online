@@ -39,6 +39,11 @@ a:hover {
  border-bottom-color: red;
  text-decoration: none;
 }
-.navbar a {
+.navbar a:not(.btn) {
   border-bottom-color: transparent;
+}
+
+
+.logos img {
+  max-width: 100%;
 }

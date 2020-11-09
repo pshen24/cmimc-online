@@ -1,7 +1,7 @@
 {% load static %}
 
-<nav class="navbar navbar-expand{% if user.is_authenticated %}-md{% endif %} navbar-dark bg-darkred">
-  <div class="container-fluid">
+<nav class="navbar navbar-expand-md navbar-dark bg-darkred">
+  <div class="container-lg">
 	<a class="navbar-brand" href="{% url 'home' %}">
       <img src="{% static 'img/cmimc_logo_white.png' %}" alt="CMIMC Programming" height="30px" width="auto">
     </a>
@@ -23,7 +23,7 @@
 		  </li>
         {% endif %}
 	      <li class="nav-item">
-			<a class="nav-link {% if request.get_full_path == url_info %}active{% endif %}" href="{% url 'info' %}">Information</a>
+			<a class="nav-link {% if request.get_full_path == url_info %}active{% endif %}" href="{% url 'info' %}">Info</a>
 		  </li>
 	      <li class="nav-item">
 			<a class="nav-link {% if request.get_full_path == url_schedule %}active{% endif %}" href="{% url 'schedule' %}">Schedule</a>
