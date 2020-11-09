@@ -10,7 +10,7 @@
     <div class="card cardlink mb-5">
       <div class="card-body">
         <h4 class="card-title">{{ t.contest.name }}</h4>
-        <p>{{ t.contest.description }}</p>
+        <p>{{ t.contest.description|safe|linebreaks }}</p>
         {% if user.is_mathlete %}
           {% if t.has_team %}
             <a href="{% url 'team_info' t.team.id %}" class="btn btn-primary stretched-link">

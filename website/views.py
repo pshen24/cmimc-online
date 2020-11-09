@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from website.models import Contest, Exam, Problem, Competitor, Submission, Score, Team
+from website.models import Contest, Exam, Problem, User, Mathlete, Competitor, Submission, Score, Team
 from website.forms import UserCreationForm
 
 
@@ -52,7 +52,6 @@ def new_team(request, contest_id):
             team.save()
             return redirect('team_info', team_id=team.id)
 
-        
 
 
 # TODO: prevent joining after team is registered
@@ -64,8 +63,10 @@ def join_team(request, team_id, invite_code):
     if user.is_mathlete:
         mathlete = user.mathlete
         if user.has_team(contest):
-            team = mathlete.get_team(contest)
-            return redirect('team_info', team_id=team.id)
+            real_team = mathlete.get_team(contest)
+            return redirect('team_info', team_id=real_team.id)
+        elif team.is_registered:
+            return redirect('contest_list')
         else:
             team.mathletes.add(mathlete)
             return redirect('team_info', team_id=team.id)
@@ -85,7 +86,6 @@ def contest_list(request):
                 tuples.append({'contest':contest, 'has_team':False, 'team':None})
         else:
             tuples.append({'contest':contest, 'has_team':user.has_team(contest), 'team':None})
-    print(tuples)
     context = {
         'tuples': tuples
     }
@@ -97,12 +97,16 @@ def team_info(request, team_id):
     user = request.user
     team = get_object_or_404(Team, pk=team_id)
     if not team.can_see_info(user):
-        return redirect('home')
+        return redirect('contest_list')
 
     if request.method == 'POST':
-        if request.POST['submit'] == 'leaveTeam' and user.is_mathlete:
+        if request.POST['submit'] == 'leaveTeam' and user.is_mathlete and not team.is_registered:
             mathlete = user.mathlete
             team.mathletes.remove(mathlete)
+            return redirect('contest_list')
+        elif request.POST['submit'] == 'deleteTeam' and (user.is_coach or user.is_staff):
+            team.delete()
+            return redirect('contest_list')
         elif request.POST['submit'] == 'register':
             team.register()
 
@@ -111,6 +115,8 @@ def team_info(request, team_id):
         'invite_link': request.build_absolute_uri(
             reverse('join_team', args=[team_id, team.invite_code])
         ),
+        'too_large': len(team.mathletes.all()) > team.contest.max_team_size,
+        'reg_permission': user != team.coach,
     }
     return render(request, 'team.html', context)
 
@@ -124,7 +130,8 @@ def coach_teams(request, contest_id):
 
     teams = Team.objects.filter(contest=contest, coach=user)
     context = {
-        'teams': teams
+        'teams': teams,
+        'contest': contest,
     }
     return render(request, 'coach_teams.html', context)
 
@@ -214,7 +221,11 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=email, password=raw_password)
             login(request, user)
-            return redirect('home')
+            print(form.cleaned_data)
+            if form.cleaned_data.get('role') == User.MATHLETE:
+                mathlete = Mathlete(user=user)
+                mathlete.save()
+            return redirect('contest_list')
     else:
         form = UserCreationForm()
     return render(request, 'signup.html', {'form': form})

@@ -179,7 +179,7 @@ class User(AbstractUser):
 
     def has_team(self, contest):
         if self.is_staff:
-            return false
+            return False
         elif self.is_mathlete:
             return self.mathlete.teams.filter(contest=contest).exists()
         else:
@@ -265,6 +265,13 @@ class Team(models.Model):
             return user.mathlete.teams.filter(pk=self.id).exists()
         if user.is_coach:
             return self.coach == user
+
+    @property
+    def mathlete_list(self):
+        if not self.mathletes.exists():
+            return 'No students'
+        m = [m.user.preferred_name for m in self.mathletes.all()]
+        return ', '.join(m)
 
 
 
