@@ -1,34 +1,45 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
 
-    <div class="row justify-content-between">
-            <div class="col-9">
-                <h2>About Us</h2>
-                Founded in 2016, The Carnegie Mellon Informatics and Mathematics Competition (CMIMC) is an annual Math and Computer Science competition that is entirely student runned by Carnegie Mellon University students. In Fall of 2020, CMIMC is introducing a programming competition as well which will focus on applications of creative problem solving to computer science.
-Due to COVID-19, CMIMC Fall 2020 and Spring 2021 will be run entirely remotely.
-            </div>
+<div class="row justify-content-center mt-5">
+    <div class="col-sm-10 col-md-8 col-lg-6">
+        <img src="{% static 'img/cmimc_logo.png' %}" alt="CMIMC logo" width="100%" height="auto" class="center">
+    </div>
+</div>
 
+<div class="row justify-content-center mb-5">
+    <div class="col-auto">
+        <h1>Programming Contest</h1>
+    </div>
+</div>
 
-            <div class="col-3" style="border:1px solid black; border-radius: 20px; background-color: #8888FF; height: fit-content;">
-                <h2 style="color: black; margin-top: 10px">Important Dates </h2>
-                <div class="card"
-                     style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
-                    <div class="card-body">
-                        <h5 class="card-title" style="color: darkred">Registration Deadline</h5>
-                        <h6 class="card-subtitle mb-2" style="color: darkred">January 16th 2021</h6>
-                        <a href="#" class="card-link">Register Here</a>
-                    </div>
-                </div>
-                <div class="card"
-                     style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
-                    <div class="card-body">
-                        <h5 class="card-title">Programming Contest</h5>
-                        <h6 class="card-subtitle mb-2">January 30 2021</h6>
-                        <a href="#" class="card-link">Start Here</a>
-                    </div>
-                </div>
-            </div>
+<div class="row justify-content-center mb-4">
+    <div class="col-md-10">
+        <p style="font-size: 1.2rem;">CMIMC Programming is a brand new high school programming contest! It's run by CMU students, the same team behind the <a href="http://cmimc-official.herokuapp.com/" target="_blank" rel="noopener noreferrer">CMIMC</a> math competition. This year's contest will be held on <span class="font-weight-bold">January 30th, 2021</span>. Due to COVID-19, it will be entirely online.</p>
+
+        <p style="font-size: 1.2rem;">The contest consists of an AI Round and an Optimization Round. See the <a href="{% url 'info' %}">info page</a> for more details.</p>
+
+        <p style="font-size: 1.2rem;">This is a team contest, with up to 3 people per team. Make sure you register a team by <span class="font-weight-bold">January 16th, 2021!</span> See the <a href="{% url 'reg_info' %}">registration page</a> for instructions to register.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center mb-3">
+    <div class="col-auto">
+        <h2>Sponsors</h2>
+    </div>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-lg-10">
+        <div class="d-flex flex-wrap justify-content-around">
+            <img src="{% static 'img/imc_logo.png' %}" alt="IMC logo" height="100" width="auto" style="max-width: 100%">
+            <img src="{% static 'img/jane_street_logo.png' %}" alt="Jane Street logo" height="100" width="auto">
+            <img src="{% static 'img/two_sigma_logo.png' %}" alt="Two Sigma logo" height="100" width="auto">
+            <img src="{% static 'img/de_shaw_logo.png' %}" alt="D. E. Shaw logo" height="100" width="auto">
         </div>
+    </div>
+</div>
 {% endblock %}
 

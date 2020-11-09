@@ -3,9 +3,24 @@
 {% block content %}
 <p class="display-3">How to Register</p>
 <hr class="red_line"/>
-1. [first step of registration process]
-2. [second step]
-3.
-4.
+<h2>For Students</h2>
+<ol>
+    <li>Create an account on this website. Make sure to select "Contestant" as your role.</li>
+    <li>If you want to join an existing team, ask someone on that team to send you the invite link</li>
+    <li>If you wan to create a new team, go to <a href="{% url 'contest_list' %}">{{ request.scheme }}://{{ request.get_host }}{% url 'contest_list' %}</a> and select the contest you want to register for.</li>
+    <li>Choose a team name</li>
+    <li>Invite other members to your team with the given invite link.</li>
+    <li>Once all your team members are finalized, click the Register button on your team's page</li>
+</ol>
+
+<h2>For Coaches</h2>
+<ol>
+    <li>Create an account on this website. Make sure to select "Coach" as your role.</li>
+    <li>Go to <a href="{% url 'contest_list' %}">{{ request.scheme }}://{{ request.get_host }}{% url 'contest_list' %}</a> and select the contest you want to register for.</li>
+    <li>Choose a team name</li>
+    <li>Invite students to your team with the given invite link.</li>
+    <li>Once all your team members are finalized, click Register</li>
+    <li>Repeat for each team you want to make</li>
+</ol>
 {% endblock %}
 

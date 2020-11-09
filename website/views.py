@@ -11,8 +11,8 @@ from website.forms import UserCreationForm
 def home(request):
     return render(request, 'home.html')
 
-def general_info(request):
-    return render(request, 'general_info.html')
+def info(request):
+    return render(request, 'info.html')
 
 def schedule(request):
     return render(request, 'schedule.html')

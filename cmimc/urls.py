@@ -6,7 +6,7 @@ from website import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('contests', views.contest_list, name='contest_list'),
-    path('info', views.general_info, name='general_info'),
+    path('info', views.info, name='info'),
     path('schedule', views.schedule, name='schedule'),
     path('reg_info', views.reg_info, name='reg_info'),
     path('faq', views.faq, name='faq'),

@@ -1,338 +1,108 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-<p class="display-3">General FAQ</p>
-<hr class="red_line"/>
-<div class="accordion md-accordion" id ="accordionEx" role="tablist" aria-multiselectable="true">
-    <div class="card">
-        <div class='card-header' role='tab' id='headingOne1'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseOne1', aria-expanded="true" aria-controls="collapseOne1">
-                <h5 class="mb-0">
-                    How can we request a waiver for the registration fee? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
 
-        <div id="collapseOne1" class="collapse" role="tabpanel" aria-labelledby="headingOne1" data-parent="#accordionEx">
-            <div class="card-body">
-                Email us at cmimc@math.cmu.edu and let us know about your circumstances. We'll do our best to accommodate!
+<div class="row justify-content-center">
+    <div class="col-xl-8 col-lg-10">
+        <p class="display-3">FAQ</p>
+        <hr class="red_line"/>
+
+        <div class="myaccordion">
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-1">
+                    When is the programming contest?
+                </button>
+                <div class="myaccordion-content" id="content-1">
+                    <p>CMIMC Programming 2021 will be on January 30th, 2021, from 10AM to 7PM Eastern Time.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingTwo2'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseTwo2', aria-expanded="true" aria-controls="collapseTwo2">
-                <h5 class="mb-0">
-                    Can I buy a CMIMC shirt? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseTwo2" class="collapse" role="tabpanel" aria-labelledby="headingTwo2" data-parent="#accordionEx">
-            <div class="card-body">
-                CMIMC t-shirts come for free with the registration fee for each competition. However, they are also sold at the competition for $__ each.
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-2">
+                    How do I register?
+                </button>
+                <div class="myaccordion-content" id="content-2">
+                    <p>Follow the registration instructions <a href="{% url 'reg_info' %}">here</a>.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingThree3'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseThree3', aria-expanded="true" aria-controls="collapseThree3">
-                <h5 class="mb-0">
-                    Can I come to CMIMC as an individual? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseThree3" class="collapse" role="tabpanel" aria-labelledby="headingThree3" data-parent="#accordionEx">
-            <div class="card-body">
-                Yes, you can! But a full team consists of 4-6 people, so you will participate as an incompelete team.
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-3">
+                    Who can participate?
+                </button>
+                <div class="myaccordion-content" id="content-3">
+                    <p>All high school students can participate in the contest.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingFour4'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseFour4', aria-expanded="true" aria-controls="collapseFour4">
-                <h5 class="mb-0">
-                    Who can participate? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseFour4" class="collapse" role="tabpanel" aria-labelledby="headingFour4" data-parent="#accordionEx">
-            <div class="card-body">
-                Participants must be high school students.
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-4">
+                    How many people per team?
+                </button>
+                <div class="myaccordion-content" id="content-4">
+                    <p>Teams consist of 1-3 students.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingFive5'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseFive5', aria-expanded="true" aria-controls="collapseFive5">
-                <h5 class="mb-0">
-                    How many people per team? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseFive5" class="collapse" role="tabpanel" aria-labelledby="headingFive5" data-parent="#accordionEx">
-            <div class="card-body">
-                For both the programming and math competitions, teams consist of 4-6 people, but incomplete teams (including teams of 1) will be accommodated on the contest date. Teams are not required to be in geographical proximity.
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-5">
+                    Can I participate individually?
+                </button>
+                <div class="myaccordion-content" id="content-5">
+                    <p>You can form a 1-person team, but you may be at a disadvantage compared to full teams.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingSix6'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseSix6', aria-expanded="true" aria-controls="collapseSix6">
-                <h5 class="mb-0">
-                    Who runs the CMIMC? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseSix6" class="collapse" role="tabpanel" aria-labelledby="headingSix6" data-parent="#accordionEx">
-            <div class="card-body">
-                CMIMC is run by Carnegie Mellon undergraduate students.
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-6">
+                    Is there a registration fee?
+                </button>
+                <div class="myaccordion-content" id="content-6">
+                    <p>No, the contest is free!</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingSeven7'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseSeven7', aria-expanded="true" aria-controls="collapseSeven7">
-                <h5 class="mb-0">
-                    What types of mini-events will there be? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseSeven7" class="collapse" role="tabpanel" aria-labelledby="headingSeven7" data-parent="#accordionEx">
-            <div class="card-body">
-                Mini-events may include ... (a talk by a guest speaker, a panel of current Carnegie Mellon students, and small competitions like Rubik's cube or chess).
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-7">
+                    Are there any prizes for winning?
+                </button>
+                <div class="myaccordion-content" id="content-7">
+                    <p>Unfortunately there are no prizes for this year's contest, but we may award prizes in future contests.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingEight8'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseEight8', aria-expanded="true" aria-controls="collapseEight8">
-                <h5 class="mb-0">
-                    What awards will be offered? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseEight8" class="collapse" role="tabpanel" aria-labelledby="headingEight8" data-parent="#accordionEx">
-            <div class="card-body">
-                Top teams will receive trophies, and top individuals will receive medals.
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-8">
+                    My team is already registered, but we need to change our team members!
+                </button>
+                <div class="myaccordion-content" id="content-8">
+                    <p>Contact us at <a href="mailto:cmimc@math.cmu.edu">cmimc@math.cmu.edu</a>, and we can fix it for you.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingNine9'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseNine9', aria-expanded="true" aria-controls="collapseNine9">
-                <h5 class="mb-0">
-                    What do I do if I do not understand a problem during the test? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseNine9" class="collapse" role="tabpanel" aria-labelledby="headingNine9" data-parent="#accordionEx">
-            <div class="card-body">
-                You should notify your testing proctor over Discord, who will relay your question to the CMIMC staff.
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-9">
+                    I forgot my login password.
+                </button>
+                <div class="myaccordion-content" id="content-9">
+                    <p>Contact us at <a href="mailto:cmimc@math.cmu.edu">cmimc@math.cmu.edu</a>, and we'll reset your password.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingTen10'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseTen10', aria-expanded="true" aria-controls="collapseTen10">
-                <h5 class="mb-0">
-                    What do I do if I disagree with an answer or solution to a problem after the test? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseTen10" class="collapse" role="tabpanel" aria-labelledby="headingTen10" data-parent="#accordionEx">
-            <div class="card-body">
-                You should fill out the Google form for problem disputes.
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-10">
+                    How will the contest be proctored?
+                </button>
+                <div class="myaccordion-content" id="content-10">
+                    <p>It will be proctored via Discord. Students will be added to a Discord channel and will have a designated proctor who will answer questions as they come up.</p>
+                </div>
             </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingEleven11'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseEleven11', aria-expanded="true" aria-controls="collapseEleven11">
-                <h5 class="mb-0">
-                    What if I am caught cheating? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseEleven11" class="collapse" role="tabpanel" aria-labelledby="headingEleven11" data-parent="#accordionEx">
-            <div class="card-body">
-                Such situations will be dealt with on a case-by-case basis. At the very least, the cheating individual will be disqualified, and the team will have to compete with the remaining individuals.
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingTwelve12'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseTwelve12', aria-expanded="true" aria-controls="collapseTwelve12">
-                <h5 class="mb-0">
-                    What should I do if I think someone cheated? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseTwelve12" class="collapse" role="tabpanel" aria-labelledby="headingTwelve12" data-parent="#accordionEx">
-            <div class="card-body">
-                You should contact any CMIMC staff, who will notify the competition directors.
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingThirteen13'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseThirteen13', aria-expanded="true" aria-controls="collapseThirteen13">
-                <h5 class="mb-0">
-                    Do good results at the CMIMC competition contribute to my college application to Carnegie Mellon University? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseThirteen13" class="collapse" role="tabpanel" aria-labelledby="headingThirteen13" data-parent="#accordionEx">
-            <div class="card-body">
-                CMIMC is not affiliated with the Carnegie Mellon admissions office; however, you should include it in your application if you competed in the CMIMC to demonstrate your motivation and excitment for math and computer science.
+            <div class="myaccordion-item">
+                <button aria-expanded="false" data-target="content-11">
+                    Who runs the CMIMC?
+                </button>
+                <div class="myaccordion-content" id="content-11">
+                    <p>CMIMC is run by Carnegie Mellon students.</p>
+                </div>
             </div>
         </div>
     </div>
 </div>
-<br>
-
-<h2>Programming Competition FAQ</h2>
-<div class="accordion md-accordion" id ="accordionEx" role="tablist" aria-multiselectable="true">
-    <div class="card">
-        <div class='card-header' role='tab' id='headingFourteen14'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseFourteen14', aria-expanded="true" aria-controls="collapseFourteen14">
-                <h5 class="mb-0">
-                    Do we register individually or as a team? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseFourteen14" class="collapse" role="tabpanel" aria-labelledby="headingFourteen14" data-parent="#accordionEx">
-            <div class="card-body">
-                You will register as a team. Each competitor will be required to provide an email address so we can add them to the private competition Discord. One person will also have to specify an address for their team and all trophies and swag will be sent to this address.
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingFifteen15'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseFifteen15', aria-expanded="true" aria-controls="collapseFifteen15">
-                <h5 class="mb-0">
-                    How will the competition be proctored? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseFifteen15" class="collapse" role="tabpanel" aria-labelledby="headingFifteen15" data-parent="#accordionEx">
-            <div class="card-body">
-                The competition will be proctored via Discord. Competitors will be added to a channel and will have a designated proctor who will answer their questions as they come up.
-            </div>
-        </div>
-    </div>
-</div>
-<br>
-
-<h2>Math Competition FAQ</h2>
-<div class="accordion md-accordion" id ="accordionEx" role="tablist" aria-multiselectable="true">
-    <div class="card">
-        <div class='card-header' role='tab' id='headingSixteen16'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseSixteen16', aria-expanded="true" aria-controls="collapseSixteen16">
-                <h5 class="mb-0">
-                    What is the difference between the two divisions of the math competition? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseSixteen16" class="collapse" role="tabpanel" aria-labelledby="headingSixteen16" data-parent="#accordionEx">
-            <div class="card-body">
-                The only difference is that the individual rounds of different divisions will consists of different problems. The rounds are weighted differently when individual scores in calculating the team aggregate score.
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingSeventeen17'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseSeventeen17', aria-expanded="true" aria-controls="collapseSeventeen17">
-                <h5 class="mb-0">
-                    Am I required to have my video on during each round?<i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseSeventeen17" class="collapse" role="tabpanel" aria-labelledby="headingSeventeen17" data-parent="#accordionEx">
-            <div class="card-body">
-                Yes! During the Individual Rounds for CMIMC Math, your video must show your hands and work area. If possible, try to include your face as well, but your hands must always be in the frame.
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingEighteen18'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseEighteen18', aria-expanded="true" aria-controls="collapseEighteen18">
-                <h5 class="mb-0">
-                    Do we still need one chaperone per team? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseEighteen18" class="collapse" role="tabpanel" aria-labelledby="headingEighteen18" data-parent="#accordionEx">
-            <div class="card-body">
-                Yes, you will need to specify an adult responsible for your team.
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingNineteen19'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseNineteen19', aria-expanded="true" aria-controls="collapseNineteen19">
-                <h5 class="mb-0">
-                    How will T-shirts be distributed and how much do they cost? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseNineteen19" class="collapse" role="tabpanel" aria-labelledby="headingNineteen19" data-parent="#accordionEx">
-            <div class="card-body">
-                answer
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class='card-header' role='tab' id='headingTwenty20'>
-            <a data-toggle='collapse' data-parent='#accordionEx' href='#collapseTwenty20', aria-expanded="true" aria-controls="collapseTwenty20">
-                <h5 class="mb-0">
-                    Can we have a team containing people in both divisions? <i class="fas fa-angle-down rotate-icon"></i>
-                </h5>
-            </a>
-        </div>
-
-        <div id="collapseTwenty20" class="collapse" role="tabpanel" aria-labelledby="headingTwenty20" data-parent="#accordionEx">
-            <div class="card-body">
-                Yes. However, scores in the harder division will receive more weight when individual scores are used to calculate the team aggregate score.
-            </div>
-        </div>
-    </div>
-</div>
-
 
 {% endblock %}
 
+{% block js %}
+<script src="{% static 'js/accordion.js' %}"></script>
+{% endblock %}
