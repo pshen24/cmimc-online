@@ -1,15 +1,41 @@
-<nav class="navbar navbar-expand{% if user.is_authenticated %}-md{% endif %} navbar-dark bg-dark">
-  <div class="container-fluid">
-	<a class="navbar-brand" href="{% url 'home' %}">CMIMC Online</a>
+{% load static %}
+
+<nav class="navbar navbar-expand-md navbar-dark bg-darkred">
+  <div class="container-lg">
+	<a class="navbar-brand" href="{% url 'home' %}">
+      <img src="{% static 'img/cmimc_logo_white.png' %}" alt="CMIMC Programming" height="30px" width="auto">
+    </a>
 	<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
 	  <span class="navbar-toggler-icon"></span>
 	</button>
 
 	<div class="collapse navbar-collapse" id="mainMenu">
 	    {% url 'contest_list' as url_contests %}
+	    {% url 'info' as url_info %}
+	    {% url 'schedule' as url_schedule %}
+	    {% url 'reg_info' as url_reg_info %}
+	    {% url 'faq' as url_faq %}
+	    {% url 'resources' as url_resources %}
 		<ul class="navbar-nav mr-auto ml-md-3">
+        {% if user.is_authenticated %}
 	      <li class="nav-item">
 			<a class="nav-link {% if request.get_full_path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
+		  </li>
+        {% endif %}
+	      <li class="nav-item">
+			<a class="nav-link {% if request.get_full_path == url_info %}active{% endif %}" href="{% url 'info' %}">Info</a>
+		  </li>
+	      <li class="nav-item">
+			<a class="nav-link {% if request.get_full_path == url_schedule %}active{% endif %}" href="{% url 'schedule' %}">Schedule</a>
+		  </li>
+	      <li class="nav-item">
+			<a class="nav-link {% if request.get_full_path == url_reg_info %}active{% endif %}" href="{% url 'reg_info' %}">Registration</a>
+		  </li>
+	      <li class="nav-item">
+			<a class="nav-link {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a>
+		  </li>
+          <li class="nav-item">
+			<a class="nav-link {% if request.get_full_path == url_resources %}active{% endif %}" href="{% url 'resources' %}">Resources</a>
 		  </li>
 		</ul>
 

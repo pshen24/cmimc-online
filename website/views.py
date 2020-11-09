@@ -11,6 +11,20 @@ from website.forms import UserCreationForm
 def home(request):
     return render(request, 'home.html')
 
+def info(request):
+    return render(request, 'info.html')
+
+def schedule(request):
+    return render(request, 'schedule.html')
+
+def reg_info(request):
+    return render(request, 'reg_info.html')
+
+def faq(request):
+    return render(request, 'faq.html')
+
+def resources(request):
+    return render(request, 'resources.html')
 
 # TODO: handle error when user submits a duplicate team name
 # TODO: check registration period to see if new teams can still be made
@@ -189,7 +203,6 @@ def exam_status(request, exam_id):
         'all_problems_scores': zip(problems, scores),
     }
     return render(request, 'exam_status.html', context)
-
 
 # User Account Signup
 def signup(request):

@@ -1,6 +1,53 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-Welcome to CMIMC Online!
+
+<div class="row justify-content-center mt-5">
+    <div class="col-sm-10 col-md-8 col-lg-6">
+        <img src="{% static 'img/cmimc_logo.png' %}" alt="CMIMC logo" width="100%" height="auto" class="center">
+    </div>
+</div>
+
+<div class="row justify-content-center mb-5">
+    <div class="col-auto">
+        <h1>Programming Contest</h1>
+    </div>
+</div>
+
+<div class="row justify-content-center mb-4">
+    <div class="col">
+        <p style="font-size: 1.2rem;">CMIMC Programming is a brand new high school programming contest! It's run by CMU students, the same team behind the <a href="http://cmimc-official.herokuapp.com/" target="_blank" rel="noopener noreferrer">CMIMC</a> math competition. This year's contest will be held on <span class="font-weight-bold">January 30th, 2021</span>. Due to COVID-19, it will be entirely online.</p>
+
+        <p style="font-size: 1.2rem;">The contest consists of an AI Round and an Optimization Round. See the <a href="{% url 'info' %}">info page</a> for more details.</p>
+
+        <p style="font-size: 1.2rem;">This is a team contest, with up to 3 people per team. Make sure you register a team by <span class="font-weight-bold">January 16th, 2021!</span> See the <a href="{% url 'reg_info' %}">registration page</a> for instructions to register.</p>
+    </div>
+</div>
+
+<div class="row justify-content-center mb-3">
+    <div class="col-auto">
+        <h2>Sponsors</h2>
+    </div>
+</div>
+
+
+<div class="row logos">
+    <div class="col-md-6 d-flex mb-5">
+        <img src="{% static 'img/jane_street_logo.png' %}" alt="Jane Street logo" width="300" class="m-auto">
+    </div>
+    <div class="col-md-6 d-flex mb-5">
+        <img src="{% static 'img/two_sigma_logo.png' %}" alt="Two Sigma logo" width="100" class="m-auto">
+    </div>
+</div>
+<div class="row logos">
+    <div class="col-md-6 d-flex mb-5">
+        <img src="{% static 'img/de_shaw_logo.png' %}" alt="D. E. Shaw logo" width="300" class="m-auto">
+    </div>
+    <div class="col-md-6 d-flex mb-5">
+        <img src="{% static 'img/imc_logo.png' %}" alt="IMC logo" width="250" class="m-auto">
+    </div>
+</div>
+
 {% endblock %}
 
