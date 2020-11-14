@@ -26,6 +26,8 @@ else:
 ALLOWED_HOSTS = [
     'cmimconline.com',
     'cmimcprogramming.com',
+    'cmimcprogramming.org',
+    'www.cmimcprogramming.org',
     'cmimc-online-env.eba-yug9gsp2.us-east-1.elasticbeanstalk.com',
     '127.0.0.1',
 ]
