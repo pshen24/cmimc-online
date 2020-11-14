@@ -1,4 +1,6 @@
 #from django.test import TestCase
+import models.py
+import registration.py
 
 def validate(self, user_input):
     '''
@@ -39,3 +41,4 @@ print(validate(self, x))
 
 
 # Create your tests here.
+nin = Team()

@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <p class="display-3">Information</p>
+        <hr class="red_line"/>
+
+        <div class="row justify-content-between">
+            <div class="col-9">
+                <h2>Rounds</h2>
+                <div style="margin-top: 10px">
+                    <div class="card" style="width: 50rem; margin-inside: 20px; margin-bottom: 10px;">
+                        <div class="card-body">
+                            <h5 class="card-title">AI Round</h5>
+                            <p>
+                                In the AI Round, you and your team write programs which play mini games (such as tic-tac-toe) against other teams. Every 5 minutes (after a 30 minute grace period), your most recent submission will be run against the programs of the other teams, and your scores will be updated on a live leaderboard. You'll be able to view your games and update your strategies accordingly! You will have 3 hours to write and improve your code for 3 different mini games. All code should be written in Python 3.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card" style="width: 50rem; margin-inside: 20px; margin-bottom: 10px;">
+                    <div class="card-body">
+                        <h5 class="card-title">Optimization Round</h5>
+                        <p>
+                            In the Optimization Round, you and your team will work on 3 optimization-based problems. These problems are not intended to be solved perfectly - instead, you will be competing against other teams to get the closest approximation to an optimal solution. These problems will have a mathy flair and require some computational tools/thinking to get a decent answer. You will have 3 hours to gradually optimize your solutions. This round will have 3 problems, each with different test cases. Your score for each problem will be determined by your best performing submission, and displayed on a live leaderboard. You can use any programming language for this round, since you will only be submitting a text output.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="col-3" style="border:1px solid black; border-radius: 20px; background-color: #8888FF; height: fit-content;">
+                <h2 style="color: black; margin-top: 10px">Important Dates </h2>
+                <div class="card"
+                     style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
+                    <div class="card-body">
+                        <h5 class="card-title" style="color: darkred">Registration Deadline</h5>
+                        <h6 class="card-subtitle mb-2" style="color: darkred">January 16th 2021</h6>
+                        <a href="{% url 'contest_list' %}" class="card-link">Register Here</a>
+                    </div>
+                </div>
+                <div class="card"
+                     style="width: 16rem; background-color: #EEEEEE; margin-bottom: 10px; border-radius: 15px">
+                    <div class="card-body">
+                        <h5 class="card-title">Programming Contest</h5>
+                        <h6 class="card-subtitle mb-2">January 30th 2021</h6>
+                        <a href="{% url 'contest_list' %}" class="card-link">Start Here</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+
+{% endblock %}

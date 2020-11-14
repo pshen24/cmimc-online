@@ -1,12 +1,44 @@
 {% extends 'base.html' %}
 
 {% block content %}
-Here is a list of contests:
-<ul>
-    {% for contest in all_contests %}
-        <li>
-            {{ contest.name }}, Team size: {{ contest.min_team_size }} - {{ contest.max_team_size }}
-        </li>
-    {% endfor %}
-</ul>
+
+<p class="display-3">Upcoming Contests</p>
+<hr class="red_line mb-4"/>
+
+<div class="card-deck-wrapper">
+  {% for t in tuples %}
+    <div class="card cardlink mb-5">
+      <div class="card-body">
+        <h4 class="card-title">{{ t.contest.name }}</h4>
+        <p>{{ t.contest.description|safe|linebreaks }}</p>
+        {% if user.is_mathlete %}
+          {% if t.has_team %}
+            <a href="{% url 'team_info' t.team.id %}" class="btn btn-primary stretched-link">
+              Your Team
+            </a>
+          {% else %}
+            <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
+              Create Team
+            </a>
+          {% endif %}
+        {% else %}
+         {% if t.has_team %}
+            <a href="{% url 'coach_teams' t.contest.id %}" class="btn btn-primary stretched-link">
+              Your Teams
+            </a>
+          {% else %}
+            <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
+              Create Team
+            </a>
+          {% endif %}
+        {% endif %}
+      </div>
+    </div>
+  {% endfor %}
+</div>
+
+<p class="display-3">Past Contests</p>
+<hr class="red_line mb-4"/>
+There are no past contests yet.
+
 {% endblock %}

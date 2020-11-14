@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="teamNameInput">Choose a team name</label>
+                <input type="text" class="form-control" id="teamNameInput" name="teamName" placeholder="Team Name">
+                
+            </div>
+            <button type="submit" class="btn btn-success">Create Team</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
