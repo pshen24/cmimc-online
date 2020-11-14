@@ -18,7 +18,15 @@ class UserChangeForm(DefaultUserChangeForm):
         fields = ('email', 'full_name', 'alias', 'role')
 
 class SnippetForm(forms.ModelForm):
+    text = forms.CharField(widget=AceWidget(
+        mode='python',
+        theme='xcode',
+        fontsize='18px',
+        width="80%",
+        height="50vh",
+        toolbar=False,
+    ), label='')
+    
     class Meta:
         model = Snippet
-        widgets = {"text": AceWidget(mode='html', theme='twilight'),}
         exclude = ()

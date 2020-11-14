@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <div class="row justify-content-between">
+    <!-- <div class="row justify-content-between">
       <div class = "col-10">
           <h1>Submission For Problem {{ problem.problem_number }}</h1> </br>
           <form method="post" enctype="multipart/form-data">
@@ -23,16 +23,17 @@
       <div class = "col-2">
         <h2><a href="{% url 'exam_status' problem.exam_id %}" class="btn btn-info"> Back To Exam</a> </h2>
       </div>
-    </div>
+    </div> -->
 
     <form action="" method="post">
         {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit"/>
-        </form>
+        <p>Code Here!</p>
+        {{ form }}
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
 
-        {% for snippet in snippets %}
-            <hr/>
-            <pre>{{ snippet.text }}</pre>
-        {% endfor %}
+    {% for snippet in snippets %}
+        <hr/>
+        <pre>{{ snippet.text }}</pre>
+    {% endfor %}
 {% endblock %}

@@ -9,7 +9,6 @@ from website.forms import SnippetForm
 from website.models import Snippet
 #from tika import parser
 
-
 def home(request):
     return render(request, 'home.html')
 
@@ -56,7 +55,7 @@ def submit(request, exam_id, problem_number):
     if request.method == 'POST':
         # TODO: Make sure that exactly one of the two inputs is submitted
         # Need a javascript event listener for when the form gets submitted
-        if 'codeFile' in request.FILES:
+        """ if 'codeFile' in request.FILES:
             text = request.FILES['codeFile'].read().decode('utf-8')
         else:
             text = request.POST['codeText']
@@ -68,10 +67,21 @@ def submit(request, exam_id, problem_number):
         )
         submission.save()
         submission.grade()
+        return redirect('exam_status', exam_id=exam_id) """
         form = SnippetForm(request.POST)
         if (form.is_valid()):
             form.save()
-        return redirect('exam_status', exam_id=exam_id)
+            text = Snippet.objects.all()[0].text
+            Snippet.objects.all().delete()  # delete if wish to record past snippets
+            competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+            submission = Submission(
+                problem=problem,
+                competitor=competitor,
+                text=text
+            )
+            submission.save()
+            submission.grade()
+            return redirect('exam_status', exam_id=exam_id)
     else: # request.method == 'GET'
         form = SnippetForm()
         context = {
