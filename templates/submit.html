@@ -25,15 +25,16 @@
       </div>
     </div> -->
 
-    <form action="" method="post">
+    <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <p>Code Here!</p>
-        {{ form }}
+        <div class="form-group">
+          <p>Code Here!</p>
+          {{ form }}
+        </div>
+        <div class="form-group">
+          <label for="codeFile">Or Upload A File:</label>
+          <input type="file" class="form-control-file" name="codeFile">
+        </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
-
-    {% for snippet in snippets %}
-        <hr/>
-        <pre>{{ snippet.text }}</pre>
-    {% endfor %}
 {% endblock %}
