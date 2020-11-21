@@ -68,15 +68,15 @@ def submit(request, exam_id, problem_number):
         submission.save()
         submission.grade()
         return redirect('exam_status', exam_id=exam_id) """
+
+        # Included django_ace editor
         form = SnippetForm(request.POST)
         if (form.is_valid()):
             form.save()
             text = Snippet.objects.all()[0].text
             Snippet.objects.all().delete()  # delete this line to record past snippets
-            return redirect('valid tho')
         else:
             text = request.FILES['codeFile'].read().decode('utf-8')
-            return redirect('XD')
         competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
         submission = Submission(
             problem=problem,
@@ -85,7 +85,6 @@ def submit(request, exam_id, problem_number):
         )
         submission.save()
         submission.grade()
-        return redirect ('huh')
         return redirect('exam_status', exam_id=exam_id)
     else: # request.method == 'GET'
         form = SnippetForm()

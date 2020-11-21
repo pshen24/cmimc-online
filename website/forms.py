@@ -22,7 +22,7 @@ class SnippetForm(forms.ModelForm):
         mode='python',
         theme='xcode',
         fontsize='18px',
-        width="80%",
+        width="100%",
         height="50vh",
         toolbar=False,
     ), label='')
