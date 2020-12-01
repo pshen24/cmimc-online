@@ -19,23 +19,23 @@
 		<ul class="navbar-nav mr-auto ml-md-3">
         {% if user.is_authenticated %}
 	      <li class="nav-item">
-			<a class="nav-link {% if request.get_full_path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
+			<a class="nav-link no-color {% if request.get_full_path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
 		  </li>
         {% endif %}
 	      <li class="nav-item">
-			<a class="nav-link {% if request.get_full_path == url_info %}active{% endif %}" href="{% url 'info' %}">Info</a>
+			<a class="nav-link no-color {% if request.get_full_path == url_info %}active{% endif %}" href="{% url 'info' %}">Info</a>
 		  </li>
 	      <li class="nav-item">
-			<a class="nav-link {% if request.get_full_path == url_schedule %}active{% endif %}" href="{% url 'schedule' %}">Schedule</a>
+			<a class="nav-link no-color {% if request.get_full_path == url_schedule %}active{% endif %}" href="{% url 'schedule' %}">Schedule</a>
 		  </li>
 	      <li class="nav-item">
-			<a class="nav-link {% if request.get_full_path == url_reg_info %}active{% endif %}" href="{% url 'reg_info' %}">Registration</a>
+			<a class="nav-link no-color {% if request.get_full_path == url_reg_info %}active{% endif %}" href="{% url 'reg_info' %}">Registration</a>
 		  </li>
 	      <li class="nav-item">
-			<a class="nav-link {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a>
+			<a class="nav-link no-color {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a>
 		  </li>
           <li class="nav-item">
-			<a class="nav-link {% if request.get_full_path == url_resources %}active{% endif %}" href="{% url 'resources' %}">Resources</a>
+			<a class="nav-link no-color {% if request.get_full_path == url_resources %}active{% endif %}" href="{% url 'resources' %}">Resources</a>
 		  </li>
 		</ul>
 
