@@ -25,6 +25,9 @@ else:
 
 ALLOWED_HOSTS = [
     'cmimconline.com',
+    'cmimcprogramming.com',
+    'cmimcprogramming.org',
+    'www.cmimcprogramming.org',
     'cmimc-online-env.eba-yug9gsp2.us-east-1.elasticbeanstalk.com',
     '127.0.0.1',
 ]
@@ -147,7 +150,7 @@ AUTH_USER_MODEL = 'website.User'
 
 
 LOGIN_URL = 'login'
-LOGIN_REDIRECT_URL = 'home'
+LOGIN_REDIRECT_URL = 'contest_list'
 LOGOUT_REDIRECT_URL = 'home'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
@@ -158,10 +161,11 @@ MEDIA_ROOT = str(BASE_DIR.joinpath('media'))
 # https security
 if not DEBUG:
     SECURE_SSL_REDIRECT = True
-SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-CSRF_COOKIE_SECURE = True
-SESSION_COOKIE_SECURE = True
-SECURE_REFERRER_POLICY = 'same-origin'
-SECURE_HSTS_SECONDS = 10
-SECURE_HSTS_PRELOAD = True
-SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    CSRF_COOKIE_SECURE = True
+    SESSION_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    SESSION_COOKIE_SAMESITE = 'None'
+    SECURE_REFERRER_POLICY = 'same-origin'
+    SECURE_HSTS_SECONDS = 10
+    SECURE_HSTS_PRELOAD = True
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True

@@ -4,9 +4,11 @@ from django.utils.translation import ugettext_lazy as _
 from django.utils.functional import cached_property
 from django.utils import timezone
 from django.conf import settings
-from django.core.validators import MinValueValidator
-from website import problem_graders
+from django.core.validators import MinValueValidator, MaxValueValidator
+#from website import problem_graders
 from website.managers import UserManager, ScoreManager, CompetitorManager
+import random
+import string
 
 
 class Contest(models.Model):
@@ -22,13 +24,14 @@ class Contest(models.Model):
     def __str__(self):
         return self.name
 
+    # TODO: update for coaches
     # whether the user is registered for this contest
     def is_registered(self, user):
         if not user.is_authenticated:
             return False
         if not user.is_mathlete:
             return False
-        return user.mathlete.teams.filter(contest=self).count() == 1
+        return user.has_team(self)
 
 
 class Exam(models.Model):
@@ -144,10 +147,11 @@ class User(AbstractUser):
 
     MATHLETE = 'ML'
     STAFF = 'ST'
+    COACH = 'CO'
     role_CHOICES = [
         (MATHLETE, 'Contestant'),
         (STAFF, 'CMU Student'),
-        # (COACH, 'Coach'),     # coaches not implemented yet
+        (COACH, 'Coach'),     # coaches not implemented yet
     ]
     role = models.CharField(max_length=2, choices=role_CHOICES, default=MATHLETE)
 
@@ -164,10 +168,23 @@ class User(AbstractUser):
         if self.alias:
             return self.alias
         return self.full_name
-    
+
     @property
     def is_mathlete(self):
         return self.role == self.MATHLETE
+
+    @property
+    def is_coach(self):
+        return self.role == self.COACH
+
+    def has_team(self, contest):
+        if self.is_staff:
+            return False
+        elif self.is_mathlete:
+            return self.mathlete.teams.filter(contest=contest).exists()
+        else:
+            return self.teams.filter(contest=contest).exists()
+
 
 
 class Mathlete(models.Model):
@@ -177,15 +194,35 @@ class Mathlete(models.Model):
     def __str__(self):
         return "Mathlete: " + str(self.user)
 
+    def get_team(self, contest):
+        return self.teams.filter(contest=contest).first()
+
+
 
 class Team(models.Model):
     contest = models.ForeignKey(Contest, related_name='teams', on_delete=models.CASCADE)
     mathletes = models.ManyToManyField(Mathlete, related_name='teams')
     is_registered = models.BooleanField(default=False, help_text=_('The members of a \
             registered team are finalized and cannot be edited'))
-    team_leader = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, \
-            on_delete=models.SET_NULL)
-    invite_code = models.IntegerField()
+    coach = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, \
+                              related_name='teams', on_delete=models.CASCADE)
+    team_name = models.CharField(max_length=100)
+    MIN_CODE = 100000
+    MAX_CODE = 999999
+    invite_code = models.CharField(unique=True, max_length=15)
+
+    @classmethod
+    def create(cls, contest, team_name, coach):
+        invite_code = Team.generate_code()
+        return cls(contest=contest,team_name=team_name,invite_code=invite_code,coach=coach)
+
+    @staticmethod
+    def generate_code():
+        digits = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+        code = ''.join(random.choice(digits) for _ in range(15))
+        while Team.objects.filter(invite_code=code).exists():
+            code = ''.join(random.choice(digits) for _ in range(15))
+        return code
 
     def __str__(self):
         name = "Team: ["
@@ -193,6 +230,50 @@ class Team(models.Model):
             name += str(m) + ", "
         name += "]"
         return name
+
+    class Meta:
+        unique_together = ['team_name', 'contest']
+
+    def register(self):
+        # TODO: check if this is during the contest registration period
+        assert(not self.is_registered)
+        size = self.mathletes.count()
+        assert(size >= self.contest.min_team_size and size <= self.contest.max_team_size)
+        for exam in self.contest.exams.all():
+            if exam.is_team_exam:
+                c = Competitor(exam=exam, team=self, mathlete=None)
+                c.save()
+            else:
+                for m in self.mathletes.all():
+                    c = Competitor(exam=exam, team=self, mathlete=m)
+                    c.save()
+        self.is_registered = True
+        self.save()
+
+    def unregister(self):
+        assert(self.is_registered)
+        for c in self.competitors.all():
+            c.delete()
+        self.is_registered = False
+        self.save()
+
+    # whether the user has access to the team info page
+    def can_see_info(self, user):
+        if user.is_staff:
+            return True
+        if user.is_mathlete:
+            return user.mathlete.teams.filter(pk=self.id).exists()
+        if user.is_coach:
+            return self.coach == user
+
+    @property
+    def mathlete_list(self):
+        if not self.mathletes.exists():
+            return 'No students'
+        m = [m.user.preferred_name for m in self.mathletes.all()]
+        return ', '.join(m)
+
+
 
 
 class Competitor(models.Model):
@@ -230,6 +311,8 @@ class Submission(models.Model):
     problem = models.ForeignKey(Problem, related_name='submissions', on_delete=models.CASCADE)
     competitor = models.ForeignKey(Competitor, related_name='submissions', \
             on_delete=models.CASCADE)
+    points = models.FloatField(null=True, blank=True)
+    is_graded = models.BooleanField(default=False)
     text = models.TextField(help_text=_('The string that the competitor submitted. \
             Its format depends on the exam (can be an integer, source code, \
             program output, etc)'))

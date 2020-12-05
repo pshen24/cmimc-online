@@ -6,6 +6,12 @@ from website import views
 urlpatterns = [
     path('', views.home, name='home'),
     path('contests', views.contest_list, name='contest_list'),
+    path('info', views.info, name='info'),
+    path('schedule', views.schedule, name='schedule'),
+    path('reg_info', views.reg_info, name='reg_info'),
+    path('faq', views.faq, name='faq'),
+    path('resources', views.resources, name='resources'),
+
     path('admin/', admin.site.urls),
     
     path('signup', views.signup, name='signup'),
@@ -15,10 +21,15 @@ urlpatterns = [
     path('change-password/done', auth_views.PasswordChangeDoneView.as_view(template_name='change_password_done.html'), name='change_password_done'),
 #    path('reset-password/', auth_views.PasswordResetView.as_view(template_name='reset_password.html'), name='reset_password'),
 
+    path('contest/<int:contest_id>/newteam', views.new_team, name='new_team'),
+    path('team/<int:team_id>', views.team_info, name='team_info'),
+    path('team/<int:team_id>/join/<str:invite_code>', views.join_team, name='join_team'),
+    path('contest/<int:contest_id>/myteams', views.coach_teams, name='coach_teams'),
+    
+    path('exam/<int:exam_id>', views.exam_status, name='exam_status'),
     path('exam/<int:exam_id>/problem/<str:problem_number>', views.problem_info, name='problem_info'),
     path('exam/<int:exam_id>/problem/<str:problem_number>/submit', views.submit, name='submit'),
     path('exam/<int:exam_id>/problem/<str:problem_number>/submit_written/<str:submit_id>/<str:is_file_upload>', views.submit_written, name='submit_written'),
-    path('exam/<int:exam_id>', views.exam_status, name='exam_status'),
 ]
 
 
