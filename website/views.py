@@ -7,7 +7,8 @@ from website.models import Contest, Problem, Competitor, Exam, Submission, Score
 from website.forms import UserCreationForm
 from website.forms import SnippetForm
 from website.models import Snippet
-from django.http import HttpResponseRedirect
+from django import forms
+from django_ace import AceWidget
 #from tika import parser
 
 def home(request):
@@ -45,7 +46,7 @@ def problem_info(request, exam_id, problem_number):
 
 
 @login_required
-def submit(request, exam_id, problem_number, cur_initial=""):
+def submit(request, exam_id, problem_number):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
     if not exam.is_in_exam(user):
@@ -107,18 +108,70 @@ def submit(request, exam_id, problem_number, cur_initial=""):
             return redirect('exam_status', exam_id=exam_id)
         else:
             text = request.FILES['codeFile'].read().decode('utf-8')
-            form.fields['text'].initial = text
-            # Problematic redirect
-            return redirect('submit', exam_id=exam_id, problem_number=problem_number, cur_initial=text)
+            competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+            submission = Submission(
+                problem=problem,
+                competitor=competitor,
+                text=text
+            )
+            submission.save()
+            return redirect('submit_written', exam_id, problem_number, submission.pk)
     else: # request.method == 'GET'
         form = SnippetForm()
-        form.fields['text'].initial = cur_initial   # not working
         context = {
             'problem': problem,
             'form': form,
             'snippets': Snippet.objects.all()
         }
         return render(request, 'submit.html', context)
+
+@login_required
+def submit_written(request, exam_id, problem_number, submit_id):
+    user = request.user
+    exam = get_object_or_404(Exam, pk=exam_id)
+    if not exam.is_in_exam(user):
+        raise PermissionDenied("You must be registered for the contest to access \
+                the submission page")
+
+    problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
+    if request.method == 'POST':
+        # Form with default value
+        form = SnippetForm(request.POST)
+        if (form.is_valid()):
+            form.save()
+            text = Snippet.objects.all()[0].text
+            print(text)
+            Snippet.objects.all().delete()  # delete this line to record past snippets
+            competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+            submission = Submission(
+                problem=problem,
+                competitor=competitor,
+                text=text
+            )
+            submission.save()
+            submission.grade()
+            return redirect('exam_status', exam_id=exam_id)
+        else:
+            text = request.FILES['codeFile'].read().decode('utf-8')
+            competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+            submission = Submission(
+                problem=problem,
+                competitor=competitor,
+                text=text
+            )
+            submission.save()
+            return redirect('submit_written', exam_id, problem_number, submission.pk)
+    else: # request.method == 'GET'
+        submission = get_object_or_404(Submission, pk=submit_id)
+        data = {'text': submission.text}
+        form = SnippetForm(data)
+        context = {
+            'problem': problem,
+            'form': form,
+            'snippets': Snippet.objects.all()
+        }
+        return render(request, 'submit_written.html', context)
+
 
 @login_required
 def exam_status(request, exam_id):
