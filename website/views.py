@@ -115,7 +115,7 @@ def submit(request, exam_id, problem_number):
                 text=text
             )
             submission.save()
-            return redirect('submit_written', exam_id, problem_number, submission.pk)
+            return redirect('submit_written', exam_id, problem_number, submission.pk, True)
     else: # request.method == 'GET'
         form = SnippetForm()
         context = {
@@ -126,7 +126,7 @@ def submit(request, exam_id, problem_number):
         return render(request, 'submit.html', context)
 
 @login_required
-def submit_written(request, exam_id, problem_number, submit_id):
+def submit_written(request, exam_id, problem_number, submit_id, is_file_upload):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
     if not exam.is_in_exam(user):
@@ -160,11 +160,13 @@ def submit_written(request, exam_id, problem_number, submit_id):
                 text=text
             )
             submission.save()
-            return redirect('submit_written', exam_id, problem_number, submission.pk)
+            return redirect('submit_written', exam_id, problem_number, submission.pk, True)
     else: # request.method == 'GET'
         submission = get_object_or_404(Submission, pk=submit_id)
         data = {'text': submission.text}
         form = SnippetForm(data)
+        if (is_file_upload):
+            Submission.objects.get(pk=submit_id).delete()
         context = {
             'problem': problem,
             'form': form,
