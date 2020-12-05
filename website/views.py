@@ -7,6 +7,7 @@ from website.models import Contest, Problem, Competitor, Exam, Submission, Score
 from website.forms import UserCreationForm
 from website.forms import SnippetForm
 from website.models import Snippet
+from django.http import HttpResponseRedirect
 #from tika import parser
 
 def home(request):
@@ -44,7 +45,7 @@ def problem_info(request, exam_id, problem_number):
 
 
 @login_required
-def submit(request, exam_id, problem_number):
+def submit(request, exam_id, problem_number, cur_initial=""):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
     if not exam.is_in_exam(user):
@@ -69,25 +70,49 @@ def submit(request, exam_id, problem_number):
         submission.grade()
         return redirect('exam_status', exam_id=exam_id) """
 
-        # Included django_ace editor
+        # # Included django_ace editor
+        # form = SnippetForm(request.POST)
+        # if (form.is_valid()):
+        #     form.save()
+        #     text = Snippet.objects.all()[0].text
+        #     print(text)
+        #     Snippet.objects.all().delete()  # delete this line to record past snippets
+        # else:
+        #     text = request.FILES['codeFile'].read().decode('utf-8')
+        # competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        # submission = Submission(
+        #     problem=problem,
+        #     competitor=competitor,
+        #     text=text
+        # )
+        # submission.save()
+        # submission.grade()
+        # return redirect('exam_status', exam_id=exam_id)
+
+        # Upload to Editor instead of submitting file
         form = SnippetForm(request.POST)
         if (form.is_valid()):
             form.save()
             text = Snippet.objects.all()[0].text
+            print(text)
             Snippet.objects.all().delete()  # delete this line to record past snippets
+            competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+            submission = Submission(
+                problem=problem,
+                competitor=competitor,
+                text=text
+            )
+            submission.save()
+            submission.grade()
+            return redirect('exam_status', exam_id=exam_id)
         else:
             text = request.FILES['codeFile'].read().decode('utf-8')
-        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
-        submission = Submission(
-            problem=problem,
-            competitor=competitor,
-            text=text
-        )
-        submission.save()
-        submission.grade()
-        return redirect('exam_status', exam_id=exam_id)
+            form.fields['text'].initial = text
+            # Problematic redirect
+            return redirect('submit', exam_id=exam_id, problem_number=problem_number, cur_initial=text)
     else: # request.method == 'GET'
         form = SnippetForm()
+        form.fields['text'].initial = cur_initial   # not working
         context = {
             'problem': problem,
             'form': form,
