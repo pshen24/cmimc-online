@@ -256,12 +256,16 @@ def submit_written(request, exam_id, problem_number, submit_id, is_file_upload):
             text = Snippet.objects.all()[0].text
             print(text)
             Snippet.objects.all().delete()  # delete this line to record past snippets
-            competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
-            submission = Submission(
-                problem=problem,
-                competitor=competitor,
-                text=text
-            )
+            if (is_file_upload):
+                submission = get_object_or_404(Submission, pk=submit_id)
+                submission.text = text
+            else:
+                competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+                submission = Submission(
+                    problem=problem,
+                    competitor=competitor,
+                    text=text
+                )
             submission.save()
             submission.grade()
             return redirect('exam_status', exam_id=exam_id)
@@ -279,8 +283,6 @@ def submit_written(request, exam_id, problem_number, submit_id, is_file_upload):
         submission = get_object_or_404(Submission, pk=submit_id)
         data = {'text': submission.text}
         form = SnippetForm(data)
-        if (is_file_upload):
-            Submission.objects.get(pk=submit_id).delete()
         context = {
             'problem': problem,
             'form': form,
