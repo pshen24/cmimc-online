@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Submissions</h1>
+
+    <div class="row justify-content-between">
+      <div class = "col-10">
+          <table class="table table-striped">
+              <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Time</th>
+                    <th scope="col">Exam Name</th>
+                    <th scope="col">Problem Number</th>
+                    <th scope="col">Score</th>
+                    <th scope="col"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for submission in submissions%}
+                <tr>
+                    <td scope="row">{{ submission.submit_time }}</td>
+                    <td scope="row">{{ exam.name }}</td>
+                    <td scope="row">{{submission.problem.problem_number}}</td>
+                    <td scope="row">{{submission.points}}</td>
+                    <td scope="row"><a href="{% url 'submit_text' exam.id submission.id %}">View Submission</a></td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+      </div>
+
+
+
+      <div class = "col-2">
+        <h2><a href="{% url 'exam_status' exam.id %}" class="btn btn-primary" style="float: right; margin-bottom: 10px;"> Back To Exam</a> </h2>
+      </div>
+    </div>
+
+
+{% endblock %}

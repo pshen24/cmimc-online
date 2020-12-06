@@ -1,14 +1,15 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div>
-    <p class="display-3">Schedule (Tentative)</p>
-    <hr class="red_line"/>
-    <table class="table table-borderless table-hover mt-3">
+<p class="display-3">Schedule (Tentative)</p>
+<hr class="red_line"/>
+<div class="row">
+    <div class="col">
+    <table class="table table-borderless table-hover">
         <thead>
           <tr>
-            <th>Start Time</th>
-            <th>End Time</th>
+            <th>Start</th>
+            <th>End</th>
             <th>Event</th>
           </tr>
         </thead>
@@ -21,7 +22,7 @@
           <tr>
             <td>10:30 AM</td>
             <td>1:30 PM</td>
-            <td>Optimization Round</td>
+            <td>AI Round</td>
           </tr>
           <tr>
             <td>1:30 PM</td>
@@ -31,7 +32,7 @@
           <tr>
             <td>3:00 PM</td>
             <td>6:00 PM</td>
-            <td>AI Round</td>
+            <td>Optimization Round</td>
           </tr>
           <tr>
             <td>6:00 PM</td>
@@ -46,6 +47,9 @@
         </tbody>
       </table>
       <p>All times are in Eastern Standard Time (GMT -5), on January 30th, 2021.</p>
+    </div>
+    <div class="col-12 col-md-auto">
+        {% include 'includes/important_dates.html' %}
+    </div>
 </div>
 {% endblock %}
-

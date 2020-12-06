@@ -44,9 +44,29 @@ class Exam(models.Model):
             to see the leaderboard during the exam'))
     show_own_scores = models.BooleanField(help_text=_('Whether to allow contestants \
             to see their scores during the exam')) 
+    
+    OPTIMIZATION = 'OPT'
+    AI = 'AI'
+    MATH = 'MATH'
+    POWER = 'POW'
+    FORM_CHOICES = [
+        (OPTIMIZATION, 'Optimization'),
+        (AI, 'AI'),
+        (MATH, 'Math (short answer)'),
+        (POWER, 'Power (proof)'),
+    ]
+    form = models.CharField(max_length=4, choices=FORM_CHOICES, default=OPTIMIZATION)
 
     def __str__(self):
         return self.name
+
+    @property
+    def is_optimization(self):
+        return self.form == self.OPTIMIZATION
+
+    @property
+    def is_ai(self):
+        return self.form == self.AI
 
     @cached_property
     def _now(self):
@@ -123,6 +143,7 @@ class Problem(models.Model):
     problem_number = models.CharField(max_length=2, help_text=_("For most exams, \
             problems are numbered 1, 2, 3, ..., but for the optimization round, \
             they are numbered 1a, 1b, 1c, 2a, 2b, ... (each problem has multiple test cases"))
+    num_cases = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)]) # only for optimization
     
     # returns an instance of the grader class defined by grader_name
     @cached_property
@@ -204,7 +225,7 @@ class Team(models.Model):
     mathletes = models.ManyToManyField(Mathlete, related_name='teams')
     is_registered = models.BooleanField(default=False, help_text=_('The members of a \
             registered team are finalized and cannot be edited'))
-    coach = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, \
+    coach = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, \
                               related_name='teams', on_delete=models.CASCADE)
     team_name = models.CharField(max_length=100)
     MIN_CODE = 100000
@@ -241,12 +262,14 @@ class Team(models.Model):
         assert(size >= self.contest.min_team_size and size <= self.contest.max_team_size)
         for exam in self.contest.exams.all():
             if exam.is_team_exam:
-                c = Competitor(exam=exam, team=self, mathlete=None)
-                c.save()
+                if not Competitor.objects.filter(exam=exam, team=self, mathlete=None).exists():
+                    c = Competitor(exam=exam, team=self, mathlete=None)
+                    c.save()
             else:
                 for m in self.mathletes.all():
-                    c = Competitor(exam=exam, team=self, mathlete=m)
-                    c.save()
+                    if not Competitor.objects.filter(exam=exam, team=self, mathlete=m).exists():
+                        c = Competitor(exam=exam, team=self, mathlete=m)
+                        c.save()
         self.is_registered = True
         self.save()
 
@@ -317,13 +340,18 @@ class Submission(models.Model):
             Its format depends on the exam (can be an integer, source code, \
             program output, etc)'))
     submit_time = models.DateTimeField(auto_now_add=True, db_index=True)
+    test_case = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)]) # only for optimization
     # add something for errors? (if they submit something invalid)
 
     def __str__(self):
         return str(self.competitor) + "'s submission to problem " + str(self.problem)
 
     def grade(self):
-        self.problem.grader.grade(self)
+        self.points = self.problem.grader.grade(self) # updates submission.points
+        self.is_graded = True
+        self.save()
+        score = Score.objects.getScore(self.problem, self.competitor)
+        score.update(self)
 
 
 class Score(models.Model):
@@ -342,4 +370,22 @@ class Score(models.Model):
     class Meta:
         unique_together = ['problem', 'competitor']
 
+    def update(self, submission):
+        # can use keep_best in grader_data if needed
+        if self.problem.exam.is_optimization:
+            case = submission.test_case
+            if self.grader_data == None:
+                self.grader_data = {"cases": {}}
+            old_score = self.grader_data["cases"].get(case, 0)
+            self.grader_data["cases"][case] = max(old_score, submission.points)
+            self.points = 0
+            for c in self.grader_data["cases"]:
+                self.points += self.grader_data["cases"][c]
+        elif self.problem.exam.is_ai:
+            if submission.points:
+                self.points = submission.points
+            else:
+                self.points = 0
+        self.save()
+        self.competitor.update_total_score()
 

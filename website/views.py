@@ -177,7 +177,9 @@ def submit(request, exam_id, problem_number):
         submission = Submission(
             problem=problem,
             competitor=competitor,
-            text=text
+            text=text,
+            test_case=1, # temporary
+            #graded=False,
         )
         submission.save()
         submission.grade()
@@ -210,6 +212,39 @@ def exam_status(request, exam_id):
         'all_problems_scores': zip(problems, scores),
     }
     return render(request, 'exam_status.html', context)
+
+@login_required
+def submit_view(request, exam_id):
+    user = request.user
+
+    exam = get_object_or_404(Exam, pk=exam_id)
+
+    submissions = []
+    if user.is_mathlete:
+        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        submissions = Submission.objects.all().filter(competitor=competitor)
+
+    #Make Submissions Reversed Order to show most recent
+    submissions = reversed(list(submissions))
+
+    context = {
+        'exam': exam,
+        'submissions': submissions,
+    }
+    return render(request, 'submit_view.html', context)
+
+@login_required
+def submit_text(request, exam_id, submit_id):
+    user = request.user
+
+    exam = get_object_or_404(Exam, pk=exam_id)
+
+    submission = get_object_or_404(Submission, pk=submit_id)
+
+    context = {
+        'submission': submission
+    }
+    return render(request, 'submit_text.html', context)
 
 # User Account Signup
 def signup(request):
