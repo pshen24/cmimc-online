@@ -2,6 +2,9 @@ from django.contrib import admin
 from django.urls import path
 from django.contrib.auth import views as auth_views
 from website import views
+from django.conf import settings
+from django.conf.urls.static import static
+from django.conf.urls import url, include
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -32,6 +35,7 @@ urlpatterns = [
     
     path('exam/<int:exam_id>/submissions', views.submit_view, name='submit_view'),
     path('exam/<int:exam_id>/submissions/<int:submit_id>', views.submit_text, name='submit_text'),
-]
+    url(r'^markdownx/', include('markdownx.urls')),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 

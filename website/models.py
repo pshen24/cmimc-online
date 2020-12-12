@@ -5,10 +5,11 @@ from django.utils.functional import cached_property
 from django.utils import timezone
 from django.conf import settings
 from django.core.validators import MinValueValidator, MaxValueValidator
-#from website import problem_graders
 from website.managers import UserManager, ScoreManager, CompetitorManager
 import random
 import string
+# from django_markdown.models import MarkdownField
+from markdownx.models import MarkdownxField
 
 
 class Contest(models.Model):
@@ -40,34 +41,54 @@ class Exam(models.Model):
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
     is_team_exam = models.BooleanField()
-    show_leaderboard = models.BooleanField(help_text=_('Whether to allow contestants \
-            to see the leaderboard during the exam'))
-    show_own_scores = models.BooleanField(help_text=_('Whether to allow contestants \
-            to see their scores during the exam')) 
     
     OPTIMIZATION = 'OPT'
     AI = 'AI'
     MATH = 'MATH'
     POWER = 'POW'
-    FORM_CHOICES = [
+    TYPE_CHOICES = [
         (OPTIMIZATION, 'Optimization'),
         (AI, 'AI'),
         (MATH, 'Math (short answer)'),
         (POWER, 'Power (proof)'),
     ]
-    form = models.CharField(max_length=4, choices=FORM_CHOICES, default=OPTIMIZATION)
+    exam_type = models.CharField(max_length=4, choices=TYPE_CHOICES, default=OPTIMIZATION)
 
     def __str__(self):
         return self.name
 
-    @property
+    @cached_property
     def is_optimization(self):
-        return self.form == self.OPTIMIZATION
+        return self.exam_type == self.OPTIMIZATION
 
-    @property
+    @cached_property
     def is_ai(self):
-        return self.form == self.AI
+        return self.exam_type == self.AI
 
+    # whether to allow contestants to see the leaderboard during the exam
+    @cached_property
+    def show_leaderboard(self):
+        if self.exam_type == self.OPTIMIZATION:
+            return True
+        if self.exam_type == self.AI:
+            return True
+        if self.exam_type == self.MATH:
+            return False
+        if self.exam_type == self.POWER:
+            return False
+
+    # whether to allow contestants to see their submission scores during the exam
+    @cached_property
+    def show_own_scores(self):
+        if self.exam_type == self.OPTIMIZATION:
+            return True
+        if self.exam_type == self.AI:
+            return True
+        if self.exam_type == self.MATH:
+            return False
+        if self.exam_type == self.POWER:
+            return False
+        
     @cached_property
     def _now(self):
         return timezone.now()
@@ -135,15 +156,19 @@ class Exam(models.Model):
 
 class Problem(models.Model):
     exam = models.ForeignKey(Exam, related_name='problems', on_delete=models.CASCADE)
-    problem_text = models.CharField(max_length=1000)
-    name = models.CharField(max_length=100, unique=True)
+    problem_text = models.TextField(max_length=10000)
+    # markdown_text = MarkdownField()
+    markdown_text = MarkdownxField()
+    name = models.CharField(max_length=100, unique=True,
+            help_text=_('The problem title that contestants see'))
+    short_name = models.CharField(max_length=100, unique=True,
+            help_text=_('Should be lowercase letters or numbers, no spaces'))
     grader_name = models.CharField(max_length=50) # add choices?
     grader_data = models.JSONField(null=True, blank=True, help_text=_("Data for the \
             problem's grader to use. The format depends on the type of grader"))
-    problem_number = models.CharField(max_length=2, help_text=_("For most exams, \
-            problems are numbered 1, 2, 3, ..., but for the optimization round, \
-            they are numbered 1a, 1b, 1c, 2a, 2b, ... (each problem has multiple test cases"))
-    num_cases = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)]) # only for optimization
+    problem_number = models.IntegerField(validators=[MinValueValidator(1)])
+    num_tasks = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)]) # only for optimization
+    pdf_link = models.CharField(max_length=1000, null=True, blank=True)
     
     # returns an instance of the grader class defined by grader_name
     @cached_property
@@ -158,6 +183,18 @@ class Problem(models.Model):
 
     class Meta:
         unique_together = ['exam', 'problem_number']
+
+
+def input_data_path(task, filename):
+    problem = task.problem
+    return 'private/{0}/input_data/{0}_{1}.in'.format(problem.short_name, task.task_number)
+
+class Task(models.Model):
+    problem = models.ForeignKey(Problem, related_name="tasks", on_delete=models.CASCADE)
+    task_number = models.IntegerField(validators=[MinValueValidator(1)])
+    input_file = models.FileField(upload_to=input_data_path)
+    grader_data = models.JSONField(null=True, blank=True, help_text=_("Data for the \
+            problem's grader to use. The format depends on the type of grader"))
 
 
 class User(AbstractUser):
@@ -340,13 +377,15 @@ class Submission(models.Model):
             Its format depends on the exam (can be an integer, source code, \
             program output, etc)'))
     submit_time = models.DateTimeField(auto_now_add=True, db_index=True)
-    test_case = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)]) # only for optimization
+    task = models.ForeignKey(Task, related_name="submissions", on_delete=models.CASCADE, \
+            null=True, blank=True) # only for optimization
     # add something for errors? (if they submit something invalid)
 
     def __str__(self):
         return str(self.competitor) + "'s submission to problem " + str(self.problem)
 
     def grade(self):
+        self.problem.grader.grade(self)
         self.points = self.problem.grader.grade(self) # updates submission.points
         self.is_graded = True
         self.save()
@@ -358,8 +397,8 @@ class Score(models.Model):
     problem = models.ForeignKey(Problem, related_name='scores', on_delete=models.CASCADE)
     competitor = models.ForeignKey(Competitor, related_name='scores', on_delete=models.CASCADE)
     points = models.FloatField(default=0.0)
-    grader_data = models.JSONField(null=True, blank=True, help_text=_("Extra data that \
-            custom graders can use. The format depends on the problem's grader"))
+    task_scores = models.JSONField(null=True, blank=True, default=list, help_text=_("List of \
+            best scores for each task of an optimization round problem"))
 
     objects = ScoreManager()
 
@@ -369,23 +408,4 @@ class Score(models.Model):
 
     class Meta:
         unique_together = ['problem', 'competitor']
-
-    def update(self, submission):
-        # can use keep_best in grader_data if needed
-        if self.problem.exam.is_optimization:
-            case = submission.test_case
-            if self.grader_data == None:
-                self.grader_data = {"cases": {}}
-            old_score = self.grader_data["cases"].get(case, 0)
-            self.grader_data["cases"][case] = max(old_score, submission.points)
-            self.points = 0
-            for c in self.grader_data["cases"]:
-                self.points += self.grader_data["cases"][c]
-        elif self.problem.exam.is_ai:
-            if submission.points:
-                self.points = submission.points
-            else:
-                self.points = 0
-        self.save()
-        self.competitor.update_total_score()
 

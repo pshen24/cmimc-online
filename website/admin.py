@@ -2,7 +2,9 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 
 from website.forms import UserCreationForm, UserChangeForm
-from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score
+from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score, Task
+
+from markdownx.admin import MarkdownxModelAdmin
 
 
 class UserAdmin(DefaultUserAdmin):
@@ -31,11 +33,12 @@ class TeamAdmin(admin.ModelAdmin):
 
 admin.site.register(Contest)
 admin.site.register(Exam)
-admin.site.register(Problem)
+admin.site.register(Problem, MarkdownxModelAdmin)
 admin.site.register(User, UserAdmin)
 admin.site.register(Mathlete)
 admin.site.register(Team, TeamAdmin)
 admin.site.register(Competitor)
 admin.site.register(Submission)
 admin.site.register(Score)
+admin.site.register(Task)
 

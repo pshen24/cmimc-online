@@ -11,6 +11,9 @@ awsebcli = "*"
 mysqlclient = "*"
 environs = "*"
 django-crispy-forms = "*"
+django-markdownify = "*"
+django-markdown = "*"
+django-markdownx = "*"
 
 [requires]
 python_version = "3.7"

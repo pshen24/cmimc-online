@@ -149,10 +149,12 @@ def problem_info(request, exam_id, problem_number):
         next_problem_number = str(int(problem_number)+1)
     except:
         next_problem_number = None
+    tasks = problem.tasks.all()
 
     context = {
         'problem': problem,
         'next_problem_number': next_problem_number,
+        'tasks': tasks
     }
     return render(request, 'problem_info.html', context)
 

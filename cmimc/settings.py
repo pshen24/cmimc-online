@@ -44,6 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'website',
     'crispy_forms',
+    'markdownify',
+#    'django_markdown',
+    'markdownx',
 ]
 
 MIDDLEWARE = [
@@ -168,3 +171,31 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 10
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+
+MARKDOWNIFY_WHITELIST_TAGS = [
+    'a',
+    'abbr',
+    'acronym',
+    'b',
+    'blockquote',
+    'code',
+    'em',
+    'i',
+    'li',
+    'ol',
+    'strong'
+    'ul',
+    'h1',
+    'h2',
+    'h3',
+    'h4',
+    'h5',
+    'h6',
+    'p',
+    'br',
+    'fenced_code',
+]
+
+MARKDOWNIFY_MARKDOWN_EXTENSIONS = ['markdown.extensions.fenced_code',
+                                   'markdown.extensions.extra', ]
