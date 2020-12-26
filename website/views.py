@@ -185,51 +185,52 @@ def submit(request, exam_id, problem_number):
         submission.grade()
         return redirect('exam_status', exam_id=exam_id) """
 
-        # # Included django_ace editor
+        # Submit file directly
+        form = SnippetForm(request.POST)
+        if (form.is_valid()):
+            form.save()
+            text = Snippet.objects.all()[0].text
+            Snippet.objects.all().delete()  # delete this line to record past snippets
+        else:
+            text = request.FILES['codeFile'].read().decode('utf-8')
+        print(text)
+        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        submission = Submission(
+            problem=problem,
+            competitor=competitor,
+            text=text
+        )
+        submission.save()
+        submission.grade()
+        return redirect('exam_status', exam_id=exam_id)
+        
+
+        # # Upload to Editor instead of submitting file
         # form = SnippetForm(request.POST)
         # if (form.is_valid()):
         #     form.save()
         #     text = Snippet.objects.all()[0].text
         #     print(text)
         #     Snippet.objects.all().delete()  # delete this line to record past snippets
+        #     competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        #     submission = Submission(
+        #         problem=problem,
+        #         competitor=competitor,
+        #         text=text
+        #     )
+        #     submission.save()
+        #     submission.grade()
+        #     return redirect('exam_status', exam_id=exam_id)
         # else:
         #     text = request.FILES['codeFile'].read().decode('utf-8')
-        # competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
-        # submission = Submission(
-        #     problem=problem,
-        #     competitor=competitor,
-        #     text=text
-        # )
-        # submission.save()
-        # submission.grade()
-        # return redirect('exam_status', exam_id=exam_id)
-
-        # Upload to Editor instead of submitting file
-        form = SnippetForm(request.POST)
-        if (form.is_valid()):
-            form.save()
-            text = Snippet.objects.all()[0].text
-            print(text)
-            Snippet.objects.all().delete()  # delete this line to record past snippets
-            competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
-            submission = Submission(
-                problem=problem,
-                competitor=competitor,
-                text=text
-            )
-            submission.save()
-            submission.grade()
-            return redirect('exam_status', exam_id=exam_id)
-        else:
-            text = request.FILES['codeFile'].read().decode('utf-8')
-            competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
-            submission = Submission(
-                problem=problem,
-                competitor=competitor,
-                text=text
-            )
-            submission.save()
-            return redirect('submit_written', exam_id, problem_number, submission.pk, True)
+        #     competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        #     submission = Submission(
+        #         problem=problem,
+        #         competitor=competitor,
+        #         text=text
+        #     )
+        #     submission.save()
+        #     return redirect('submit_written', exam_id, problem_number, submission.pk, True)
     else: # request.method == 'GET'
         form = SnippetForm()
         context = {
