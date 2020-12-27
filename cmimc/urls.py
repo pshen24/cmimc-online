@@ -29,13 +29,12 @@ urlpatterns = [
     path('team/<int:team_id>/join/<str:invite_code>', views.join_team, name='join_team'),
     path('contest/<int:contest_id>/myteams', views.coach_teams, name='coach_teams'),
     
-    path('exam/<int:exam_id>', views.exam_status, name='exam_status'),
-    path('exam/<int:exam_id>/problem/<str:problem_number>', views.problem_info, name='problem_info'),
+    path('exam/<int:exam_id>', views.all_problems, name='all_problems'),
+    path('exam/<int:exam_id>/problem/<int:problem_number>', views.view_problem, name='view_problem'),
     path('exam/<int:exam_id>/problem/<int:problem_number>/submit', views.submit, name='submit'),
     path('exam/<int:exam_id>/problem/<int:problem_number>/submit/task/<int:task_number>', views.submit, name='submit'),
     
-    path('exam/<int:exam_id>/submissions', views.submit_view, name='submit_view'),
-    path('exam/<int:exam_id>/submissions/<int:submit_id>', views.submit_text, name='submit_text'),
+    path('exam/<int:exam_id>/submissions', views.all_submissions, name='all_submissions'),
+    path('submission/<int:submission_id>', views.view_submission, name='view_submission'),
+    path('resubmit/<int:submission_id>', views.resubmit, name='resubmit'),
 ]
-
-

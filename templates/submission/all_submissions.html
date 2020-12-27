@@ -23,7 +23,7 @@
                     <td scope="row">{{ exam.name }}</td>
                     <td scope="row">{{submission.problem.problem_number}}</td>
                     <td scope="row">{{submission.points}}</td>
-                    <td scope="row"><a href="{% url 'submit_text' exam.id submission.id %}">View Submission</a></td>
+                    <td scope="row"><a href="{% url 'view_submission' submission.id %}">View Submission</a></td>
                 </tr>
                 {% endfor %}
               </tbody>
@@ -33,7 +33,7 @@
 
 
       <div class = "col-2">
-        <h2><a href="{% url 'exam_status' exam.id %}" class="btn btn-primary" style="float: right; margin-bottom: 10px;"> Back To Exam</a> </h2>
+        <h2><a href="{% url 'all_problems' exam.id %}" class="btn btn-primary" style="float: right; margin-bottom: 10px;"> Back To Exam</a> </h2>
       </div>
     </div>
 
