@@ -43,8 +43,8 @@ def submit(request, exam_id, problem_number, task_number=None):
             return HttpResponse('Error: Only optimization and AI rounds are supported right now')
 
 
-@login_required
 def submit_opt(request, exam, problem, task, text=None):
+    print('submit_opt, text=', text)
     context = {
         'problem': problem,
         'task': task,
@@ -53,7 +53,6 @@ def submit_opt(request, exam, problem, task, text=None):
     return render(request, 'submit/submit_opt.html', context)
 
 
-@login_required
 def submit_ai(request, exam, problem, text=None):
     context = {
         'problem': problem,

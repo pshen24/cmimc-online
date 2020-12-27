@@ -4,15 +4,15 @@
 
     <h2>Submission Text</h2>
 
-    <div class="row justify-content-between">
-      <div class = "col-9">
+    <div class="row">
+      <div class = "col">
           <div class="card" style="margin-top: 10px; margin-bottom: 10px; margin-inside: 10px">{{ submission.text }}</div>
       </div>
 
 
-
-      <div class = "col-3">
-        <h2><a href="{% url 'all_submissions' submission.competitor.exam_id %}" class="btn btn-primary"> Back To Submissions</a> </h2>
+      <div class="col-auto">
+          {% include 'includes/exam_nav.html' with exam=submission.problem.exam %} <br>
+        <a href="{% url 'resubmit' submission.id %}" class="btn btn-info">Resubmit</a>
       </div>
     </div>
 
