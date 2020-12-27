@@ -168,7 +168,10 @@ def problem_info(request, exam_id, problem_number):
             task_scores = {} # dictionary with tasks as key and scores as value
             for i in range(problem.num_tasks):
                 task = Task.objects.get(problem=problem, task_number=i+1)
-                pts = score.task_scores[i]
+                try:
+                    pts = score.task_scores[i]
+                except:
+                    pts = 0.0
                 task_scores[task] = pts
 
     context = {
