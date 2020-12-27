@@ -44,9 +44,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'website',
     'crispy_forms',
-    'markdownify',
-#    'django_markdown',
-    'markdownx',
     'ckeditor',
 ]
 
@@ -173,44 +170,10 @@ if not DEBUG:
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 
-
-MARKDOWNIFY_WHITELIST_TAGS = [
-    'a',
-    'abbr',
-    'acronym',
-    'b',
-    'blockquote',
-    'code',
-    'em',
-    'i',
-    'li',
-    'ol',
-    'strong'
-    'ul',
-    'h1',
-    'h2',
-    'h3',
-    'h4',
-    'h5',
-    'h6',
-    'p',
-    'br',
-    'fenced_code',
-]
-
-MARKDOWNIFY_MARKDOWN_EXTENSIONS = ['markdown.extensions.fenced_code',
-                                   'markdown.extensions.extra', ]
-
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
-        #'mathJaxLib': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.1.2/es5/tex-chtml-full.min.js',
-        #'mathJaxLib': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.1.2/es5/latest.js',
         'mathJaxLib': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML',
-        #'mathJaxLib': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS_SVG',
-        #'mathJaxLib': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/config/TeX-AMS_SVG.js',
-        #'mathJaxLib': '//cdn.mathjax.org/mathjax/2.2-latest/MathJax.js?config=TeX-AMS_HTML',
-        #'mathJaxLib': '//cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS_HTML',
         'extraPlugins': 'codesnippet, mathjax',
     },
 }

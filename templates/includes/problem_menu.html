@@ -1,5 +1,5 @@
 <div class="btn-group-vertical">
-    {% url 'exam_problems' exam.id as all_problems %}
+    {% url 'all_problems' exam.id as all_problems %}
     <a href="{{ all_problems }}" class="btn btn-outline-primary {% if request.get_full_path == all_problems %}active{% endif %}" style="text-align: left">All Problems</a>
     {% for p in exam.problems.all %}
     {% url 'view_problem' exam.id p.problem_number as p_link %}

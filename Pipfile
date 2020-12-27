@@ -12,6 +12,7 @@ mysqlclient = "*"
 environs = "*"
 django-crispy-forms = "*"
 django-ckeditor = "*"
+django-markdownx = "*"
 
 [requires]
 python_version = "3.7"
