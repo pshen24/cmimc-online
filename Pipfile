@@ -11,9 +11,6 @@ awsebcli = "*"
 mysqlclient = "*"
 environs = "*"
 django-crispy-forms = "*"
-django-markdownify = "*"
-django-markdown = "*"
-django-markdownx = "*"
 django-ckeditor = "*"
 
 [requires]
