@@ -1,2 +1,3 @@
 from website.problem_graders.integer import IntegerGrader
-from website.problem_graders.optimization import OptGrader
+from website.problem_graders.optimization import OptimizationGrader
+from website.problem_graders.squareit import SquareIt

@@ -12,17 +12,31 @@ def all_problems(request, exam_id):
     problems = exam.problems.order_by('problem_number')
     if user.is_mathlete:
         competitor = Competitor.objects.getCompetitor(exam, user.mathlete)
+
         scores = []
+        task_scores = []
         for problem in problems:
-            scores.append(Score.objects.getScore(problem, competitor))
+            curr_score = Score.objects.getScore(problem, competitor)
+            scores.append(curr_score)
+            if exam.is_optimization:
+                temp = []
+                for i in range(len(curr_score.task_scores)):
+                    temp.append(curr_score.task_scores[i])
+                task_scores.append(temp)
+            else:
+                task_scores.append(None)
     else:
         scores = []
+        task_scores = []
         for problem in problems:
             scores.append(None)
+            task_scores.append(None)
+
+
 
     context = {
         'exam': exam,
-        'all_problems_scores': zip(problems, scores),
+        'all_problems_scores': zip(problems, scores, task_scores),
     }
     return render(request, 'exam/all_problems.html', context)
 
