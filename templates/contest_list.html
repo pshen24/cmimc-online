@@ -41,4 +41,11 @@
 <hr class="red_line mb-4"/>
 There are no past contests yet.
 
+{% if user.is_staff %}
+<h1>Staff Info Only (regular users can't see this)</h1>
+<hr class="red_line mb-4"/>
+
+{{ emaillist }}
+{% endif %}
+
 {% endblock %}

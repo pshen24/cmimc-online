@@ -8,8 +8,7 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from website.managers import UserManager, ScoreManager, CompetitorManager
 import random
 import string
-# from django_markdown.models import MarkdownField
-from markdownx.models import MarkdownxField
+from ckeditor.fields import RichTextField
 
 
 class Contest(models.Model):
@@ -156,9 +155,7 @@ class Exam(models.Model):
 
 class Problem(models.Model):
     exam = models.ForeignKey(Exam, related_name='problems', on_delete=models.CASCADE)
-    problem_text = models.TextField(max_length=10000)
-    # markdown_text = MarkdownField()
-    markdown_text = MarkdownxField()
+    problem_text = RichTextField()
     name = models.CharField(max_length=100, unique=True,
             help_text=_('The problem title that contestants see'))
     short_name = models.CharField(max_length=100, unique=True,
@@ -173,6 +170,7 @@ class Problem(models.Model):
     # returns an instance of the grader class defined by grader_name
     @cached_property
     def grader(self):
+        from website import problem_graders
         class_ = getattr(problem_graders, self.grader_name)
         return class_(self)
 
@@ -192,9 +190,14 @@ def input_data_path(task, filename):
 class Task(models.Model):
     problem = models.ForeignKey(Problem, related_name="tasks", on_delete=models.CASCADE)
     task_number = models.IntegerField(validators=[MinValueValidator(1)])
-    input_file = models.FileField(upload_to=input_data_path)
+    input_file = models.CharField(max_length=1000, blank=True)
+    # Currently using links instead of storing files, but this would be the alternative:
+    # input_file = models.FileField(upload_to=input_data_path)
     grader_data = models.JSONField(null=True, blank=True, help_text=_("Data for the \
             problem's grader to use. The format depends on the type of grader"))
+
+    def __str__(self):
+        return '{0} - Task {1}'.format(self.problem.name, self.task_number)
 
 
 class User(AbstractUser):
@@ -385,12 +388,14 @@ class Submission(models.Model):
         return str(self.competitor) + "'s submission to problem " + str(self.problem)
 
     def grade(self):
-        self.problem.grader.grade(self)
+        score = Score.objects.getScore(self.problem, self.competitor)
+        self.problem.grader.grade(self, score)
+        '''
         self.points = self.problem.grader.grade(self) # updates submission.points
         self.is_graded = True
         self.save()
-        score = Score.objects.getScore(self.problem, self.competitor)
-        score.update(self)
+        score.update_total_score(self)
+        '''
 
 
 class Score(models.Model):

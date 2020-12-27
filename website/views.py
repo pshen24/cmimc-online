@@ -4,7 +4,7 @@ from django.http import HttpResponse
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from website.models import Contest, Exam, Problem, User, Mathlete, Competitor, Submission, Score, Team
+from website.models import Contest, Exam, Problem, Task, User, Mathlete, Competitor, Submission, Score, Team
 from website.forms import UserCreationForm
 
 
@@ -86,8 +86,16 @@ def contest_list(request):
                 tuples.append({'contest':contest, 'has_team':False, 'team':None})
         else:
             tuples.append({'contest':contest, 'has_team':user.has_team(contest), 'team':None})
+
+    # Temporary email list (only visible to staff)
+    all_users = User.objects.all()
+    all_emails = []
+    for user in all_users:
+        all_emails.append(user.email)
+
     context = {
-        'tuples': tuples
+        'tuples': tuples,
+        'emaillist': ', '.join(all_emails),
     }
     return render(request, 'contest_list.html', context)
 
@@ -136,12 +144,13 @@ def coach_teams(request, contest_id):
     return render(request, 'coach_teams.html', context)
 
 
+@login_required
 def problem_info(request, exam_id, problem_number):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
     if not exam.can_see_problems(user):
-        raise PermissionDenied("You must be registered for the contest to access \
-                the submission page")
+        raise PermissionDenied("You must be registered for the contest to see \
+                the problems")
 
     problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
     try:
@@ -149,18 +158,30 @@ def problem_info(request, exam_id, problem_number):
         next_problem_number = str(int(problem_number)+1)
     except:
         next_problem_number = None
-    tasks = problem.tasks.all()
+
+    # TODO: needs to work for coaches too (except they can't submit)
+    if user.is_mathlete:
+        if exam.is_optimization:
+            mathlete = user.mathlete
+            competitor = Competitor.objects.getCompetitor(exam, mathlete)
+            score = Score.objects.getScore(problem, competitor)
+            task_scores = {} # dictionary with tasks as key and scores as value
+            for i in range(problem.num_tasks):
+                task = Task.objects.get(problem=problem, task_number=i+1)
+                pts = score.task_scores[i]
+                task_scores[task] = pts
 
     context = {
         'problem': problem,
         'next_problem_number': next_problem_number,
-        'tasks': tasks
+        'task_scores': task_scores,
+        'exam': exam,
     }
     return render(request, 'problem_info.html', context)
 
 
 @login_required
-def submit(request, exam_id, problem_number):
+def submit(request, exam_id, problem_number, task_number=None):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
     if not exam.is_in_exam(user):
@@ -168,29 +189,54 @@ def submit(request, exam_id, problem_number):
                 the submission page")
 
     problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
+
     if request.method == 'POST':
-        # TODO: Make sure that exactly one of the two inputs is submitted
-        # Need a javascript event listener for when the form gets submitted
         if 'codeFile' in request.FILES:
             text = request.FILES['codeFile'].read().decode('utf-8')
         else:
             text = request.POST['codeText']
-        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        competitor = Competitor.objects.getCompetitor(exam, user.mathlete)
+        if exam.is_optimization:
+            task = Task.objects.get(problem=problem, task_number=task_number)
+        else:
+            task = None
         submission = Submission(
             problem=problem,
             competitor=competitor,
             text=text,
-            test_case=1, # temporary
-            #graded=False,
+            task=task,
         )
         submission.save()
         submission.grade()
         return redirect('exam_status', exam_id=exam_id)
     else: # request.method == 'GET'
-        context = {
-            'problem': problem,
-        }
-        return render(request, 'submit.html', context)
+        if exam.is_optimization:
+            task = Task.objects.get(problem=problem, task_number=task_number)
+            return submit_opt(request, exam, problem, task)
+        elif exam.is_ai:
+            return submit_ai(request, exam, problem)
+        else:
+            return HttpResponse('Error: Only optimization and AI rounds are supported right now')
+
+
+# pretty basic right now, but we might add more to it later
+@login_required
+def submit_opt(request, exam, problem, task):
+    context = {
+        'problem': problem,
+        'task': task,
+    }
+    return render(request, 'submit_opt.html', context)
+
+
+@login_required
+def submit_ai(request, exam, problem, text=None):
+    context = {
+        'problem': problem,
+        'text': text, # if text is not None, insert it into the IDE
+    }
+    return render(request, 'submit_ai.html', context)
+
 
 @login_required
 def exam_status(request, exam_id):
@@ -200,7 +246,7 @@ def exam_status(request, exam_id):
         raise PermissionDenied('You do not have access to this page')
     problems = exam.problems.order_by('problem_number')
     if user.is_mathlete:
-        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
+        competitor = Competitor.objects.getCompetitor(exam, user.mathlete)
         scores = []
         for problem in problems:
             scores.append(Score.objects.getScore(problem, competitor))
@@ -215,6 +261,7 @@ def exam_status(request, exam_id):
     }
     return render(request, 'exam_status.html', context)
 
+
 @login_required
 def submit_view(request, exam_id):
     user = request.user
@@ -223,11 +270,8 @@ def submit_view(request, exam_id):
 
     submissions = []
     if user.is_mathlete:
-        competitor = Competitor.objects.mathleteToCompetitor(exam, user.mathlete)
-        submissions = Submission.objects.all().filter(competitor=competitor)
-
-    #Make Submissions Reversed Order to show most recent
-    submissions = reversed(list(submissions))
+        competitor = Competitor.objects.getCompetitor(exam, user.mathlete)
+        submissions = Submission.objects.filter(competitor=competitor).order_by('-submit_time')
 
     context = {
         'exam': exam,

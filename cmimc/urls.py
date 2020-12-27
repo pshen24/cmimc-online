@@ -15,7 +15,7 @@ urlpatterns = [
     path('faq', views.faq, name='faq'),
     path('resources', views.resources, name='resources'),
 
-    path('admin/', admin.site.urls),
+    path('admin', admin.site.urls),
     
     path('signup', views.signup, name='signup'),
     path('login', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
@@ -31,11 +31,11 @@ urlpatterns = [
     
     path('exam/<int:exam_id>', views.exam_status, name='exam_status'),
     path('exam/<int:exam_id>/problem/<str:problem_number>', views.problem_info, name='problem_info'),
-    path('exam/<int:exam_id>/problem/<str:problem_number>/submit', views.submit, name='submit'),
+    path('exam/<int:exam_id>/problem/<int:problem_number>/submit', views.submit, name='submit'),
+    path('exam/<int:exam_id>/problem/<int:problem_number>/submit/task/<int:task_number>', views.submit, name='submit'),
     
     path('exam/<int:exam_id>/submissions', views.submit_view, name='submit_view'),
     path('exam/<int:exam_id>/submissions/<int:submit_id>', views.submit_text, name='submit_text'),
-    url(r'^markdownx/', include('markdownx.urls')),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+]
 
 

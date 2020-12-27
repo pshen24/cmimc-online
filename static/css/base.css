@@ -64,3 +64,15 @@ a:hover:not(.btn):not(.no-color) {
 .logos img {
   max-width: 100%;
 }
+
+
+.problem-text hr {
+  margin-top: 0.5rem;
+}
+
+
+pre {
+  background-color: #f8f9fa;
+  padding: 1.5rem;
+}
+

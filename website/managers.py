@@ -31,6 +31,7 @@ class ScoreManager(models.Manager):
         score = self.create(problem=problem, competitor=competitor)
         if problem.exam.is_optimization:
             score.task_scores = [0]*problem.num_tasks
+            score.save()
         return score
 
     def getScore(self, problem, competitor):
@@ -42,7 +43,7 @@ class ScoreManager(models.Manager):
             return new_score
 
 class CompetitorManager(models.Manager):
-    def mathleteToCompetitor(self, exam, mathlete):
+    def getCompetitor(self, exam, mathlete):
         team = mathlete.teams.filter(contest=exam.contest).first()
         if exam.is_team_exam:
             return self.get(exam=exam, team=team, mathlete=None)
