@@ -1,6 +1,6 @@
 problem_graders/
-
-
+media/private/
+staticfiles/
 
 
 # ===== Default gitignore below =====
