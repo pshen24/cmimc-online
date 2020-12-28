@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="row">
+      <div class="col"> <h1 class="mb-3">Submission to {{ submission.problem }} </h1> </div>
+      <!-- TODO: add link to problem -->
+      <div class="col-auto">
+        <a href="{% url 'all_submissions' submission.problem.exam.id %}"
+        class="btn btn-info mt-2">Back to All Submissions</a>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class = "col">
+        <h4>Score: {{ submission.points }} </h4>
+        <h4>Content:</h4>
+        <div class="card" style="margin-top: 10px; margin-bottom: 10px; margin-inside: 10px">{{ submission.text }}</div>
+      </div>
+
+      <div class="col-auto">
+        {% include 'includes/exam_nav.html' with exam=submission.problem.exam %} <br>
+        <a href="{% url 'resubmit' submission.id %}" class="btn btn-info mt-2">Resubmit</a>
+      </div>
+    </div>
+
+
+{% endblock %}

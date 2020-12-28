@@ -29,3 +29,19 @@ class EditorForm(forms.Form):
         label='Code Here!',
         required=False,
     )
+
+class ViewOnlyEditorForm(forms.Form):
+    text = forms.CharField(
+        widget=AceWidget(
+            mode='python',
+            theme='katzenmilch',
+            fontsize='18px',
+            width="100%",
+            height="50vh",
+            toolbar=False,
+            readonly=True,
+            showgutter=False,
+        ),
+        label='Note: Read-Only!',
+        required=False,
+    )
