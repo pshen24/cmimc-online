@@ -39,7 +39,6 @@ def resubmit(request, submission_id):
 def make_submission(request, exam, problem, task=None):
     user = request.user
     # get text
-    print(request)
     if 'codeFile' in request.FILES:
         text = request.FILES['codeFile'].read().decode('utf-8')
     else:
