@@ -1,7 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm as DefaultUserCreationForm
 from django.contrib.auth.forms import UserChangeForm as DefaultUserChangeForm
 from website.models import User
-from website.models import Snippet
 from django import forms
 from django_ace import AceWidget
 
@@ -17,16 +16,16 @@ class UserChangeForm(DefaultUserChangeForm):
         model = User
         fields = ('email', 'full_name', 'alias', 'role')
 
-class SnippetForm(forms.ModelForm):
-    text = forms.CharField(widget=AceWidget(
-        mode='python',
-        theme='xcode',
-        fontsize='18px',
-        width="100%",
-        height="50vh",
-        toolbar=False,
-    ), label='')
-    
-    class Meta:
-        model = Snippet
-        exclude = ()
+class EditorForm(forms.Form):
+    text = forms.CharField(
+        widget=AceWidget(
+            mode='python',
+            theme='xcode',
+            fontsize='18px',
+            width="100%",
+            height="50vh",
+            toolbar=False,
+        ),
+        label='Code Here!',
+        required=False,
+    )

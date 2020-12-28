@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>Submissions</h1>
+
+<div class="row">
+  <div class = "col">
+      <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+                <th scope="col">Time</th>
+                <th scope="col">Exam Name</th>
+                <th scope="col">Problem Number</th>
+                <th scope="col">Score</th>
+                <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for submission in submissions%}
+            <tr>
+                <td scope="row">{{ submission.submit_time }}</td>
+                <td scope="row">{{ exam.name }}</td>
+                <td scope="row">{{submission.problem.problem_number}}</td>
+                <td scope="row">{{submission.points}}</td>
+                <td scope="row"><a href="{% url 'view_submission' submission.id %}">View Submission</a></td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+  </div>
+
+
+
+  <div class="col-auto">
+    {% include 'includes/exam_nav.html' %}
+  </div>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+  <div class = "col">
+    <h1>Submit To {{ problem.name }} - Task {{ task.task_number }}</h1>
+    <form method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      {{ form }}
+      <div class="form-group">
+        <label for="codeFile">Or Upload a File</label>
+        <input type="file" class="form-control-file" name="codeFile">
+      </div>
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+  </div>
+
+  <div class = "col-auto">
+    {% include 'includes/exam_nav.html' with exam=problem.exam %}
+  </div>
+</div>
+{% endblock %}

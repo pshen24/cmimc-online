@@ -14,7 +14,7 @@
         {% if user.is_mathlete %}
           {% if t.has_team %}
             <a href="{% url 'team_info' t.team.id %}" class="btn btn-primary stretched-link">
-              Your Team
+              My Team
             </a>
           {% else %}
             <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
@@ -24,7 +24,7 @@
         {% else %}
          {% if t.has_team %}
             <a href="{% url 'coach_teams' t.contest.id %}" class="btn btn-primary stretched-link">
-              Your Teams
+              My Teams
             </a>
           {% else %}
             <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
@@ -40,5 +40,12 @@
 <p class="display-3">Past Contests</p>
 <hr class="red_line mb-4"/>
 There are no past contests yet.
+
+{% if user.is_staff %}
+<h1>Staff Info Only (regular users can't see this)</h1>
+<hr class="red_line mb-4"/>
+
+{{ emaillist }}
+{% endif %}
 
 {% endblock %}

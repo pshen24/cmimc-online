@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'website',
     'crispy_forms',
     'django_ace',
+    'ckeditor',
 ]
 
 MIDDLEWARE = [
@@ -169,3 +170,12 @@ if not DEBUG:
     SECURE_HSTS_SECONDS = 10
     SECURE_HSTS_PRELOAD = True
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+CKEDITOR_CONFIGS = {
+    'default': {
+        'toolbar': 'full',
+        'mathJaxLib': 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-AMS_CHTML',
+        'extraPlugins': 'codesnippet, mathjax',
+    },
+}
+

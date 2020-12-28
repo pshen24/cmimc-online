@@ -2,7 +2,7 @@ class BaseGrader:
     def __init__(self, problem):
         self.problem = problem
 
-    def grade(self, submission):
+    def grade(self, submission, score):
         '''
         Assigns a point value to the submission, and updates the
         corresponding score and competitor's total score

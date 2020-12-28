@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p class="display-3">How to Register</p>
+<hr class="red_line"/>
+
+
+<div class="row">
+    <div class="col"> 
+        <p>All students will need an account on this website, which they use to submit their solutions on the day of the contest. Only one person (either a student or coach) needs to create the team.</p>
+
+        <h2>For Students</h2>
+        <ol>
+            <li>Create an account on this website. Make sure to select "Contestant" as your role.</li>
+            <li>Go to <a href="{% url 'contest_list' %}">{{ request.scheme }}://{{ request.get_host }}{% url 'contest_list' %}</a> and select the contest you want to register for.</li>
+            <li>Choose a team name.</li>
+            <li>Invite other members to your team with the given invite link.</li>
+            <li>Once all your team members are finalized, click the Register button on your team's page</li>
+            <li>Make sure each team member fills out the <a href="https://drive.google.com/uc?export=download&id=1wy1ndIDVC1luACAs0fBDsyghuigln5Gv">waiver</a> and submits it via <a href="https://forms.gle/Awz57gbNs9xdwLGS6" target=”_blank” rel=”noopener noreferrer”>this form</a> by January 16th.</li>
+            <li>If you're interested in a CMIMC Programming T-shirt, fill out <a href="https://forms.gle/pm6cinqgHedWM7sd7" target=”_blank” rel=”noopener noreferrer”>this form</a> by January 3rd.</li>
+        </ol>
+
+        <h2>For Coaches</h2>
+        <ol>
+            <li>Create an account on this website. Make sure to select "Coach" as your role.</li>
+            <li>Go to <a href="{% url 'contest_list' %}">{{ request.scheme }}://{{ request.get_host }}{% url 'contest_list' %}</a> and select the contest you want to register for.</li>
+            <li>Choose a team name</li>
+            <li>Invite students to your team with the given invite link.</li>
+            <li>Once all your team members are finalized, click Register.</li>
+            <li>Repeat this process for each team you want to create.</li>
+            <li>Make sure each student fills out the <a href="https://drive.google.com/uc?export=download&id=1wy1ndIDVC1luACAs0fBDsyghuigln5Gv">waiver</a> and submits it via <a href="https://forms.gle/Awz57gbNs9xdwLGS6" target=”_blank” rel=”noopener noreferrer”>this form</a> by January 16th.</li>
+            <li>If you or your students are interested in a CMIMC Programming T-shirt, fill out <a href="https://forms.gle/pm6cinqgHedWM7sd7" target=”_blank” rel=”noopener noreferrer”>this form</a> by January 3rd.</li>
+        </ol>
+    </div>
+
+    <div class="col-12 col-md-auto">
+        {% include 'includes/important_dates.html' %}
+    </div>
+</div>
+{% endblock %}
+

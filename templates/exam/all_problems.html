@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<h1>{{ exam.name }}</h1>
+<h2 class="text-info">Time remaining: {{ exam.time_remaining }}</h2>
+
+
+<div class="row justify-content-between">
+  <div class = "col">
+      <table class="table table-striped">
+          <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Name</th>
+                <th scope="col">
+                    {% if exam.is_optimization %}
+                        Task Scores
+                    {% else %}
+                        Score
+                    {% endif %}
+                </th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for problem, score, task_score in all_problems_scores %}
+            <tr>
+                <td scope="row">{{ problem.problem_number }}</td>
+                <td scope="row"><a href="{% url 'view_problem' exam.id problem.problem_number %}">{{ problem.name }}</a></td>
+                <td scope="row">
+                    {% if score %}
+                        {% if task_score %}
+                            {% for num in task_score %}
+                                {{ num }},
+                            {% endfor %}
+                        {% else %}
+                            {{ score.points }}
+                        {% endif %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+  </div>
+  
+  <div class = "col-auto">
+    {% include 'includes/exam_nav.html' %}
+    <p><a href="{% url 'all_submissions' exam.id %}" style="margin-bottom: 10px; margin-top: 5px;"> View All Submissions</a> </p>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+<!-- we'll need javascript to update the countdown timer -->
+{% endblock %}
