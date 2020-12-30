@@ -7,14 +7,15 @@
       <!-- TODO: add link to problem -->
       <div class="col-auto">
         <a href="{% url 'all_submissions' submission.problem.exam.id %}"
-        class="btn btn-info mt-2">Back to All Submissions</a>
+        class="btn btn-secondary mt-2">Back to All Submissions</a>
       </div>
     </div>
 
     <div class="row">
       <div class = "col">
-        <h4>Score: {{ submission.points }} </h4>
-        <h4>Content:</h4>
+        <h5>Score: {{ submission.points }} </h5>
+        <h5>Time: {{ submission.submit_time }} </h5>
+        <h5>Content:</h5>
         {{ form }}
       </div>
 

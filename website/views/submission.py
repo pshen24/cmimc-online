@@ -23,9 +23,12 @@ def all_submissions(request, exam_id):
 @login_required
 def view_submission(request, submission_id):
     user = request.user
-
     submission = get_object_or_404(Submission, pk=submission_id)
     exam = submission.problem.exam
+    submission_team = submission.competitor.team
+
+    if (not submission_team.can_see_info(user)):
+        return HttpResponseForbidden()
 
     if (exam.is_optimization):
         context = {
