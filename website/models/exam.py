@@ -91,21 +91,23 @@ class Exam(models.Model):
     def is_in_exam(self, user):
         return self.ongoing and self.contest.is_registered(user)
 
-    # whether the user has access to the leaderboard page
-    def can_see_leaderboard(self, user):
-        if user.is_staff:
-            return True
-        if not self.ended and not self.contest.is_registered(user):
-            return False
-        return self.show_leaderboard
-
-    # whether the user has access to the problem pages
-    def can_see_problems(self, user):
+    # whether the user can view the exam pages, which includes:
+    # 1. all problems page
+    # 2. individual problem pages
+    # 3. all submissions page
+    # 4. individual submission pages (only when the submission belongs to them)
+    # 5. leaderboard (only when the leaderboard is meant to be public)
+    # 6. problem submit pages (only permission to view the page, not to submit)
+    def can_view(self, user):
         if user.is_staff:
             return True
         if self.ended:
-            return True
-        if not self.started:
-            return False
-        return self.contest.is_registered(user)
+            return True     # anyone can view a past contest
+        if self.ongoing and user.has_team(self.contest):
+            return True     # you need to be registered for an ongoing contest
+        return False
 
+    def can_view_leaderboard(self, user):
+        if user.is_staff:
+            return True
+        return self.can_view and self.show_leaderboard

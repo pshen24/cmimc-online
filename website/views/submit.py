@@ -24,7 +24,10 @@ def submit(request, exam_id, problem_number, task_number=None):
 
 @login_required
 def resubmit(request, submission_id):
+    user = request.user
     submission = get_object_or_404(Submission, pk=submission_id)
+    if not submission.can_view(user):
+        raise PermissionDenied("You do not have access to this submission")
     problem = submission.problem
     exam = problem.exam
     task = submission.task

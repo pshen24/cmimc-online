@@ -6,8 +6,9 @@ from website.forms import ViewOnlyEditorForm
 @login_required
 def all_submissions(request, exam_id):
     user = request.user
-
     exam = get_object_or_404(Exam, pk=exam_id)
+    if not exam.can_view(user):
+        raise PermissionDenied("You do not have access to view these submissions")
 
     submissions = []
     if user.is_mathlete:
@@ -23,8 +24,9 @@ def all_submissions(request, exam_id):
 @login_required
 def view_submission(request, submission_id):
     user = request.user
-
     submission = get_object_or_404(Submission, pk=submission_id)
+    if submission.can_view(user):
+        raise PermissionDenied("You do not have access to this submission")
     exam = submission.problem.exam
 
     if (exam.is_optimization):
