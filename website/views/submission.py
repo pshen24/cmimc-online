@@ -29,17 +29,13 @@ def view_submission(request, submission_id):
     if not submission.can_view(user):
         raise PermissionDenied("You do not have access to this submission")
     exam = submission.problem.exam
-    submission_team = submission.competitor.team
 
-    if (not submission_team.can_see_info(user)):
-        return HttpResponseForbidden()
-
-    if (exam.is_optimization):
+    if exam.is_optimization:
         context = {
             'submission': submission
         }
         return render(request, 'submission/view_submission_opt.html', context)
-    elif (exam.is_ai):
+    elif exam.is_ai:
         form = ViewOnlyEditorForm({'text': submission.text})
         context = {
             'submission': submission, 
