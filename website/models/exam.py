@@ -8,6 +8,7 @@ class Exam(models.Model):
     name = models.CharField(max_length=100, unique=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+
     is_team_exam = models.BooleanField()
     
     OPTIMIZATION = 'OPT'
@@ -74,16 +75,58 @@ class Exam(models.Model):
         return self.started and not self.ended
 
     @cached_property
-    def time_until_start(self):
+    def time_until_start_days(self):
         if not self.started:
-            return self.start_time - self._now
+            return (self.start_time - self._now).days
         else:
             return None
 
     @cached_property
-    def time_remaining(self):
+    def time_until_start_hours(self):
+        if not self.started:
+            return (int)((self.start_time - self._now).seconds/60/60)
+        else:
+            return None
+
+    @cached_property
+    def time_until_start_minutes(self):
+        if not self.started:
+            return (int)((self.start_time - self._now).seconds / 60)
+        else:
+            return None
+
+    @cached_property
+    def time_until_start_seconds(self):
+        if not self.started:
+            return (self.start_time - self._now).seconds
+        else:
+            return None
+
+    @cached_property
+    def time_remaining_days(self):
         if not self.ended:
-            return self.end_time - self._now
+            return (self.end_time - self._now).days
+        else:
+            return None
+
+    @cached_property
+    def time_remaining_hours(self):
+        if not self.ended:
+            return (int)((self.end_time - self._now).seconds/60/60)
+        else:
+            return None
+
+    @cached_property
+    def time_remaining_minutes(self):
+        if not self.ended:
+            return (int)((self.end_time - self._now).seconds / 60)%60
+        else:
+            return None
+
+    @cached_property
+    def time_remaining_seconds(self):
+        if not self.ended:
+            return (self.end_time - self._now).seconds%60
         else:
             return None
 

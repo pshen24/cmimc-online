@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1>{{ exam.name }}</h1>
-<h2 class="text-info">Time remaining: {{ exam.time_remaining }}</h2>
+<h2 class="text-info">Time remaining: {{ exam.time_remaining_days }} days {{ exam.time_remaining_hours }} hours {{ exam.time_remaining_minutes }} minutes {{ exam.time_remaining_seconds }} seconds</h2>
 
 
 <div class="row justify-content-between">
