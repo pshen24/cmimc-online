@@ -3,7 +3,7 @@
 {% block content %}
 
 <h1>{{ exam.name }}</h1>
-<h2 class="text-info">Time remaining: {{ exam.time_remaining }}</h2>
+<h2 class="text-info">Time remaining: {{ exam.time_remaining_days }} days {{ exam.time_remaining_hours }} hours {{ exam.time_remaining_minutes }} minutes {{ exam.time_remaining_seconds }} seconds</h2>
 
 
 <div class="row justify-content-between">
@@ -20,10 +20,11 @@
                         Score
                     {% endif %}
                 </th>
+                <th scope="col">Rank</th>
             </tr>
           </thead>
           <tbody>
-            {% for problem, score, task_score in all_problems_scores %}
+            {% for problem, score, task_score, rank, total_num in all_problems_scores_ranks %}
             <tr>
                 <td scope="row">{{ problem.problem_number }}</td>
                 <td scope="row"><a href="{% url 'view_problem' exam.id problem.problem_number %}">{{ problem.name }}</a></td>
@@ -36,6 +37,13 @@
                         {% else %}
                             {{ score.points }}
                         {% endif %}
+                    {% else %}
+                        N/A
+                    {% endif %}
+                </td>
+                <td scope="row">
+                    {% if rank and total_num %}
+                        {{ rank }} out of {{ total_num }}
                     {% else %}
                         N/A
                     {% endif %}

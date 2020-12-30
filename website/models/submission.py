@@ -25,3 +25,14 @@ class Submission(models.Model):
     def grade(self):
         score = Score.objects.getScore(self.problem, self.competitor)
         self.problem.grader.grade(self, score)
+
+    def can_view(self, user):
+        if user.is_staff:
+            return True
+        if user.is_coach and user == self.competitor.team.coach:
+            return True
+        if user.is_mathlete:
+            comp = Competitor.objects.getCompetitor(self.problem.exam, user.mathlete)
+            if comp == self.competitor:
+                return True
+        return False
