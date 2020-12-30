@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from website.models import Exam, Competitor, Submission
 from website.forms import ViewOnlyEditorForm
+from django.core.exceptions import PermissionDenied
 
 @login_required
 def all_submissions(request, exam_id):
@@ -25,7 +26,7 @@ def all_submissions(request, exam_id):
 def view_submission(request, submission_id):
     user = request.user
     submission = get_object_or_404(Submission, pk=submission_id)
-    if submission.can_view(user):
+    if not submission.can_view(user):
         raise PermissionDenied("You do not have access to this submission")
     exam = submission.problem.exam
 

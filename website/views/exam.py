@@ -7,7 +7,7 @@ from website.models import Exam, Competitor, Score
 def all_problems(request, exam_id):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
-    if not exam.can_see_problems(user):
+    if not exam.can_view(user):
         raise PermissionDenied('You do not have access to this page')
     problems = exam.problems.order_by('problem_number')
     if user.is_mathlete:
