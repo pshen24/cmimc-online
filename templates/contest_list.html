@@ -7,7 +7,7 @@
 <div class="card-deck-wrapper">
   {% for t in tuples %}
     {% if t.contest.ongoing %}
-      <div class="card mb-5">
+      <div class="card cardlink mb-5">
         <div class="card-body">
           <h4 class="card-title">{{ t.contest.name }}</h4>
           <p>{{ t.contest.description|safe|linebreaks }}</p>
@@ -23,11 +23,11 @@
             {% endif %}
           {% else %}
           {% if t.has_team %}
-              <a href="{% url 'coach_teams' t.contest.id %}" class="btn btn-primary stretched-link">
+              <a href="{% url 'coach_teams' t.contest.id %}" class="btn btn-primary">
                 My Teams
               </a>
             {% else %}
-              <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
+              <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success">
                 Create Team
               </a>
             {% endif %}
@@ -79,21 +79,21 @@
           <p>{{ t.contest.description|safe|linebreaks }}</p>
           {% if user.is_mathlete %}
             {% if t.has_team %}
-              <a href="{% url 'team_info' t.team.id %}" class="btn btn-primary stretched-link">
+              <a href="{% url 'team_info' t.team.id %}" class="btn btn-primary">
                 My Team
               </a>
             {% else %}
-              <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
+              <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success">
                 Create Team
               </a>
             {% endif %}
           {% else %}
           {% if t.has_team %}
-              <a href="{% url 'coach_teams' t.contest.id %}" class="btn btn-primary stretched-link">
+              <a href="{% url 'coach_teams' t.contest.id %}" class="btn btn-primary">
                 My Teams
               </a>
             {% else %}
-              <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
+              <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success">
                 Create Team
               </a>
             {% endif %}
