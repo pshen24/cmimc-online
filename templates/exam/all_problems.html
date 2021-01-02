@@ -9,41 +9,17 @@
     <tr>
         <th scope="col">#</th>
         <th scope="col">Name</th>
-        <th scope="col">
-            {% if exam.is_optimization %}
-                Task Scores
-            {% else %}
-                Score
-            {% endif %}
-        </th>
+        <th scope="col">Score</th>
         <th scope="col">Rank</th>
     </tr>
   </thead>
   <tbody>
-    {% for problem, score, task_score, rank, total_num in all_problems_scores_ranks %}
+    {% for problem, score, rank in prob_score_rank %}
     <tr>
         <td scope="row">{{ problem.problem_number }}</td>
         <td scope="row"><a href="{% url 'view_problem' exam.id problem.problem_number %}">{{ problem.name }}</a></td>
-        <td scope="row">
-            {% if score %}
-                {% if task_score %}
-                    {% for num in task_score %}
-                        {{ num }},
-                    {% endfor %}
-                {% else %}
-                    {{ score.points }}
-                {% endif %}
-            {% else %}
-                N/A
-            {% endif %}
-        </td>
-        <td scope="row">
-            {% if rank and total_num %}
-                {{ rank }} out of {{ total_num }}
-            {% else %}
-                N/A
-            {% endif %}
-        </td>
+        <td scope="row">{{ score }}</td>
+        <td scope="row">{{ rank }}</td>
     </tr>
     {% endfor %}
   </tbody>
