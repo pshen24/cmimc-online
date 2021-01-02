@@ -1,5 +1,7 @@
 from django.db import models
+from django.utils.functional import cached_property
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
 
 class Contest(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -9,7 +11,9 @@ class Contest(models.Model):
     reg_start_date = models.DateTimeField(help_text=_('The date that registration \
             opens, and mathletes can start forming teams'))
     reg_end_date = models.DateTimeField(help_text=_('Teams can no longer be modified \
-            after this date')) 
+            after this date'))
+    end_time = models.DateTimeField() # latest end time of any exam in the contest
+    start_time = models.DateTimeField() # earliest start time of any exam in the contest
 
     def __str__(self):
         return self.name
@@ -23,3 +27,34 @@ class Contest(models.Model):
             return False
         return user.has_team(self)
 
+    @cached_property
+    def _now(self):
+        return timezone.now()
+
+    @cached_property
+    def end_time(self): # NOTE: returns reg deadline if no exams are in contest
+        temp = self.reg_end_date
+        for e in self.exams.all():
+            if e.end_time > temp:
+                temp = e.end_time
+        return temp
+    
+    @cached_property
+    def start_time(self): # NOTE: returns reg deadline if no exams are in contest
+        temp = self.reg_end_date
+        for e in self.exams.all():
+            if e.start_time < temp:
+                temp = e.start_time
+        return temp
+
+    @cached_property
+    def ended(self):
+        return self._now > self.end_time
+
+    @cached_property
+    def started(self):
+        return self._now > self.start_time
+
+    @cached_property
+    def ongoing(self):
+        return self.started and not self.ended
