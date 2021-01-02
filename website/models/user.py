@@ -25,10 +25,10 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.preferred_name
+        return self.name
 
     @property
-    def preferred_name(self):
+    def name(self):
         if self.alias:
             return self.alias
         return self.full_name

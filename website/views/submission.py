@@ -32,7 +32,8 @@ def view_submission(request, submission_id):
 
     if (exam.is_optimization):
         context = {
-            'submission': submission
+            'submission': submission,
+            'exam': exam,
         }
         return render(request, 'submission/view_submission_opt.html', context)
     elif (exam.is_ai):
@@ -40,6 +41,7 @@ def view_submission(request, submission_id):
         context = {
             'submission': submission, 
             'form': form,
+            'exam': exam,
         }
         return render(request, 'submission/view_submission_ai.html', context)
     else:

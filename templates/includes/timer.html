@@ -1,0 +1,19 @@
+<script>
+    const pad = num => d =>
+        (d > 0 ? ("0".repeat(d - num.toString().length)) : "") + num;
+    const displayVal = num => d => colon =>
+        `${pad(Math.floor(num))(d)}${colon ? ":" : ""}`;
+    const timer = secs =>
+        displayVal(secs / 86400)(0)(true) +
+        displayVal((secs % 86400) / 3600)(2)(true) +
+        displayVal((secs % 3600) / 60)(2)(true) +
+        displayVal(secs % 60)(2)(false);
+
+    let s = {{ secs_remaining }};
+    let loop = setInterval(() => {
+        if (s <= 0) clearInterval(loop);
+        document.getElementById("countdown").innerHTML = timer(s);
+        s--;
+    }, 1000);
+</script>
+

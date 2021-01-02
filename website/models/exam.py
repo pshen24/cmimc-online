@@ -78,14 +78,12 @@ class Exam(models.Model):
         if not self.started:
             return self.start_time - self._now
         else:
-            return None
+            return 0
 
+    # number of seconds remaining in exam
     @cached_property
     def time_remaining(self):
-        if not self.ended:
-            return self.end_time - self._now
-        else:
-            return None
+        return max((self.end_time - self._now).total_seconds(), 0)
 
     # whether the user is currently doing the exam
     def is_in_exam(self, user):

@@ -1,44 +1,33 @@
-{% extends 'base.html' %}
+{% extends 'exam/exam_base.html' %}
 
-{% block content %}
-<div class="row">
-  <div class = "col">
-    <h1>Problem {{ problem.problem_number }}</h1>
-    <div class="problem-text mb-5">
-    {{ problem.problem_text|safe }}
-    </div>
-
-    {% if exam.is_optimization %}
-    <table class="table table-striped">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Task</th>
-          <th scope="col">Input File</th>
-          <th scope="col">Score</th>
-          <th scope="col">Submit</th>
-        </tr>
-      </thead>
-      <tbody>
-      {% for task, score in task_scores.items %}
-        <tr>
-          <th scope="row">{{ task.task_number }}</th>
-          <td><a href="{{ task.input_file }}">Input {{ task.task_number }}</a></td>
-          <td>{{ score }}</td>
-          <td><a href="{% url 'submit' exam.id problem.problem_number task.task_number %}">Submit Task {{ task.task_number }}</a></td>
-        </tr>
-      {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
-  </div>
-
-  <div class="col-auto">
-      {% include 'includes/exam_nav.html' %}<br>
-      {% if exam.is_ai %}
-      <a href="{% url 'submit' exam.id problem.problem_number %}" class="btn btn-info">Submit Task {{ task.task_number }}</a>
-      {% endif %}
-  </div>
+{% block exam_content %}
+<h1>Problem {{ problem.problem_number }}</h1>
+<div class="problem-text mb-5 language-none">
+{{ problem.problem_text|safe }}
 </div>
+
+{% if exam.is_optimization %}
+<table class="table table-striped">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Task</th>
+      <th scope="col">Input File</th>
+      <th scope="col">Score</th>
+      <th scope="col">Submit</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for task, score in task_scores.items %}
+    <tr>
+      <th scope="row">{{ task.task_number }}</th>
+      <td><a href="{{ task.input_file }}">Input {{ task.task_number }}</a></td>
+      <td>{{ score }}</td>
+      <td><a href="{% url 'submit' exam.id problem.problem_number task.task_number %}">Submit Task {{ task.task_number }}</a></td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endif %}
 
 
 {% endblock %}
