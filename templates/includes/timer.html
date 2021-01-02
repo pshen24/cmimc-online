@@ -10,10 +10,13 @@
         displayVal(secs % 60)(2)(false);
 
     let s = {{ secs_remaining }};
-    let loop = setInterval(() => {
+    function update() {
         if (s <= 0) clearInterval(loop);
         document.getElementById("countdown").innerHTML = timer(s);
         s--;
-    }, 1000);
+    }
+
+    update();
+    let loop = setInterval(update, 1000); 
 </script>
 
