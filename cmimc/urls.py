@@ -10,10 +10,12 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('contests', views.contest_list, name='contest_list'),
     path('info', views.info, name='info'),
+    path('sample_problems', views.general_info.sample_problems, name='sample_problems'),
     path('schedule', views.schedule, name='schedule'),
     path('reg_info', views.reg_info, name='reg_info'),
     path('faq', views.faq, name='faq'),
     path('resources', views.resources, name='resources'),
+    path('mini_events', views.general_info.mini_events, name='mini_events'),
 
     path('admin', admin.site.urls),
     
