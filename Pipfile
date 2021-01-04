@@ -13,6 +13,7 @@ environs = "*"
 django-crispy-forms = "*"
 django-ckeditor = "*"
 django-markdownx = "*"
+django-ace = "*"
 
 [requires]
 python_version = "3.7"

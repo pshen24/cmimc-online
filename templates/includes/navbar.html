@@ -40,7 +40,7 @@
                 Logistics
               </a>
               <ul class="dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
-                <li><a class="dropdown-item no-color {% if request.get_full_path == url_schedule %}active{% endif %}" href="{% url 'schedule' %}">Schedule</a></li>
+                <li><a class="dropdown-item no-color {% if request.get_full_path == url_schedule %}active {% else %} no-color {% endif %}" href="{% url 'schedule' %}">Schedule</a></li>
                 <li><a class="dropdown-item no-color {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a></li>
                 <li><a class="dropdown-item no-color {% if request.get_full_path == url_mini_events %}active{% endif %}" href="{% url 'mini_events' %}">Mini Events</a></li>
               </ul>

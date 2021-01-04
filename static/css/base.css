@@ -41,10 +41,15 @@ body {
     font-weight: 600;
 }
 
-.dropdown .dropdown-menu {
-    background-color: #b00;
+.dropdown-menu li > a:hover {
+  background-color: #f8f9fa;
+  color: black;
 }
 
+.dropdown-menu li > .active {
+  background-color: #b00;
+  color: white;
+}
 
 /* Links (copied from CMU's CSS) */
 a:not(.btn):not(.no-color) {
