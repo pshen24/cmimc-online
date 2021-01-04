@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<p class="display-3">Information</p>
+<p class="display-3">Rules</p>
 <hr class="red_line"/>
 
 <div class="row mb-4">
@@ -24,60 +24,6 @@
         {% include 'includes/important_dates.html' %}
     </div>
 </div>
-
-<p class="display-3">Sample Problems</p>
-<hr class="red_line"/>
-<h1>Greed Control (AI Round)</h1>
-
-<p>This example problem is adapted from AoPS's <a href="https://artofproblemsolving.com/greedcontrol/help">Greed Control</a> forum game.</p>
-
-<h3>Problem Setup</h3>
-<p>Greed control is an $n$-player game, played in $10$ <em>rounds</em>.</p>
-<p>In each round, you choose an integer between $0$ and $10$.</p>
-<p>You gain points equal to the number you chose divided by the number of people who chose the same number as you.</p>
-<p>To aid in your decision making, you also get the results of the previous round, so you can see what numbers people chose before.</p>
-
-<h3>Implementation Details</h3>
-<p>You will need to write a Python function, which takes a <em>state</em> as input, and returns an integer from $0$ to $10$.</p>
-<p>The state is a list of the $n-1$ numbers that other players picked in the previous round. If this is the first round, the list will be empty. The order of your opponents within the array will remain consistent.</p>
-
-<h3>Return Format</h3>
-<p>Return a single integer between $0$ and $10$.</p>
-
-<h3>Invalid Return</h3>
-<p>If you make an invalid return or time out, we will treat it as if you chose the number $0$.</p>
-
-<h2>Scoring</h2>
-<p>On any given round, if you pick the integer $k$, then your score is
-$$\frac{k}{\text{total number of people who picked }k}$$
-Your final score is the sum of your scores over the 10 rounds.</p>
-
-<h3>Feedback</h3>
-<p>At the end of the game, you can see all total scores, and the choices that each player made for each round.</p>
-
-<hr class="red_line my-4"/>
-
-<h1>Minimum Sum of Digits (Optimization Round)</h1>
-
-<p>Given an integer $K$, output a positive integer $N$ such that the sum of the (decimal) digits of $N \cdot K$ is minimized.</p>
-
-<h2>Input</h2>
-<p>The first line of each test-file contains a single integer $T$ denoting the number of test-cases.</p>
-<p>$T$ lines of input follow, each containing one integer $K$</p>
-
-<h2>Output</h2>
-<p>Output $T$ lines, each containing a single integer $1 \le N < 10^{10^5}$</p>
-
-<h2>Scoring</h2>
-<p>Your score will be calculated as
-$$S(N_1 \cdot K_1) + S(N_2 \cdot K_2) + \cdots + S(N_T \cdot K_T),$$
-where $S(x)$ is the sum of the decimal digits of $x$. The goal is to minimize this value.
-
-<h2>Tasks</h2>
-<p>Task 1: $T = 100$, $1 \le K \le 100$.</p>
-<p>Task 2: $T = 10$, $10^4 < K < 10^6$.</p>
-<p>Task 3: $T = 10$, $10^6 < K < 10^8$.</p>
-<p>Task 4: $T = 10$, $10^{17} < K < 10^{18}$.</p>
 
 {% endblock %}
 
