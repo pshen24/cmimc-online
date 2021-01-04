@@ -37,6 +37,14 @@ body {
   font-weight: 600;
 }
 
+.dropdown .dropdown-menu .dropdown-item:active {
+    font-weight: 600;
+}
+
+.dropdown .dropdown-menu {
+    background-color: #b00;
+}
+
 
 /* Links (copied from CMU's CSS) */
 a:not(.btn):not(.no-color) {

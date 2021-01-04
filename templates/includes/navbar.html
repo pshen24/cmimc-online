@@ -22,8 +22,16 @@
 			<a class="nav-link no-color {% if request.get_full_path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
 		  </li>
         {% endif %}
-	      <li class="nav-item">
-			<a class="nav-link no-color {% if request.get_full_path == url_info %}active{% endif %}" href="{% url 'info' %}">Info</a>
+	      <li class="nav-item dropdown">
+              <a class="nav-link no-color dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+                Info
+              </a>
+              <ul class="dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink" style="background-color: #b00">
+                <li><a class="dropdown-item no-color {% if request.get_full_path == url_info %}active{% endif %}" href="{% url 'info' %}">General Info</a></li>
+                <li><a class="dropdown-item no-color" href="#">Another action</a></li>
+                <li><a class="dropdown-item no-color" href="#">Something else here</a></li>
+              </ul>
+
 		  </li>
 	      <li class="nav-item">
 			<a class="nav-link no-color {% if request.get_full_path == url_schedule %}active{% endif %}" href="{% url 'schedule' %}">Schedule</a>
