@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from website.models import Contest, User
+from website.models import Contest, User, Mathlete, Team
 
 @login_required
 def contest_list(request):
@@ -23,9 +23,17 @@ def contest_list(request):
     for user in all_users:
         all_emails.append(user.email)
 
+    c = Contest.objects.get(pk=1)
+    teams = Team.objects.filter(contest=c, is_registered=False)
+    unreg_emails = []
+    for team in teams:
+        for m in team.mathletes.all():
+            unreg_emails.append(m.user.email)
+
     context = {
         'tuples': tuples,
         'emaillist': ', '.join(all_emails),
+        'unreg_emails': ', '.join(unreg_emails),
     }
     return render(request, 'contest_list.html', context)
 
