@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from website.models import Exam, Competitor, Score
 
+
 @login_required
 def all_problems(request, exam_id):
     user = request.user
