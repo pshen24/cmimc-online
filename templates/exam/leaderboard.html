@@ -1,0 +1,25 @@
+{% extends 'exam/exam_base.html' %}
+
+{% block exam_content %}
+<table class="table table-striped">
+    <thead>
+    <tr>
+        <th scope="col">Team</th>
+        {% for p in problems %}
+        <th scope="col"><a href="{% url 'view_problem' exam.id p.problem_number %}">{{ p.name }}</a></th>
+        {% endfor %}
+        <th scope="col">Total Score</th>
+    </tr>
+    </thead>
+    {% for comp in comp_info %}
+        <tr>
+            <td>{{ comp.name }}</td>
+            {% for score in comp.scores %}
+                <td>{{ score }}</td>
+            {% endfor %}
+            <td>{{ comp.total_score }}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+

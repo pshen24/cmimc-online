@@ -1,4 +1,4 @@
-from website.problem_graders.optimization import OptimizationGrader
+from .optimization import OptimizationGrader
 
 '''
 Given an integer $n$, compute $n^2$.
@@ -36,6 +36,10 @@ class SquareIt(OptimizationGrader):
     # Returns the number of points that the submission should receive
     # If the input is invalid, return None (this is temporary,
     # later it will return a more detailed error message)
+    #
+    # self.num_tasks = number of tasks in problem
+    # self.task_number = 1-indexed task number
+    # self.task_data = custom task grader_data that you can set (JSON object)
     def grade_task(self, user_input):
         answer = self.task_data["answer"]
         weight = self.task_data["weight"]

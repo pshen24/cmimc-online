@@ -25,10 +25,10 @@ class User(AbstractUser):
     objects = UserManager()
 
     def __str__(self):
-        return self.preferred_name
+        return self.name
 
     @property
-    def preferred_name(self):
+    def name(self):
         if self.alias:
             return self.alias
         return self.full_name
@@ -42,11 +42,11 @@ class User(AbstractUser):
         return self.role == self.COACH
 
     def has_team(self, contest):
-        if self.is_staff:
-            return False
-        elif self.is_mathlete:
+        if self.is_mathlete:
             return self.mathlete.teams.filter(contest=contest).exists()
-        else:
+        elif self.is_coach:
             return self.teams.filter(contest=contest).exists()
+        else:
+            return False
 
 

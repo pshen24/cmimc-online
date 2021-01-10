@@ -1,9 +1,23 @@
-<div class="btn-group-vertical">
-    {% url 'all_problems' exam.id as all_problems %}
-    <a href="{{ all_problems }}" class="btn btn-outline-primary {% if request.get_full_path == all_problems %}active{% endif %}" style="text-align: left">All Problems</a>
-    {% for p in exam.problems.all %}
-    {% url 'view_problem' exam.id p.problem_number as p_link %}
-    <a href="{{ p_link }}" class="btn btn-outline-primary {% if request.get_full_path == p_link %}active{% endif %}" style="text-align: left">{{ p.problem_number }}. {{ p.name }}</a>
-    {% endfor %}
+<div class="sidebar ml-5">
+    <div class="mb-4">
+        Time remaining:<br/>
+        <span id="countdown"></span>
+    </div>
+
+    <ul class="nav-list">
+        {% url 'all_problems' exam.id as all_problems %}
+        <li><a href="{{ all_problems }}" class="no-color {% if request.get_full_path == all_problems %}active{% endif %}">All Problems</a></li>
+
+        {% for p in exam.problems.all %}
+            {% url 'view_problem' exam.id p.problem_number as p_link %}
+            <li><a href="{{ p_link }}" class="no-color {% if request.get_full_path == p_link %}active{% endif %}">{{ p.problem_number }}. {{ p.name }}</a></li>
+        {% endfor %}
+
+        {% url 'leaderboard' exam.id as leaderboard %}
+        <li><a href="{{ leaderboard }}" class="no-color {% if request.get_full_path == leaderboard %}active{% endif %}">Leaderboard</a></li>
+
+        {% url 'all_submissions' exam.id as all_submissions %}
+        <li><a href="{{ all_submissions }}" class="no-color {% if request.get_full_path == all_submissions %}active{% endif %}">My Submissions</a></li>
+    </ul>
 </div>
 

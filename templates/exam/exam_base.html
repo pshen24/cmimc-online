@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row">
+    <div class="col">
+        {% block exam_content %}
+        {% endblock %}
+    </div>
+
+    <div class="col-auto">
+        {% include 'includes/exam_nav.html' with exam=exam %}
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+{% include 'includes/timer.html' with secs_remaining=exam.time_remaining %}
+{% endblock %}
+

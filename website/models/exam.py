@@ -8,6 +8,7 @@ class Exam(models.Model):
     name = models.CharField(max_length=100, unique=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+
     is_team_exam = models.BooleanField()
     
     OPTIMIZATION = 'OPT'
@@ -74,16 +75,62 @@ class Exam(models.Model):
         return self.started and not self.ended
 
     @cached_property
-    def time_until_start(self):
+    def time_until_start_days(self):
         if not self.started:
-            return self.start_time - self._now
+            return (self.start_time - self._now).days
         else:
             return None
 
     @cached_property
-    def time_remaining(self):
+    def time_until_start_hours(self):
+        if not self.started:
+            return (int)((self.start_time - self._now).seconds/60/60)
+        else:
+            return None
+
+    @cached_property
+    def time_until_start_minutes(self):
+        if not self.started:
+            return (int)((self.start_time - self._now).seconds / 60)
+        else:
+            return None
+
+    @cached_property
+    def time_until_start_seconds(self):
+        if not self.started:
+            return (self.start_time - self._now).seconds
+        else:
+            return None
+
+    @cached_property
+    def time_remaining_days(self):
         if not self.ended:
-            return self.end_time - self._now
+            return (self.end_time - self._now).days
+        else:
+            return None
+
+    @cached_property
+    def time_remaining_hours(self):
+        if not self.ended:
+            return (int)((self.end_time - self._now).seconds/60/60)
+        else:
+            return None
+
+    @cached_property
+    def time_remaining_minutes(self):
+        if not self.ended:
+            return (int)((self.end_time - self._now).seconds / 60)%60
+        else:
+            return 0
+
+    # number of seconds remaining in exam
+    @cached_property
+    def time_remaining(self):
+        return max((self.end_time - self._now).total_seconds(), 0)
+
+    def time_remaining_seconds(self):
+        if not self.ended:
+            return (self.end_time - self._now).seconds%60
         else:
             return None
 
@@ -91,21 +138,23 @@ class Exam(models.Model):
     def is_in_exam(self, user):
         return self.ongoing and self.contest.is_registered(user)
 
-    # whether the user has access to the leaderboard page
-    def can_see_leaderboard(self, user):
-        if user.is_staff:
-            return True
-        if not self.ended and not self.contest.is_registered(user):
-            return False
-        return self.show_leaderboard
-
-    # whether the user has access to the problem pages
-    def can_see_problems(self, user):
+    # whether the user can view the exam pages, which includes:
+    # 1. all problems page
+    # 2. individual problem pages
+    # 3. all submissions page
+    # 4. individual submission pages (only when the submission belongs to them)
+    # 5. leaderboard (only when the leaderboard is meant to be public)
+    # 6. problem submit pages (only permission to view the page, not to submit)
+    def can_view(self, user):
         if user.is_staff:
             return True
         if self.ended:
-            return True
-        if not self.started:
-            return False
-        return self.contest.is_registered(user)
+            return True     # anyone can view a past contest
+        if self.ongoing and user.has_team(self.contest):
+            return True     # you need to be registered for an ongoing contest
+        return False
 
+    def can_view_leaderboard(self, user):
+        if user.is_staff:
+            return True
+        return self.can_view and self.show_leaderboard

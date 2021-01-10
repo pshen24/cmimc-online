@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'website',
     'crispy_forms',
+    'django_ace',
     'ckeditor',
+    'background_task'
 ]
 
 MIDDLEWARE = [
@@ -177,4 +179,5 @@ CKEDITOR_CONFIGS = {
         'extraPlugins': 'codesnippet, mathjax',
     },
 }
+
 

@@ -37,6 +37,19 @@ body {
   font-weight: 600;
 }
 
+.dropdown .dropdown-menu .dropdown-item:active {
+    font-weight: 600;
+}
+
+.dropdown-menu li > a:hover {
+  background-color: #f8f9fa;
+  color: black;
+}
+
+.dropdown-menu li > .active {
+  background-color: #b00;
+  color: white;
+}
 
 /* Links (copied from CMU's CSS) */
 a:not(.btn):not(.no-color) {
@@ -71,8 +84,40 @@ a:hover:not(.btn):not(.no-color) {
 }
 
 
-pre {
-  background-color: #f8f9fa;
-  padding: 1.5rem;
+.sidebar {
+  position: sticky;
+  position: -webkit-sticky;
+  top: 3rem;
 }
 
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+}
+.nav-list li a {
+  display: block;
+  border-radius: 4px;
+  color: black;
+  text-decoration: none;
+  padding: 5px 50px 6px 10px;
+  border: 1px solid transparent;
+  margin-bottom: 4px;
+}
+.nav-list li a:hover {
+  background-color: #ebf6fd;
+  border: 1px solid #dcf0fb;
+}
+.nav-list li a.active {
+  background-color: #2d9ee0;
+  color: #fff;
+  padding: 3px 50px 4px 10px;
+  border: 1px solid transparent;
+  font-weight: 700;
+}
+
+
+/* for prismjs */
+.token.operator {
+  background: none;
+}

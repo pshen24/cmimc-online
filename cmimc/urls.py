@@ -10,10 +10,12 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('contests', views.contest_list, name='contest_list'),
     path('info', views.info, name='info'),
+    path('sample_problems', views.general_info.sample_problems, name='sample_problems'),
     path('schedule', views.schedule, name='schedule'),
     path('reg_info', views.reg_info, name='reg_info'),
     path('faq', views.faq, name='faq'),
     path('resources', views.resources, name='resources'),
+    path('mini_events', views.general_info.mini_events, name='mini_events'),
 
     path('admin', admin.site.urls),
     
@@ -30,6 +32,7 @@ urlpatterns = [
     path('contest/<int:contest_id>/myteams', views.coach_teams, name='coach_teams'),
     
     path('exam/<int:exam_id>', views.all_problems, name='all_problems'),
+    path('exam/<int:exam_id>/leaderboard', views.leaderboard, name='leaderboard'),
     path('exam/<int:exam_id>/problem/<int:problem_number>', views.view_problem, name='view_problem'),
     path('exam/<int:exam_id>/problem/<int:problem_number>/submit', views.submit, name='submit'),
     path('exam/<int:exam_id>/problem/<int:problem_number>/submit/task/<int:task_number>', views.submit, name='submit'),

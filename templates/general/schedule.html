@@ -1,52 +1,82 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<p class="display-3">Schedule (Tentative)</p>
+<p class="display-3">Schedule</p>
 <hr class="red_line"/>
+
 <div class="row">
     <div class="col">
-    <table class="table table-borderless table-hover">
-        <thead>
-          <tr>
-            <th>Start</th>
-            <th>End</th>
-            <th>Event</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>10:00 AM</td>
-            <td>10:30 AM</td>
-            <td>Opening, Contest Explanation, FAQ, Discord Room Setup</td>
-          </tr>
-          <tr>
-            <td>10:30 AM</td>
-            <td>1:30 PM</td>
-            <td>AI Round</td>
-          </tr>
-          <tr>
-            <td>1:30 PM</td>
-            <td>3:00 PM</td>
-            <td>Lunch Break</td>
-          </tr>
-          <tr>
-            <td>3:00 PM</td>
-            <td>6:00 PM</td>
-            <td>Optimization Round</td>
-          </tr>
-          <tr>
-            <td>6:00 PM</td>
-            <td>7:00 PM</td>
-            <td>Mini Events, Meet Sponsors</td>
-          </tr>
-          <tr>
-            <td>7:00 PM</td>
-            <td>8:00 PM</td>
-            <td>Awards</td>
-          </tr>
-        </tbody>
-      </table>
-      <p>All times are in Eastern Standard Time (GMT -5), on January 30th, 2021.</p>
+        <h2 class="mb-3">Friday, January 29th, 2021</h2>
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Start</th>
+                <th>End</th>
+                <th>Event</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>5:00 PM</td>
+                <td>6:00 PM</td>
+                <td>Tetris Tournament</td>
+              </tr>
+              <tr>
+                <td>6:00 PM</td>
+                <td>7:00 PM</td>
+                <td>Trivia Game</td>
+              </tr>
+              <tr>
+                <td>7:00 PM</td>
+                <td>8:00 PM</td>
+                <td>Jane Street Estimation</td>
+              </tr>
+            </tbody>
+        </table>
+
+        <h2 class="mb-3">Saturday, January 30th, 2021</h2>
+        <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>Start</th>
+                <th>End</th>
+                <th>Event</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>10:00 AM</td>
+                <td>10:30 AM</td>
+                <td>Opening, Contest Explanation, FAQ, Slack Room Setup</td>
+              </tr>
+              <tr>
+                <td>10:30 AM</td>
+                <td>1:30 PM</td>
+                <td>Optimization Round</td>
+              </tr>
+              <tr>
+                <td>1:30 PM</td>
+                <td>3:00 PM</td>
+                <td>Lunch Break</td>
+              </tr>
+              <tr>
+                <td>3:00 PM</td>
+                <td>6:00 PM</td>
+                <td>AI Round</td>
+              </tr>
+              <tr>
+                <td>6:00 PM</td>
+                <td>7:00 PM</td>
+                <td>CMU Student Panel</td>
+              </tr>
+              <tr>
+                <td>7:00 PM</td>
+                <td>8:00 PM</td>
+                <td>Awards</td>
+              </tr>
+            </tbody>
+        </table>
+        <p>All times are in Eastern Standard Time (GMT -5), on January 30th, 2021.</p>
     </div>
     <div class="col-12 col-md-auto">
         {% include 'includes/important_dates.html' %}

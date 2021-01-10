@@ -12,7 +12,7 @@ class Competitor(models.Model):
             related_name='competitors', on_delete=models.CASCADE, \
             help_text=_('If the exam is an individual exam, this is the \
             corresponding mathlete. If the exam is a team exam, this is null'))
-    total_score = models.IntegerField(default=True, db_index=True)
+    total_score = models.FloatField(default=0.0, db_index=True)
 
     objects = CompetitorManager()
 
@@ -35,4 +35,10 @@ class Competitor(models.Model):
             self.total_score += s.points
         self.save()
 
+    @property
+    def name(self):
+        if self.is_team:
+            return self.team.team_name
+        else:
+            return self.mathlete.user.name
 
