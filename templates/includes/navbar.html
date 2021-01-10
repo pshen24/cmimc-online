@@ -25,10 +25,10 @@
 		  </li>
         {% endif %}
 	      <li class="nav-item dropdown">
-              <a class="nav-link no-color dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+              <a class="nav-link no-color dropdown-toggle" href="#" id="contestInfoDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
                 Contest Info
               </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
+              <ul class="dropdown-menu" aria-labelledby="contestInfoDropdown">
                 <li><a class="dropdown-item no-color {% if request.get_full_path == url_info %}active{% endif %}" href="{% url 'info' %}">Rules</a></li>
                 <li><a class="dropdown-item no-color {% if request.get_full_path == url_sample_problems %}active{% endif %}" href="{% url 'sample_problems' %}">Sample Problems</a></li>
               </ul>
@@ -36,10 +36,10 @@
 		  </li>
 
           <li class="nav-item dropdown">
-              <a class="nav-link no-color dropdown-toggle" href="#" id="navbarDarkDropdownMenuLink" role="button" data-toggle="dropdown" aria-expanded="false">
+              <a class="nav-link no-color dropdown-toggle" href="#" id="logisticsDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
                 Logistics
               </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDarkDropdownMenuLink">
+              <ul class="dropdown-menu" aria-labelledby="logisticsDropdown">
                 <li><a class="dropdown-item no-color {% if request.get_full_path == url_schedule %}active {% else %} no-color {% endif %}" href="{% url 'schedule' %}">Schedule</a></li>
                 <li><a class="dropdown-item no-color {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a></li>
                 <li><a class="dropdown-item no-color {% if request.get_full_path == url_mini_events %}active{% endif %}" href="{% url 'mini_events' %}">Mini Events</a></li>
