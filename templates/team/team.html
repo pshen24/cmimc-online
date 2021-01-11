@@ -16,7 +16,7 @@
             <ol>
             {% for mathlete in team.mathletes.all %} 
                 <li>
-                    {{ mathlete.user.preferred_name }}
+                    {{ mathlete.user.name }}
                 </li>
             {% endfor %}
             </ol>
