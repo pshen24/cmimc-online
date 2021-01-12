@@ -123,4 +123,14 @@
   No contests yet.
 {% endif %}
 
+{% if user.is_staff %}
+<h1 class="mt-5">Staff Info Only (regular users can't see this)</h1>
+<hr class="red_line mb-4"/>
+<h3>All Emails (students and coaches with an account on this website)</h3>
+<p>{{ emaillist }}</p>
+
+<h3>Unregistered Emails (students and coaches with an unregistered team)</h3>
+<p>{{ unreg_emails }}</p>
+{% endif %}
+
 {% endblock %}

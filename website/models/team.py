@@ -82,7 +82,7 @@ class Team(models.Model):
     def mathlete_list(self):
         if not self.mathletes.exists():
             return 'No students'
-        m = [m.user.preferred_name for m in self.mathletes.all()]
+        m = [m.user.name for m in self.mathletes.all()]
         return ', '.join(m)
 
 

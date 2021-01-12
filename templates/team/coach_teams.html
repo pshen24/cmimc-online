@@ -16,7 +16,7 @@
             {% for team in teams %}
               <tr style="transform: rotate(0);">
                 <td>
-                  <a href="{% url 'team_info' team.id %}" class="stretched-link text-reset text-decoration-none">
+                  <a href="{% url 'team_info' team.id %}" class="stretched-link">
                     {{ team.team_name }}
                   </a>
                 </td>

@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from website.models import Contest, User, Exam
+from website.models import Contest, User, Exam, Mathlete, Team
 from django.utils import timezone
 
 @login_required
@@ -36,8 +36,25 @@ def contest_list(request):
     # Get all exams
     all_exams = Exam.objects.all()
 
+    # Temporary email list (only visible to staff)
+    all_users = User.objects.all()
+    all_emails = []
+    for user in all_users:
+        all_emails.append(user.email)
+
+    c = Contest.objects.get(pk=1)
+    teams = Team.objects.filter(contest=c, is_registered=False)
+    unreg_emails = []
+    for team in teams:
+        for m in team.mathletes.all():
+            unreg_emails.append(m.user.email)
+        if team.coach:
+            unreg_emails.append(team.coach.email)
+
     context = {
         'exams': all_exams,
+        'emaillist': ', '.join(all_emails),
+        'unreg_emails': ', '.join(unreg_emails),
         'ongoing': ongoing_contests,
         'upcoming': upcoming_contests,
         'past': past_contests,
