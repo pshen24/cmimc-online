@@ -28,7 +28,7 @@ def contest_list(request):
         all_emails.append(user.email)
 
     c = Contest.objects.get(pk=1)
-    teams = Team.objects.filter(contest=c, is_registered=False)
+    teams = Team.objects.filter(contest=c, is_finalized=False)
     unreg_emails = []
     for team in teams:
         for m in team.mathletes.all():
