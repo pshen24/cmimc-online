@@ -9,24 +9,18 @@
             <tr>
               <th scope="col">Team Name</th>
               <th scope="col">Students</th>
-              <th scope="col">Registered</th>
+              <th></th>
             </tr>
           </thead>
           <tbody>
             {% for team in teams %}
               <tr style="transform: rotate(0);">
                 <td>
-                  <a href="{% url 'team_info' team.id %}" class="stretched-link">
-                    {{ team.team_name }}
-                  </a>
+                  {{ team.team_name }}
                 </td>
                 <td>{{ team.mathlete_list }}</td>
                 <td>
-                  {% if team.is_finalized %}
-                    <p class="text-success mb-0">Yes</p>
-                  {% else %}
-                    <p class="text-danger mb-0">No</p>
-                  {% endif %}
+                  <a href="{% url 'team_info' team.id %}" class="stretched-link">View</a>
                 </td>
               </tr>
             {% endfor %}
