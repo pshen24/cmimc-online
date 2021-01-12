@@ -41,7 +41,10 @@ class Contest(models.Model):
     
     @cached_property
     def start_time(self): # NOTE: returns reg deadline if no exams are in contest
-        temp = self.reg_end_date
+        if len(self.exams.all()) == 0:
+            temp = self.reg_end_date
+        else:
+            temp = self.exams.all()[0].start_time
         for e in self.exams.all():
             if e.start_time < temp:
                 temp = e.start_time
@@ -58,3 +61,7 @@ class Contest(models.Model):
     @cached_property
     def ongoing(self):
         return self.started and not self.ended
+
+    @cached_property
+    def reg_ended(self):
+        return self._now > self.reg_end_date

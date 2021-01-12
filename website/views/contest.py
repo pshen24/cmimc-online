@@ -17,20 +17,30 @@ def contest_list(request):
                 tuples.append({'contest':contest, 'has_team':False, 'team':None, 'exams': contest.exams.all()})
         else:
             tuples.append({'contest':contest, 'has_team':user.has_team(contest), 'team':None, 'exams': contest.exams.all()})
+    
+    # Categorize the contests in the tuples
+    ongoing_contests = []
+    for t in tuples:
+        if t['contest'].ongoing:
+            ongoing_contests.append(t)
+    upcoming_contests = []
+    for t in tuples:
+        if not t['contest'].started:
+            upcoming_contests.append(t)
+    past_contests = []
+    for t in tuples:
+        if t['contest'].ended:
+            past_contests.append(t)
+    
 
     # Get all exams
     all_exams = Exam.objects.all()
 
-    # Temporary email list (only visible to staff)
-    all_users = User.objects.all()
-    all_emails = []
-    for user in all_users:
-        all_emails.append(user.email)
-
     context = {
         'exams': all_exams,
-        'tuples': tuples,
-        'emaillist': ', '.join(all_emails),
+        'ongoing': ongoing_contests,
+        'upcoming': upcoming_contests,
+        'past': past_contests,
     }
     return render(request, 'contest_list.html', context)
 
