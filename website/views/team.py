@@ -92,3 +92,8 @@ def coach_teams(request, contest_id):
     return render(request, 'team/coach_teams.html', context)
 
 
+def finalize_all_teams(request, contest_id):
+    contest = get_object_or_404(Contest, pk=contest_id)
+    teams = Team.objects.filter(contest=contest)
+    for team in teams:
+        team.register()
