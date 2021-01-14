@@ -43,9 +43,9 @@ class Team(models.Model):
     def register(self):
         # TODO: check if this is during the contest registration period
         from .competitor import Competitor
-        assert(not self.is_finalized)
         size = self.mathletes.count()
-        assert(size >= self.contest.min_team_size and size <= self.contest.max_team_size)
+        if size < self.contest.min_team_size or size > self.contest.max_team_size:
+            return
         for exam in self.contest.exams.all():
             if exam.is_team_exam:
                 if not Competitor.objects.filter(exam=exam, team=self, mathlete=None).exists():
@@ -60,7 +60,6 @@ class Team(models.Model):
         self.save()
 
     def unregister(self):
-        assert(self.is_finalized)
         for c in self.competitors.all():
             c.delete()
         self.is_finalized = False
