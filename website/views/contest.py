@@ -2,9 +2,14 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from website.models import Contest, User, Exam, Mathlete, Team
 from django.utils import timezone
+from website.views.team import finalize_all_teams
 
 @login_required
 def contest_list(request):
+
+    if request.method == 'POST':
+       finalize_all_teams(request, request.POST['contest_id'])
+
     user = request.user
     all_contests = Contest.objects.all()
     tuples = []
@@ -43,7 +48,7 @@ def contest_list(request):
         all_emails.append(user.email)
 
     c = Contest.objects.get(pk=1)
-    teams = Team.objects.filter(contest=c, is_registered=False)
+    teams = Team.objects.filter(contest=c, is_finalized=False)
     unreg_emails = []
     for team in teams:
         for m in team.mathletes.all():

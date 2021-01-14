@@ -40,4 +40,5 @@ urlpatterns = [
     path('exam/<int:exam_id>/submissions', views.all_submissions, name='all_submissions'),
     path('submission/<int:submission_id>', views.view_submission, name='view_submission'),
     path('resubmit/<int:submission_id>', views.resubmit, name='resubmit'),
+
 ]
