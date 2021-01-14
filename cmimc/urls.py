@@ -5,6 +5,7 @@ from website import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import url, include
+from website.models.airound import initialize_all
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -41,3 +42,6 @@ urlpatterns = [
     path('submission/<int:submission_id>', views.view_submission, name='view_submission'),
     path('resubmit/<int:submission_id>', views.resubmit, name='resubmit'),
 ]
+
+# Initialize all AI round contests at their start time
+initialize_all()

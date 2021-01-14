@@ -8,3 +8,4 @@ from .team import Team
 from .competitor import Competitor
 from .submission import Submission
 from .score import Score
+from .airound import AIGrader, AIGame, AISubmission
