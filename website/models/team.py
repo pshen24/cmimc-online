@@ -11,7 +11,7 @@ class Team(models.Model):
     is_registered = models.BooleanField(default=False, help_text=_('The members of a \
             registered team are finalized and cannot be edited'))
     coach = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, \
-                              related_name='teams', on_delete=models.CASCADE)
+                              related_name='teams', on_delete=models.SET_NULL)
     team_name = models.CharField(max_length=100)
     MIN_CODE = 100000
     MAX_CODE = 999999

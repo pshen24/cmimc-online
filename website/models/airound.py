@@ -4,7 +4,23 @@ from website.models import Exam, Team
 from django.shortcuts import render, get_object_or_404
 from background_task import background
 import datetime
+from .competitor import Competitor
+from .problem import Problem
 
+
+
+class AIGrader(models.Model):
+    hostname = models.TextField() # hostname of the grader
+    currently = models.TextField() # current status of the grader
+    class Meta:
+        db_table = "graders_airound"
+
+
+class AIProblem(models.Model):
+    code = models.TextField() # python grading code for the contest
+    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    class Meta:
+        db_table = "contests_airound"
 
 
 class AIGame(models.Model):
@@ -17,25 +33,20 @@ class AIGame(models.Model):
     history = models.JSONField() # after the game is played, gives the history output of the grader
     time = models.TimeField() # when the game should be played
     numplayers = models.IntegerField() # number of players
-    contest = models.ForeignKey(Exam, on_delete=models.CASCADE) # which exam to use
-    #worker = models.ForeignKey(AIGrader) # which grader was used to grade this
+    problem = models.ForeignKey(AIProblem, on_delete=models.CASCADE) # which problem to use
+    worker = models.ForeignKey(AIGrader, null=True, blank=True, on_delete=models.SET_NULL) # which grader was used to grade this
     class Meta:
         db_table = "games_airound"
+
 
 class AISubmission(models.Model):
     game = models.ForeignKey(AIGame, on_delete=models.CASCADE) # game that submission was made for
     seat = models.IntegerField() # position the player's entry should be in for the grader
     code = models.TextField() # code of the submission
-    team = models.ForeignKey(Team, on_delete=models.CASCADE) # team that made the submission
+    score = models.FloatField() # resulting score of the round for the team
+    competitor = models.ForeignKey(Competitor, on_delete=models.CASCADE) # team that made the submission
     class Meta:
         db_table = "submissions_airound"
-
-class AIGrader(models.Model):
-    hostname = models.TextField() # hostname of the grader
-    currently = models.TextField() # current status of the grader
-    class Meta:
-        db_table = "graders_airound"
-
 
 @background(schedule=0)
 def initialize_one(exam_id):
