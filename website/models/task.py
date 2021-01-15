@@ -13,6 +13,7 @@ class Task(models.Model):
     input_file = models.CharField(max_length=1000, blank=True)
     # Currently using links instead of storing files, but this would be the alternative:
     # input_file = models.FileField(upload_to=input_data_path)
+    best_raw_points = models.FloatField(default=0.0)
     grader_data = models.JSONField(null=True, blank=True, help_text=_("Data for the \
             problem's grader to use. The format depends on the type of grader"))
 

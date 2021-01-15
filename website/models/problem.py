@@ -13,8 +13,6 @@ class Problem(models.Model):
     short_name = models.CharField(max_length=100, unique=True,
             help_text=_('Should be lowercase letters or numbers, no spaces'))
     grader_name = models.CharField(max_length=50) # add choices?
-    grader_data = models.JSONField(null=True, blank=True, help_text=_("Data for the \
-            problem's grader to use. The format depends on the type of grader"))
     problem_number = models.IntegerField(validators=[MinValueValidator(1)])
     num_tasks = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)]) # only for optimization
     pdf_link = models.CharField(max_length=1000, null=True, blank=True)

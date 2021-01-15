@@ -17,7 +17,7 @@ def leaderboard(request, exam_id):
 
     comp_info = [{
         "name": comp.name,
-        "scores": [Score.objects.getScore(p, comp).points for p in problems],
+        "scores": [Score.objects.get(problem=p, competitor=comp).points for p in problems],
         "total_score": comp.total_score
     } for comp in comps]
 

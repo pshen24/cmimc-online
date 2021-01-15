@@ -12,25 +12,25 @@ def all_problems(request, exam_id):
         raise PermissionDenied('You do not have access to this page')
     problems = exam.problems.order_by('problem_number')
 
-    prob_score_rank = []
+    prob_score_task_rank = []
     if user.is_mathlete:
         competitor = Competitor.objects.getCompetitor(exam, user.mathlete)
 
         num_comps = Competitor.objects.filter(exam=exam).count()
         for problem in problems:
-            score = Score.objects.getScore(problem, competitor)
+            score = Score.objects.get(problem=problem, competitor=competitor)
             rank = Score.objects.filter(problem=problem, points__gt=score.points).count() + 1
             if exam.is_optimization:
-                task_scores = ' + '.join(map(str, score.task_scores))
-                score_str = '{0} ({1})'.format(str(score.points), task_scores)
+                task_str = ', '.join([str(round(ts.raw_points, 2)) for ts in score.taskscores.all()])
             else:
-                score_str = str(score.points)
+                task_str = ''
+            score_str = str(round(score.points, 2))
             rank_str = '{0} out of {1}'.format(str(rank), str(num_comps))
-            prob_score_rank.append((problem, score_str, rank_str))
+            prob_score_task_rank.append((problem, score_str, task_str, rank_str))
 
     context = {
         'exam': exam,
-        'prob_score_rank': prob_score_rank,
+        'prob_score_task_rank': prob_score_task_rank,
     }
     return render(request, 'exam/all_problems.html', context)
 

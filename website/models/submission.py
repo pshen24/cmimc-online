@@ -23,7 +23,7 @@ class Submission(models.Model):
         return str(self.competitor) + "'s submission to problem " + str(self.problem)
 
     def grade(self):
-        score = Score.objects.getScore(self.problem, self.competitor)
+        score = Score.objects.get(problem=self.problem, competitor=self.competitor)
         self.problem.grader.grade(self, score)
 
     def can_view(self, user):

@@ -93,7 +93,8 @@ def coach_teams(request, contest_id):
 
 
 def finalize_all_teams(request, contest_id):
+    print('finalize all teams')
     contest = get_object_or_404(Contest, pk=contest_id)
-    teams = Team.objects.filter(contest=contest)
-    for team in teams:
+    for team in contest.teams.all():
+        team.unregister() # ensure no duplicates
         team.register()

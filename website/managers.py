@@ -26,22 +26,6 @@ class UserManager(BaseUserManager):
             raise ValueError(_('Superuser must have is_superuser=True.'))
         return self.create_user(email, password, **extra_fields)
 
-class ScoreManager(models.Manager):
-    def create_score(self, problem, competitor):
-        score = self.create(problem=problem, competitor=competitor)
-        if problem.exam.is_optimization:
-            score.task_scores = [0]*problem.num_tasks
-            score.save()
-        return score
-
-    def getScore(self, problem, competitor):
-        score = self.filter(problem=problem, competitor=competitor).first()
-        if score:
-            return score
-        else:
-            new_score = self.create_score(problem=problem, competitor=competitor)
-            return new_score
-
 class CompetitorManager(models.Manager):
     def getCompetitor(self, exam, mathlete):
         team = mathlete.teams.filter(contest=exam.contest).first()
