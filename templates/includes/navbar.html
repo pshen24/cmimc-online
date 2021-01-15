@@ -10,47 +10,56 @@
 	</button>
 
 	<div class="collapse navbar-collapse" id="mainMenu">
-	    {% url 'contest_list' as url_contests %}
-	    {% url 'info' as url_info %}
-        {% url 'sample_problems' as url_sample_problems %}
+      {% url 'contest_list' as url_contests %}
+      {% url 'math_info' as url_math_info %}
+      {% url 'prog_info' as url_prog_info %}
+      {% url 'math_sample_problems' as url_math_sample_problems %}
+      {% url 'prog_sample_problems' as url_prog_sample_problems %}
 	    {% url 'schedule' as url_schedule %}
 	    {% url 'reg_info' as url_reg_info %}
 	    {% url 'faq' as url_faq %}
         {% url 'mini_events' as url_mini_events %}
 	    {% url 'resources' as url_resources %}
 		<ul class="navbar-nav mr-auto ml-md-3">
-        {% if user.is_authenticated %}
-	      <li class="nav-item">
-			<a class="nav-link no-color {% if request.get_full_path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
-		  </li>
-        {% endif %}
-	      <li class="nav-item dropdown">
-              <a class="nav-link no-color dropdown-toggle" href="#" id="contestInfoDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                Contest Info
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="contestInfoDropdown">
-                <li><a class="dropdown-item no-color {% if request.get_full_path == url_info %}active{% endif %}" href="{% url 'info' %}">Rules</a></li>
-                <li><a class="dropdown-item no-color {% if request.get_full_path == url_sample_problems %}active{% endif %}" href="{% url 'sample_problems' %}">Sample Problems</a></li>
-              </ul>
+      {% if user.is_authenticated %}
+        <li class="nav-item">
+        <a class="nav-link no-color {% if request.get_full_path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
+        </li>
+      {% endif %}
+      <li class="nav-item dropdown">
+        <a class="nav-link no-color dropdown-toggle" href="#" id="mathDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+        Math
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="mathDropdown">
+        <li><a class="dropdown-item no-color {% if request.get_full_path == url_math_info %}active{% endif %}" href="{% url 'math_info' %}">Rules</a></li>
+        <li><a class="dropdown-item no-color {% if request.get_full_path == url_math_sample_problems %}active{% endif %}" href="{% url 'math_sample_problems' %}">Sample Problems</a></li>
+        </ul>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link no-color dropdown-toggle" href="#" id="programmingDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+          Programming
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="programmingDropdown">
+          <li><a class="dropdown-item no-color {% if request.get_full_path == url_prog_info %}active{% endif %}" href="{% url 'prog_info' %}">Rules</a></li>
+          <li><a class="dropdown-item no-color {% if request.get_full_path == url_prog_sample_problems %}active{% endif %}" href="{% url 'prog_sample_problems' %}">Sample Problems</a></li>
+        </ul>
+      </li>
 
+      <li class="nav-item dropdown">
+          <a class="nav-link no-color dropdown-toggle" href="#" id="logisticsDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+            Logistics
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="logisticsDropdown">
+            <li><a class="dropdown-item no-color {% if request.get_full_path == url_schedule %}active {% else %} no-color {% endif %}" href="{% url 'schedule' %}">Schedule</a></li>
+            <li><a class="dropdown-item no-color {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a></li>
+            <li><a class="dropdown-item no-color {% if request.get_full_path == url_mini_events %}active{% endif %}" href="{% url 'mini_events' %}">Mini Events</a></li>
+          </ul>
 		  </li>
-
-          <li class="nav-item dropdown">
-              <a class="nav-link no-color dropdown-toggle" href="#" id="logisticsDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-                Logistics
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="logisticsDropdown">
-                <li><a class="dropdown-item no-color {% if request.get_full_path == url_schedule %}active {% else %} no-color {% endif %}" href="{% url 'schedule' %}">Schedule</a></li>
-                <li><a class="dropdown-item no-color {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a></li>
-                <li><a class="dropdown-item no-color {% if request.get_full_path == url_mini_events %}active{% endif %}" href="{% url 'mini_events' %}">Mini Events</a></li>
-              </ul>
-
+      <li class="nav-item">
+			  <a class="nav-link no-color {% if request.get_full_path == url_reg_info %}active{% endif %}" href="{% url 'reg_info' %}">Registration</a>
 		  </li>
-	      <li class="nav-item">
-			<a class="nav-link no-color {% if request.get_full_path == url_reg_info %}active{% endif %}" href="{% url 'reg_info' %}">Registration</a>
-		  </li>
-          <li class="nav-item">
-			<a class="nav-link no-color {% if request.get_full_path == url_resources %}active{% endif %}" href="{% url 'resources' %}">Resources</a>
+      <li class="nav-item">
+			  <a class="nav-link no-color {% if request.get_full_path == url_resources %}active{% endif %}" href="{% url 'resources' %}">Resources</a>
 		  </li>
 		</ul>
 

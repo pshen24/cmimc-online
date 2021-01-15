@@ -9,8 +9,10 @@ from django.conf.urls import url, include
 urlpatterns = [
     path('', views.home, name='home'),
     path('contests', views.contest_list, name='contest_list'),
-    path('info', views.info, name='info'),
-    path('sample-problems', views.general_info.sample_problems, name='sample_problems'),
+    path('math-info', views.math_info, name='math_info'),
+    path('math-sample-problems', views.math_sample_problems, name='math_sample_problems'),
+    path('prog-info', views.prog_info, name='prog_info'),
+    path('prog-sample-problems', views.prog_sample_problems, name='prog_sample_problems'),
     path('schedule', views.schedule, name='schedule'),
     path('registration', views.reg_info, name='reg_info'),
     path('faq', views.faq, name='faq'),
