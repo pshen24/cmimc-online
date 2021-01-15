@@ -11,17 +11,28 @@
 
 <div class="row justify-content-center mb-5">
     <div class="col-auto">
-        <h1>Programming Contest</h1>
+        <h1>Math and Programming Contests</h1>
     </div>
 </div>
 
+<p class="display-4">Welcome!</p>
+<hr class="red_line"/>
 <div class="row justify-content-center mb-4">
     <div class="col">
-        <p style="font-size: 1.2rem;">CMIMC Programming is a brand new high school programming contest! It's run by CMU students, the same team behind the <a href="http://cmimc-official.herokuapp.com/" target="_blank" rel="noopener noreferrer">CMIMC</a> math competition. This year's contest will be held on <span class="font-weight-bold">January 30th, 2021</span>. Due to COVID-19, it will be entirely online.</p>
+        <p style="font-size: 1.2rem;">The Carnegie Mellon Informatics and Mathematics Competition (CMIMC) is an annual math and computer science competition held at Carnegie Mellon University by CMU students. This year's contest will be held on <b>January 30th, 2021</b>.</p>
+    </div>
+</div>
 
-        <p style="font-size: 1.2rem;">The contest consists of an AI Round and an Optimization Round. See the <a href="{% url 'info' %}">info page</a> for more details.</p>
-
-        <p style="font-size: 1.2rem;">This is a team contest, with up to 3 people per team. Make sure you register a team by <span class="font-weight-bold">January 16th, 2021!</span> See the <a href="{% url 'reg_info' %}">registration page</a> for instructions to register.</p>
+<h2>Announcements</h2>
+<hr class="red_line"/>
+<div class="row justify-content-center mb-4">
+    <div class="col">
+        <ul class="center">
+            <li style="font-size: 1.2rem; padding-left: 1rem; padding-top: 0.5rem">The CMIMC 2021 Math Contest will be held entirely online due to COVID-19. See the <a href="{% url 'reg_info' %}">registration page</a> for instructions to register.</li>
+            <li style="font-size: 1.2rem; padding-left: 1rem; padding-top: 0.5rem">CMIMC is starting a brand-new programming contest this year! It's run by CMU students, the same team behind the <a href="http://cmimc-official.herokuapp.com/" target="_blank" rel="noopener noreferrer">CMIMC</a> math competition.
+                This is a team contest, with up to 3 people per team. Make sure you register a team by <span class="font-weight-bold">January 16th, 2021!</span> See the <a href="{% url 'reg_info' %}">registration page</a> for instructions to register. Due to COVID-19, it will be entirely online.
+                The contest consists of an AI Round and an Optimization Round. See the <a href="{% url 'prog_info' %}">info page</a> for more details.</li>
+        </ul>
     </div>
 </div>
 
