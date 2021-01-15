@@ -121,3 +121,8 @@ a:hover:not(.btn):not(.no-color) {
 .token.operator {
   background: none;
 }
+
+
+.hide-asterisk .asteriskField {
+  display: none;
+}

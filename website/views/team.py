@@ -63,8 +63,6 @@ def team_info(request, team_id):
         elif request.POST['submit'] == 'deleteTeam' and (user.is_coach or user.is_staff):
             team.delete()
             return redirect('contest_list')
-        elif request.POST['submit'] == 'register':
-            team.register()
 
     context = {
         'team': team,
@@ -73,6 +71,7 @@ def team_info(request, team_id):
         ),
         'too_large': len(team.mathletes.all()) > team.contest.max_team_size,
         'reg_permission': user != team.coach,
+        'can_edit': user.can_edit(team),
     }
     return render(request, 'team/team.html', context)
 
