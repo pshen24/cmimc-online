@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 
 from website.forms import UserCreationForm, UserChangeForm
-from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score, Task
+from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score, Task, TaskScore
 
 
 class UserAdmin(DefaultUserAdmin):
@@ -26,8 +26,8 @@ class UserAdmin(DefaultUserAdmin):
 
 
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ('team_name', 'mathlete_list', 'coach', 'is_registered',)
-    list_filter = ('is_registered',)
+    list_display = ('team_name', 'mathlete_list', 'coach', 'is_finalized',)
+    list_filter = ('is_finalized',)
 
 admin.site.register(Contest)
 admin.site.register(Exam)
@@ -39,4 +39,6 @@ admin.site.register(Competitor)
 admin.site.register(Submission)
 admin.site.register(Score)
 admin.site.register(Task)
+admin.site.register(TaskScore)
+
 

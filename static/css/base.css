@@ -9,7 +9,7 @@
     transition: 0.3s;
 }
 
-.cardlink:hover {
+.cardlink:not(.no-hover):hover {
     box-shadow: 0 10px 20px 0 rgba(66,66,66,0.1),
                 0 10px 40px 0 rgba(66,66,66,0.2);
 }

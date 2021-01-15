@@ -8,7 +8,7 @@ import random
 class Team(models.Model):
     contest = models.ForeignKey(Contest, related_name='teams', on_delete=models.CASCADE)
     mathletes = models.ManyToManyField(Mathlete, related_name='teams')
-    is_registered = models.BooleanField(default=False, help_text=_('The members of a \
+    is_finalized = models.BooleanField(default=False, help_text=_('The members of a \
             registered team are finalized and cannot be edited'))
     coach = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, \
                               related_name='teams', on_delete=models.SET_NULL)
@@ -41,29 +41,32 @@ class Team(models.Model):
         unique_together = ['team_name', 'contest']
 
     def register(self):
-        # TODO: check if this is during the contest registration period
         from .competitor import Competitor
-        assert(not self.is_registered)
         size = self.mathletes.count()
-        assert(size >= self.contest.min_team_size and size <= self.contest.max_team_size)
+        if size < self.contest.min_team_size or size > self.contest.max_team_size:
+            return
         for exam in self.contest.exams.all():
             if exam.is_team_exam:
-                if not Competitor.objects.filter(exam=exam, team=self, mathlete=None).exists():
+                c = Competitor.objects.filter(exam=exam, team=self, mathlete=None).first()
+                if c is None:
                     c = Competitor(exam=exam, team=self, mathlete=None)
                     c.save()
+                c.init_scores(exam)
             else:
                 for m in self.mathletes.all():
-                    if not Competitor.objects.filter(exam=exam, team=self, mathlete=m).exists():
+                    c = Competitor.objects.filter(exam=exam, team=self, mathlete=m).first()
+                    if c is None:
                         c = Competitor(exam=exam, team=self, mathlete=m)
                         c.save()
-        self.is_registered = True
+                    c.init_scores(exam)
+
+        self.is_finalized = True
         self.save()
 
     def unregister(self):
-        assert(self.is_registered)
         for c in self.competitors.all():
             c.delete()
-        self.is_registered = False
+        self.is_finalized = False
         self.save()
 
     def has_member(self, user):
@@ -82,7 +85,7 @@ class Team(models.Model):
     def mathlete_list(self):
         if not self.mathletes.exists():
             return 'No students'
-        m = [m.user.preferred_name for m in self.mathletes.all()]
+        m = [m.user.name for m in self.mathletes.all()]
         return ', '.join(m)
 
 
