@@ -1,9 +1,5 @@
 from django.db import models
 from .team import Team
-from website.models import Exam, Team
-from django.shortcuts import render, get_object_or_404
-from background_task import background
-import datetime
 from .competitor import Competitor
 from .problem import Problem
 
@@ -18,7 +14,7 @@ class AIGrader(models.Model):
 
 class AIProblem(models.Model):
     code = models.TextField() # python grading code for the contest
-    problem = models.ForeignKey(Problem, on_delete=models.CASCADE)
+    problem = models.ForeignKey(Problem, related_name="aiproblem", on_delete=models.CASCADE)
     class Meta:
         db_table = "contests_airound"
 
@@ -29,8 +25,8 @@ class AIGame(models.Model):
     1 = running
     2 = graded
     """
-    status = models.IntegerField(default = 0)
-    history = models.JSONField() # after the game is played, gives the history output of the grader
+    status = models.IntegerField(default=0)
+    history = models.JSONField(null=True, blank=True) # after the game is played, gives the history output of the grader
     time = models.TimeField() # when the game should be played
     numplayers = models.IntegerField() # number of players
     problem = models.ForeignKey(AIProblem, on_delete=models.CASCADE) # which problem to use
@@ -43,34 +39,7 @@ class AISubmission(models.Model):
     game = models.ForeignKey(AIGame, on_delete=models.CASCADE) # game that submission was made for
     seat = models.IntegerField() # position the player's entry should be in for the grader
     code = models.TextField() # code of the submission
-    score = models.FloatField() # resulting score of the round for the team
+    score = models.FloatField(null=True, blank=True) # resulting score of the round for the team
     competitor = models.ForeignKey(Competitor, on_delete=models.CASCADE) # team that made the submission
     class Meta:
         db_table = "submissions_airound"
-
-@background(schedule=0)
-def initialize_one(exam_id):
-    exam = get_object_or_404(Exam, pk=exam_id)
-
-    #TODO make schedule, right now just puts all things at the same time
-
-    teams = Team.objects.filter(contest=exam.contest)
-
-    counter = 0
-    curr_game = None
-    for team in teams:
-        if(counter==0):
-            temp_game = AIGame(history=None, time=exam.start_time, numplayers=4, contest=exam)
-            temp_game.save()
-            curr_game = temp_game
-
-        temp_sub = AISubmission(game=curr_game, seat = counter, code=None, team=team)
-        temp_sub.save()
-        counter+=1
-        counter%=4
-
-def initialize_all():
-    exams = Exam.objects.all()
-    for exam in exams:
-        if exam.is_ai and not exam.started:
-            initialize_one(exam.id, schedule=exam.start_time)
