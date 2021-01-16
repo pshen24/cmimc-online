@@ -24,9 +24,16 @@
                 <tbody>
                 {% for mathlete in team.mathletes.all %} 
                     <tr>
-                        <td>{{ mathlete.user.name }}</td>
-                        <td>{{ mathlete.user.email }}</td>
-                        {% if can_edit %}<td><a href="">Remove</a></td>{% endif %}
+                        <td class="align-middle">{{ mathlete.user.name }}</td>
+                        <td class="align-middle">{{ mathlete.user.email }}</td>
+                        {% if can_edit %}
+                        <td>
+                            <form method="post">
+                                {% csrf_token %}
+                                <button type="submit" name="removeMember" value="{{ mathlete.id }}" class="btn btn-danger btn-sm">Remove</button>
+                            </form>
+                        </td>
+                        {% endif %}
                     </tr>
                 {% endfor %}
                 </tbody>
@@ -42,18 +49,14 @@
         {% if team.is_finalized %}
         <p class="mb-4">Your team has been finalized, and can no longer be edited. If there was a mistake, please contact <a href="mailto:contact@cmimc.info">contact@cmimc.info</a>.</p>
         {% else %}
-            {% if not team.coach or user == team.coach %}
             <p class="mb-4">All teams will be automatically finalized on <span class="font-weight-bold">{{ team.contest.reg_end_date.date }}</span>. You will no longer be able to invite new members or edit your team after that point.</p>
-            {% endif %}
 
+            {% if can_edit %}
             <form method="post">
                 {% csrf_token %}
-                {% if user.is_mathlete %}
-                    <button type="submit" name="submit" class="btn btn-danger mr-3" value="leaveTeam">Leave Team</button>
-                {% else %}
-                    <button type="submit" name="submit" class="btn btn-danger mr-3" value="deleteTeam">Delete Team</button>
-                {% endif %}
+                    <button type="submit" name="deleteTeam" class="btn btn-danger mr-3">Delete Team</button>
             </form>
+            {% endif %}
         {% endif %}
   </div>
 </div>

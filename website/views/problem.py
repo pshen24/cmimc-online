@@ -8,7 +8,7 @@ from django.http import HttpResponse
 def view_problem(request, exam_id, problem_number):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
-    if not exam.can_view(user):
+    if not user.can_view_exam(exam):
         raise PermissionDenied("You must be registered for the contest to see \
                 the problems")
 

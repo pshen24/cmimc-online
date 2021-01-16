@@ -8,7 +8,7 @@ def leaderboard(request, exam_id):
     # Authentication
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
-    if not exam.can_view_leaderboard(user):
+    if not user.can_view_leaderboard(exam):
         raise PermissionDenied("You do not have permission to view the "
                                "leaderboard for this exam")
     problems = Problem.objects.filter(exam=exam)
