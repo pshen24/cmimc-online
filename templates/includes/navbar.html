@@ -12,10 +12,11 @@
 	<div class="collapse navbar-collapse" id="mainMenu">
       {% url 'contest_list' as url_contests %}
       {% url 'math_info' as mi %}
-      {% url 'prog_info' as pi %}
       {% url 'math_sample_problems' as msp %}
+	  {% url 'math_schedule' as ms %}
+      {% url 'prog_info' as pi %}
       {% url 'prog_sample_problems' as psp %}
-	  {% url 'schedule' as ps %}
+	  {% url 'prog_schedule' as ps %}
 	  {% url 'reg_info' as url_reg_info %}
 	  {% url 'faq' as url_faq %}
       {% url 'mini_events' as pme %}
@@ -28,12 +29,13 @@
         </li>
       {% endif %}
       <li class="nav-item dropdown">
-          <a class="nav-link no-color dropdown-toggle {% if path == mi or path == msp %}active{% endif %}" href="#" id="mathDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link no-color dropdown-toggle {% if path == mi or path == msp or path == ms %}active{% endif %}" href="#" id="mathDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
         Math
         </a>
         <ul class="dropdown-menu" aria-labelledby="mathDropdown">
         <li><a class="dropdown-item no-color {% if path == mi %}active{% endif %}" href="{{ mi }}">Format</a></li>
         <li><a class="dropdown-item no-color {% if path == msp %}active{% endif %}" href="{{ msp }}">Sample Problems</a></li>
+        <li><a class="dropdown-item no-color {% if path == ms %}active{% endif %}" href="{{ ms }}">Schedule</a></li>
         </ul>
       </li>
       <li class="nav-item dropdown">
