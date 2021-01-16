@@ -41,21 +41,25 @@ class Team(models.Model):
         unique_together = ['team_name', 'contest']
 
     def register(self):
-        # TODO: check if this is during the contest registration period
         from .competitor import Competitor
         size = self.mathletes.count()
         if size < self.contest.min_team_size or size > self.contest.max_team_size:
             return
         for exam in self.contest.exams.all():
             if exam.is_team_exam:
-                if not Competitor.objects.filter(exam=exam, team=self, mathlete=None).exists():
+                c = Competitor.objects.filter(exam=exam, team=self, mathlete=None).first()
+                if c is None:
                     c = Competitor(exam=exam, team=self, mathlete=None)
                     c.save()
+                c.init_scores(exam)
             else:
                 for m in self.mathletes.all():
-                    if not Competitor.objects.filter(exam=exam, team=self, mathlete=m).exists():
+                    c = Competitor.objects.filter(exam=exam, team=self, mathlete=m).first()
+                    if c is None:
                         c = Competitor(exam=exam, team=self, mathlete=m)
                         c.save()
+                    c.init_scores(exam)
+
         self.is_finalized = True
         self.save()
 
@@ -66,16 +70,7 @@ class Team(models.Model):
         self.save()
 
     def has_member(self, user):
-        return user.mathlete and user.mathlete.teams.filter(pk=self.id).exists()
-
-    # whether the user has access to the team info page
-    def can_see_info(self, user):
-        if user.is_staff:
-            return True
-        if user.is_mathlete:
-            return self.has_member(user)
-        if user.is_coach:
-            return self.coach == user
+        return user.is_mathlete and user.mathlete.teams.filter(pk=self.id).exists()
 
     @property
     def mathlete_list(self):

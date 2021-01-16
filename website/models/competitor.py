@@ -42,3 +42,14 @@ class Competitor(models.Model):
         else:
             return self.mathlete.user.name
 
+    def init_scores(self, exam):
+        from .score import Score
+        from .taskscore import TaskScore
+        for problem in exam.problems.all():
+            s = Score(problem=problem, competitor=self)
+            s.save()
+            if exam.is_optimization:
+                for task in problem.tasks.all():
+                    ts = TaskScore(task=task, score=s)
+                    ts.save()
+

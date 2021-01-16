@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<p class="display-4">Math Contest Format</p>
+<hr class="red_line"/>
+
+<div class="row mb-4">
+    <div class="col">
+        <p>The contest consists of five rounds: TCS round, team round, and three individual rounds.</p>
+        <h3>TCS Round (new!)</h3>
+        <p>The main idea behind this round is algorithmic design. We will give you a problem that is either an optimization problem where you try to get a close approximation to optimal or a deterministic problem.</p>
+        <p>You may find a few different solutions to the problems, but they must be deterministic problems.</p>
+        <p>We will give you points based off of which complexity bounds your solutions beat.</p>
+        <p>You can think of the complexity bounds as saying "have no more than $N$ steps in your algorithm" or "try to maximize your score, $N$, in the game"</p>
+        <p>More technically, the idea is to design and prove the correctness of an algorithm. If you have an $O(N \log N)$ solution, you will get more points than an $O(N^2)$ solution according to our rubric.</p>
+        <p>By prove, we mean that you must show that your algorithm is correct and terminates.</p>
+        <h3>Team Round</h3>
+        <p>The team round will be 60 minutes long, with fifteen short-answer problems. The problems will be taken from a variety of subjects.</p>
+
+        <h3>Individual Round</h3>
+        <p>The individual rounds each consists often short-answer problems, to be solved in 60 minutes. Each competitor takes all three individual rounds: Algebra and Number Theory, Combinatorics and Computer Science, and Geometry.</p>
+    </div>
+
+    <div class="col-12 col-md-auto">
+        {% include 'includes/important_dates.html' %}
+    </div>
+</div>
+
+{% endblock %}
+

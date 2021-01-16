@@ -2,23 +2,29 @@
 
 {% block exam_content %}
 
-<h1>{{ exam.name }}</h1>
+<h1 class="mb-4">{{ exam.name }}</h1>
 
 <table class="table table-striped">
   <thead class="thead-dark">
     <tr>
         <th scope="col">#</th>
         <th scope="col">Name</th>
-        <th scope="col">Score</th>
+        <th scope="col">Normalized Score</th>
+        {% if exam.is_optimization %}
+        <th scope="col">Task Scores</th>
+        {% endif %}
         <th scope="col">Rank</th>
     </tr>
   </thead>
   <tbody>
-    {% for problem, score, rank in prob_score_rank %}
+    {% for problem, score, task, rank in prob_score_task_rank %}
     <tr>
         <td scope="row">{{ problem.problem_number }}</td>
         <td scope="row"><a href="{% url 'view_problem' exam.id problem.problem_number %}">{{ problem.name }}</a></td>
         <td scope="row">{{ score }}</td>
+        {% if exam.is_optimization %}
+        <td scope="row">{{ task }}</td>
+        {% endif %}
         <td scope="row">{{ rank }}</td>
     </tr>
     {% endfor %}

@@ -2,15 +2,15 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 
 from website.forms import UserCreationForm, UserChangeForm
-from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score, Task
+from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score, Task, TaskScore
 
 
 class UserAdmin(DefaultUserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
-    list_display = ('full_name', 'email', 'role', 'is_staff', 'is_active',)
-    list_filter = ('role', 'is_staff', 'is_active',)
+    list_display = ('email', 'name', 'role', 'is_staff')
+    list_filter = ('role', 'is_staff')
     fieldsets = (
         (None, {'fields': ('full_name', 'alias', 'email', 'password', 'role')}),
         ('Permissions', {'fields': ('is_superuser', 'is_staff', 'is_active')}),
@@ -21,13 +21,14 @@ class UserAdmin(DefaultUserAdmin):
             'fields': ('full_name', 'alias', 'email', 'password1', 'password2', 'role', 'is_superuser', 'is_staff', 'is_active')}
         ),
     )
-    search_fields = ('full_name',)
-    ordering = ('full_name',)
+    search_fields = ('email', 'first_name', 'last_name', 'full_name')
+    ordering = ('email',)
 
 
 class TeamAdmin(admin.ModelAdmin):
     list_display = ('team_name', 'mathlete_list', 'coach', 'is_finalized',)
     list_filter = ('is_finalized',)
+    search_fields = ('team_name',)
 
 admin.site.register(Contest)
 admin.site.register(Exam)
@@ -39,4 +40,6 @@ admin.site.register(Competitor)
 admin.site.register(Submission)
 admin.site.register(Score)
 admin.site.register(Task)
+admin.site.register(TaskScore)
+
 

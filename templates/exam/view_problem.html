@@ -17,12 +17,12 @@
     </tr>
   </thead>
   <tbody>
-  {% for task, score in task_scores.items %}
+  {% for ts in score.taskscores.all %}
     <tr>
-      <th scope="row">{{ task.task_number }}</th>
-      <td><a href="{{ task.input_file }}">Input {{ task.task_number }}</a></td>
-      <td>{{ score }}</td>
-      <td><a href="{% url 'submit' exam.id problem.problem_number task.task_number %}">Submit Task {{ task.task_number }}</a></td>
+      <th scope="row">{{ ts.task.task_number }}</th>
+      <td><a href="{{ ts.task.input_file }}">Input {{ ts.task.task_number }}</a></td>
+      <td>{{ ts.raw_points }}</td>
+      <td><a href="{% url 'submit' exam.id problem.problem_number ts.task.task_number %}">Submit Task {{ ts.task.task_number }}</a></td>
     </tr>
   {% endfor %}
   </tbody>

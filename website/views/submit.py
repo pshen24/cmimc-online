@@ -9,7 +9,7 @@ from website.forms import EditorForm
 def submit(request, exam_id, problem_number, task_number=None):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
-    if not exam.is_in_exam(user):
+    if not user.can_view_exam(exam):
         raise PermissionDenied("You must be registered for the contest to access \
                 the submission page")
 
@@ -17,6 +17,8 @@ def submit(request, exam_id, problem_number, task_number=None):
     task = Task.objects.filter(problem=problem, task_number=task_number).first()
 
     if request.method == 'POST':
+        if not user.can_submit(exam):
+            raise PermissionDenied("You are not allowed to submit to this problem")
         return make_submission(request, exam, problem, task)
     else: # request.method == 'GET'
         return show_form(request, exam, problem, task)
@@ -26,7 +28,7 @@ def submit(request, exam_id, problem_number, task_number=None):
 def resubmit(request, submission_id):
     user = request.user
     submission = get_object_or_404(Submission, pk=submission_id)
-    if not submission.can_view(user):
+    if not user.can_view_submission(submission):
         raise PermissionDenied("You do not have access to this submission")
     problem = submission.problem
     exam = problem.exam

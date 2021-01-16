@@ -1,8 +1,10 @@
 {% extends 'exam/exam_base.html' %}
 
 {% block exam_content %}
+<h1 class="mb-4">{{ exam.name }} Leaderboard</h1>
+
 <table class="table table-striped">
-    <thead>
+    <thead class="thead-light">
     <tr>
         <th scope="col">Team</th>
         {% for p in problems %}
