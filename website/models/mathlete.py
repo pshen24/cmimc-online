@@ -6,7 +6,7 @@ class Mathlete(models.Model):
             unique=True, on_delete=models.CASCADE)
 
     def __str__(self):
-        return "Mathlete: " + str(self.user)
+        return "Mathlete: {0} ({1})".format(self.user.name, self.user.email)
 
     def get_team(self, contest):
         return self.teams.filter(contest=contest).first()
