@@ -10,6 +10,7 @@ class User(AbstractUser):
     last_name = models.CharField(_('last name'), max_length=150)
     full_name = models.CharField(max_length=100, help_text=_('full name'))
     alias = models.CharField(max_length=100, blank=True, help_text=_('preferred name'))
+    is_tester = models.BooleanField(default=False, help_text=_('whether they can view private contests'))
 
     MATHLETE = 'ML'
     STAFF = 'ST'
@@ -17,7 +18,7 @@ class User(AbstractUser):
     role_CHOICES = [
         (MATHLETE, 'Contestant'),
         (STAFF, 'CMU Student'),
-        (COACH, 'Coach'),     # coaches not implemented yet
+        (COACH, 'Coach'),
     ]
     role = models.CharField(max_length=2, choices=role_CHOICES, default=MATHLETE)
 
@@ -131,6 +132,8 @@ class User(AbstractUser):
         if self.is_staff:
             return False
         if contest.reg_ended:
+            return False
+        if contest.is_private and not self.is_tester:
             return False
         return True
 

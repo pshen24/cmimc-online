@@ -12,6 +12,9 @@ def contest_list(request):
 
     user = request.user
     all_contests = Contest.objects.all()
+    if not user.is_tester:
+        all_contests = all_contests.filter(is_private=False)     # hide private contests
+
     tuples = []
     for contest in all_contests:
         if user.is_mathlete:

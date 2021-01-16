@@ -9,16 +9,16 @@ class UserAdmin(DefaultUserAdmin):
     add_form = UserCreationForm
     form = UserChangeForm
     model = User
-    list_display = ('email', 'name', 'role', 'is_staff')
-    list_filter = ('role', 'is_staff')
+    list_display = ('email', 'name', 'role', 'is_staff', 'is_tester')
+    list_filter = ('role', 'is_staff', 'is_tester')
     fieldsets = (
         (None, {'fields': ('full_name', 'alias', 'email', 'password', 'role')}),
-        ('Permissions', {'fields': ('is_superuser', 'is_staff', 'is_active')}),
+        ('Permissions', {'fields': ('is_superuser', 'is_staff', 'is_tester', 'is_active')}),
     )
     add_fieldsets = (
         (None, {
             'classes': ('wide',),
-            'fields': ('full_name', 'alias', 'email', 'password1', 'password2', 'role', 'is_superuser', 'is_staff', 'is_active')}
+            'fields': ('full_name', 'alias', 'email', 'password1', 'password2', 'role', 'is_superuser', 'is_staff', 'is_tester', 'is_active')}
         ),
     )
     search_fields = ('email', 'first_name', 'last_name', 'full_name')
@@ -26,9 +26,9 @@ class UserAdmin(DefaultUserAdmin):
 
 
 class TeamAdmin(admin.ModelAdmin):
-    list_display = ('team_name', 'mathlete_list', 'coach', 'is_finalized',)
-    list_filter = ('is_finalized',)
-    search_fields = ('team_name',)
+    list_display = ('team_name', 'mathlete_list', 'coach', 'contest', 'is_finalized',)
+    list_filter = ('contest', 'is_finalized',)
+    search_fields = ('team_name', 'coach')
 
 admin.site.register(Contest)
 admin.site.register(Exam)

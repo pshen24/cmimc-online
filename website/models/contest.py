@@ -8,12 +8,10 @@ class Contest(models.Model):
     description = models.TextField(blank=True)
     min_team_size = models.IntegerField() # if we ever need an individual contest,
     max_team_size = models.IntegerField() # set min and max team size to 1
-    reg_start_date = models.DateTimeField(help_text=_('The date that registration \
-            opens, and mathletes can start forming teams'))
     reg_end_date = models.DateTimeField(help_text=_('Teams can no longer be modified \
             after this date'))
-    end_time = models.DateTimeField() # latest end time of any exam in the contest
-    start_time = models.DateTimeField() # earliest start time of any exam in the contest
+    is_private = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.name
