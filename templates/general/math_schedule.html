@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<p class="display-4">Math Contest Schedule</p>
+<hr class="red_line"/>
+
+<div class="row">
+    <div class="col">
+        <h2 class="mb-3">Saturday, February 27th, 2021</h2>
+        <table class="table table-hover">
+            <thead class="thead-light">
+              <tr>
+                <th>Start</th>
+                <th>End</th>
+                <th>Event</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>10:00 AM</td>
+                <td>10:30 AM</td>
+                <td>Opening Ceremony</td>
+              </tr>
+              <tr>
+                <td>10:45 AM</td>
+                <td>11:45 AM</td>
+                <td>TCS Round</td>
+              </tr>
+              <tr>
+                <td>12:00 PM</td>
+                <td>1:00 PM</td>
+                <td>Algebra and Number Theory Round</td>
+              </tr>
+              <tr>
+                <td>1:00 PM</td>
+                <td>2:30 PM</td>
+                <td>Lunch</td>
+              </tr>
+              <tr>
+                <td>2:30 PM</td>
+                <td>3:30 PM</td>
+                <td>Geometry Round</td>
+              </tr>
+              <tr>
+                <td>3:45 PM</td>
+                <td>4:45 PM</td>
+                <td>Combinatorics and Computer Science Round</td>
+              </tr>
+              <tr>
+                <td>5:00 PM</td>
+                <td>6:00 PM</td>
+                <td>Team Round</td>
+              </tr>
+              <tr>
+                <td>6:00 PM</td>
+                <td>7:00 PM</td>
+                <td>Mini Events</td>
+              </tr>
+              <tr>
+                <td>7:15 PM</td>
+                <td>8:00 PM</td>
+                <td>Closing Ceremony</td>
+              </tr>
+            </tbody>
+        </table>
+        <p>All times are in Eastern Standard Time (GMT -5), on January 30th, 2021.</p>
+    </div>
+    <div class="col-12 col-md-auto">
+        {% include 'includes/important_dates.html' %}
+    </div>
+</div>
+{% endblock %}

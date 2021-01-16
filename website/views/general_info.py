@@ -16,14 +16,17 @@ def math_info(request):
 def math_sample_problems(request):
     return render(request, 'general/math_sample_problems.html')
 
+def math_schedule(request):
+    return render(request, 'general/math_schedule.html')
+
 def prog_info(request):
     return render(request, 'general/prog_info.html')
 
 def prog_sample_problems(request):
     return render(request, 'general/prog_sample_problems.html')
 
-def schedule(request):
-    return render(request, 'general/schedule.html')
+def prog_schedule(request):
+    return render(request, 'general/prog_schedule.html')
 
 def reg_info(request):
     return render(request, 'general/reg_info.html')
