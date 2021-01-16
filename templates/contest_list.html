@@ -71,28 +71,28 @@
           <p>{{ t.contest.description|safe|linebreaks }}</p>
           {% if user.is_mathlete %}
             {% if t.has_team %}
-              <a href="{% url 'team_info' t.team.id %}" class="btn btn-primary">
+              <a href="{% url 'team_info' t.team.id %}" class="btn btn-primary stretched-link">
                 My Team
               </a>
             {% else %}
               {% if t.contest.reg_ended %}
                 <p><b>Registration has ended.</b></p>
               {% else %}
-                <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success">
+                <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
                   Create Team
                 </a>
               {% endif %}
             {% endif %}
           {% else %}
             {% if t.has_team %}
-              <a href="{% url 'coach_teams' t.contest.id %}" class="btn btn-primary">
+              <a href="{% url 'coach_teams' t.contest.id %}" class="btn btn-primary stretched-link">
                 My Teams
               </a>
             {% else %}
               {% if t.contest.reg_ended %}
                 <p><b>Registration has ended.</b></p>
               {% else %}
-                <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success">
+                <a href="{% url 'new_team' t.contest.id %}" class="btn btn-success stretched-link">
                   Create Team
                 </a>
               {% endif %}

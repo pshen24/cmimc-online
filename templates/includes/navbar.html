@@ -11,56 +11,50 @@
 
 	<div class="collapse navbar-collapse" id="mainMenu">
       {% url 'contest_list' as url_contests %}
-      {% url 'math_info' as url_math_info %}
-      {% url 'prog_info' as url_prog_info %}
-      {% url 'math_sample_problems' as url_math_sample_problems %}
-      {% url 'prog_sample_problems' as url_prog_sample_problems %}
-	    {% url 'schedule' as url_schedule %}
-	    {% url 'reg_info' as url_reg_info %}
-	    {% url 'faq' as url_faq %}
-        {% url 'mini_events' as url_mini_events %}
-	    {% url 'resources' as url_resources %}
-		<ul class="navbar-nav mr-auto ml-md-3">
+      {% url 'math_info' as mi %}
+      {% url 'prog_info' as pi %}
+      {% url 'math_sample_problems' as msp %}
+      {% url 'prog_sample_problems' as psp %}
+	  {% url 'schedule' as ps %}
+	  {% url 'reg_info' as url_reg_info %}
+	  {% url 'faq' as url_faq %}
+      {% url 'mini_events' as pme %}
+	  {% url 'resources' as pr %}
+      {% with path=request.get_full_path %}
+	  <ul class="navbar-nav mr-auto ml-md-3">
       {% if user.is_authenticated %}
         <li class="nav-item">
-        <a class="nav-link no-color {% if request.get_full_path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
+        <a class="nav-link no-color {% if path == url_contests %}active{% endif %}" href="{% url 'contest_list' %}">Contests</a>
         </li>
       {% endif %}
       <li class="nav-item dropdown">
-        <a class="nav-link no-color dropdown-toggle" href="#" id="mathDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link no-color dropdown-toggle {% if path == mi or path == msp %}active{% endif %}" href="#" id="mathDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
         Math
         </a>
         <ul class="dropdown-menu" aria-labelledby="mathDropdown">
-        <li><a class="dropdown-item no-color {% if request.get_full_path == url_math_info %}active{% endif %}" href="{% url 'math_info' %}">Rules</a></li>
-        <li><a class="dropdown-item no-color {% if request.get_full_path == url_math_sample_problems %}active{% endif %}" href="{% url 'math_sample_problems' %}">Sample Problems</a></li>
+        <li><a class="dropdown-item no-color {% if path == mi %}active{% endif %}" href="{{ mi }}">Format</a></li>
+        <li><a class="dropdown-item no-color {% if path == msp %}active{% endif %}" href="{{ msp }}">Sample Problems</a></li>
         </ul>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link no-color dropdown-toggle" href="#" id="programmingDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+        <a class="nav-link no-color dropdown-toggle {% if path == pi or path == psp or path == ps or path == pme or path == pr %}active{% endif %}" href="#" id="programmingDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
           Programming
         </a>
         <ul class="dropdown-menu" aria-labelledby="programmingDropdown">
-          <li><a class="dropdown-item no-color {% if request.get_full_path == url_prog_info %}active{% endif %}" href="{% url 'prog_info' %}">Rules</a></li>
-          <li><a class="dropdown-item no-color {% if request.get_full_path == url_prog_sample_problems %}active{% endif %}" href="{% url 'prog_sample_problems' %}">Sample Problems</a></li>
+          <li><a class="dropdown-item no-color {% if path == pi %}active{% endif %}" href="{{ pi }}">Format</a></li>
+          <li><a class="dropdown-item no-color {% if path == psp %}active{% endif %}" href="{{ psp }}">Sample Problems</a></li>
+          <li><a class="dropdown-item no-color {% if path == ps %}active{% endif %}" href="{{ ps }}">Schedule</a></li>
+          <li><a class="dropdown-item no-color {% if path == pme %}active{% endif %}" href="{{ pme }}">Mini Events</a></li>
+          <li><a class="dropdown-item no-color {% if path == pr %}active{% endif %}" href="{{ pr }}">Resources</a></li>
         </ul>
       </li>
 
-      <li class="nav-item dropdown">
-          <a class="nav-link no-color dropdown-toggle" href="#" id="logisticsDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
-            Logistics
-          </a>
-          <ul class="dropdown-menu" aria-labelledby="logisticsDropdown">
-            <li><a class="dropdown-item no-color {% if request.get_full_path == url_schedule %}active {% else %} no-color {% endif %}" href="{% url 'schedule' %}">Schedule</a></li>
-            <li><a class="dropdown-item no-color {% if request.get_full_path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a></li>
-            <li><a class="dropdown-item no-color {% if request.get_full_path == url_mini_events %}active{% endif %}" href="{% url 'mini_events' %}">Mini Events</a></li>
-          </ul>
-		  </li>
       <li class="nav-item">
-			  <a class="nav-link no-color {% if request.get_full_path == url_reg_info %}active{% endif %}" href="{% url 'reg_info' %}">Registration</a>
-		  </li>
+          <a class="nav-link no-color {% if path == url_reg_info %}active{% endif %}" href="{% url 'reg_info' %}">Registration</a>
+      </li>
       <li class="nav-item">
-			  <a class="nav-link no-color {% if request.get_full_path == url_resources %}active{% endif %}" href="{% url 'resources' %}">Resources</a>
-		  </li>
+          <a class="nav-link no-color {% if path == url_faq %}active{% endif %}" href="{% url 'faq' %}">FAQ</a>
+      </li>
 		</ul>
 
       {% if user.is_authenticated %}
@@ -80,6 +74,7 @@
 		  <a href="{% url 'signup' %}" class="btn btn-light ml-2">Register</a>
 		</form>
 	  {% endif %}
+      {% endwith %}
 	</div>
   </div>
 </nav>
