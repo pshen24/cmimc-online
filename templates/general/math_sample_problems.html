@@ -6,11 +6,59 @@
 
 <p class="display-4">Math Contest Sample Problems</p>
 <hr class="red_line"/>
-<h2>TCS Round (new!)</h2>
-<p>TCS Sample Problem TBA</p>
+<h1>TCS Round (new!)</h1>
+<h4>Problem Statement</h4>
+<p>You have an $n \times n$ square grid of lightbulbs, where $n = 10^{10}$. Initially, each lightbulb is either on or off, chosen at random. On any <em>move</em>, you may select $3$ lightbulbs which form an isosceles right triangle of minimal size on the grid (i.e. an L-shaped <a href"https://en.wikipedia.org/wiki/Tromino">tromino</a>), and flip the state of all $3$ lightbulbs (so if they were on before, they will now be off, and vice versa).</p>
 
-<h2>Other Rounds</h2>
-<p>For sample problems in the team and individual rounds, you can access them <a href="http://cmimc-official.herokuapp.com/archive">here</a>.</p>
+<p>Find (with proof) an algorithm that will turn all lightbulb off in $k \cdot 10^{19}$ moves, regardless of the initial configuration.</p>
+
+<h4>Scoring</h4>
+<p>An algorithm that completes in at most $k \cdot 10^{19}$ moves will be awarded:</p>
+
+<ul>
+    <li>$100$ points for $k=6$</li>
+    <li>$70$ points for $k=10$</li>
+    <li>$60$ points for $k=11$</li>
+    <li>$30$ points for $k=30$</li>
+    <li>$10$ points for $k=40$</li>
+    <li>$1$ point for $k>40$</li>
+</ul>
+
+<p>You are allowed to prove multiple bounds, and will receive points for the best bound that is correctly proven. Please state which bound you are trying to prove above any proof, or you may not be awarded points for that bound.</p>
+
+<p>Partial points may be awarded for progress towards the next bound, and partial points may be deducted for logical flaws or lack of rigor in proofs. To get full points, you must demonstrate that your algorithm always produces a correct result, and always runs in at most the stated number of moves.</p>
+
+<h4>Example Solutions</h4>
+<p><b>10 points</b> &mdash; $40 \cdot 10^{19}$ moves</p>
+<p>Note that performing a move on the same triangle twice is equivalent to doing nothing, hence any possible solution can be reduced to a solution where each triangle is used at most once. In total, there are $(n-1)^2$ squares of minimal size, and each square contains $4$ possible triangles, so the total number of triangles, and hence the maximum possible necessary number of moves, is $4(n-1)^2 < 40 \cdot 10^{19}$.</p>
+
+<p>However, note that the above proof only gives an upper bound on the number of moves if a solution exists, and does not prove the existence of a solution for any starting state. To prove existence, we can verify that all $16$ possible $2 \times 2$ boards are attainable using the $4$ triangles within that $2 \times 2$ square, and this inductively shows that any board of size $2k$ by $2k$ is attainable using some number of moves.</p>
+
+<p>Hence we can now define our algorithm as computing the results of all $2^{4(n-1)^2}$ subsets of moves by hand, and picking a subset that solves our board, and since we have shown existence and an upper bound, we can safely say that this algorithm will always produce a solution requiring at most $4(n-1)^2$ moves.</p>
+
+<p><b>30 points</b> &mdash; $30 \cdot 10^{19}$ moves</p>
+
+<p>We claim we can turn off any lightbulb in exactly $3$ moves. WLOG let the lightbulb be in the bottom left corner $(C)$ of some $2 \times 2$ square:
+$$\begin{matrix} A & B \\ C & D \end{matrix}$$
+Then it is clear that the moves $ACD$, $BCD$, $ABC$ will in total flip only square $C$. Hence the total number of moves to turn off every bulb is at most $3n^2 = 30 \cdot 10^{19}$.</p>
+
+
+<p><b>60 points</b> &mdash; $11 \cdot 10^{19}$ moves</p>
+
+<p>View the grid of lightbulbs as $\frac{n}{2}$ concentric square layers. Given any lit lightbulb in the $k^\text{th}$ inner layer, for $k < \frac{n}{2}$, we can flip the triangle that contains this lightbulb and two other lightbulbs in the $(k+1)^\text{st}$ layer. Thus, after at most $(n-2)^2$ moves, we have cleared all layers except the outermost layer. Now, we can clear the outermost layer one at a time using the method in the 30-point solution, adding at most $3(4n-4)$ moves, so the total number of moves is at most $$n^2+8n-8 = 10^{20}+ 8 \cdot 10^{10} - 8 < 11 \cdot 10^{19}.$$</p>
+
+<p><b>70 points</b> &mdash; $10 \cdot 10^{19}$ moves</p>
+
+<p>We can re-use our existence result from the 10-point solution, but with the additional observation that any $2 \times 2$ square can be generated in at most $4$ moves. This allows us to partition our board into $\frac{n^2}{4}$ different $2 \times 2$ squares and resolve each in at most $4$ moves, giving a total of at most $n^2 = 10 \cdot 10^{19}$ moves.
+
+<p><b>100 points</b> &mdash; $61 \cdot 10^{19}$ moves</p>
+
+<p>We will use the concentric square layers setup from the 60-point solution; however, we can partition every layer into $1 \times 2$ rectangles, and if a $1 \times 2$ rectangle in the $k^\text{th}$ layer has both lightbulbs on, we can instead perform the move containing both lightbulbs and a third lightbulb in the $(k+1)^\text{st}$ layer. Thus we can turn off any $1 \times 2$ rectangle of an inner layer in at most one move, so in total we can turn off the innermost $(n-2)^2$ lightbulbs in at most $\frac{(n-2)^2}{2}$ moves. Now, each of the $4(n-1)$ squares in the outer layer can be individually turned off in $3$ moves (see the 30-point solution), so the total number of moves is at most
+$$\frac{n^2}{2} + 3 \cdot 4(n-1) = 5 \cdot 10^{19} + 12 \cdot 10^{10} - 12 < 6 \cdot 10^{19}.$$</p>
+
+
+<h1>Other Rounds</h1>
+<p>Team Round and Individual Round problems can be found in <a href="http://cmimc-official.herokuapp.com/archive">previous CMIMC contests</a>.</p>
 
 {% endblock %}
 
