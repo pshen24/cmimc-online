@@ -24,7 +24,7 @@ def signup(request):
         form = UserCreationForm()
     context = {
         'form': form,
-        'next': request.GET['next'],
+        'next': request.GET.get('next'),
     }
     return render(request, 'signup.html', context)
 
