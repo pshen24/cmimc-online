@@ -2,54 +2,24 @@
 
 {% block content %}
 
-<p class="display-3">Math Contest Rules</p>
+<p class="display-4">Math Contest Format</p>
 <hr class="red_line"/>
 
 <div class="row mb-4">
     <div class="col">
-        <h2>General Rules</h2>
-        <ol>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Use of electronics during a round is forbidden. This includes the use of all calculators, such as any type of four-function, scientific, or graphing calculator.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Any communication is forbidden during non-collaboration rounds. Communication between members of different teams is forbidden during all rounds.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">No clarifications will be given on questions during the rounds. Contestants may not ask for help during the contest at any time.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Problems may be disputed by submitting a written protest to CMIMC staff; disputes will be handled in a consistent and fair manner. Written protests must be submitted prior to the end of lunch for individual rounds and prior to the faculty talk for the team round.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Solutions to individual and team rounds will be posted on-site shortly after the conclusion of each round. They will be made available on the CMIMC website after the end of the competition.</li>
-        </ol>
-
-        <h2>Contest</h2>
         <p>The contest consists of five rounds: TCS round, team round, and three individual rounds.</p>
-        <h5>TCS Round (new!)</h5>
-        <p>The main idea behind this round is algorithmic design. We will give you a problem that is either an optimization problem where you try to get a close approximation to optimal or a deterministic problem.
-            You may find a few different solutions to the problems, but they must be deterministic problems.
-            We will give you points based off of which complexity bounds your solutions beat.
-            You can think of the complexity bounds as saying "have no more than $N$ steps in your algorithm" or "try to maximize your score, $N$, in the game"
-            More technically, the idea is to design and prove the correctness of an algorithm. If you have an $O(N \log N)$ solution, you will get more points than an $O(N^2)$ solution according to our rubric.
-            By prove, we mean that you must show that your algorithm is correct and terminates.</p>
-        <h5>Team Round</h5>
-        <p>The team round will be 60 minutes long, with fifteen short-answer problems.</p>
-        <h5>Individual Round</h5>
+        <h3>TCS Round (new!)</h3>
+        <p>The main idea behind this round is algorithmic design. We will give you a problem that is either an optimization problem where you try to get a close approximation to optimal or a deterministic problem.</p>
+        <p>You may find a few different solutions to the problems, but they must be deterministic problems.</p>
+        <p>We will give you points based off of which complexity bounds your solutions beat.</p>
+        <p>You can think of the complexity bounds as saying "have no more than $N$ steps in your algorithm" or "try to maximize your score, $N$, in the game"</p>
+        <p>More technically, the idea is to design and prove the correctness of an algorithm. If you have an $O(N \log N)$ solution, you will get more points than an $O(N^2)$ solution according to our rubric.</p>
+        <p>By prove, we mean that you must show that your algorithm is correct and terminates.</p>
+        <h3>Team Round</h3>
+        <p>The team round will be 60 minutes long, with fifteen short-answer problems. The problems will be taken from a variety of subjects.</p>
+
+        <h3>Individual Round</h3>
         <p>The individual rounds each consists often short-answer problems, to be solved in 60 minutes. Each competitor takes all three individual rounds: Algebra and Number Theory, Combinatorics and Computer Science, and Geometry.</p>
-
-        <h2>Awards</h2>
-        <p>Awards will be given to the 10 top-scoring competitors in each individual round, the 5 top-scoring teams on the power round, and the 5 top-scoring teams overall.</p>
-
-        <h2>Conventions</h2>
-        <ol>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Answers to problems may or may not be integers. In other words, the answer to any problem can be expressed in terms of basic arithmetic operations, parentheses, exponents, factorials, trigonometric functions, binomial coefficients, and any other notations which are dictated by the problem in question.  More information on answer submissions can be found in the acceptable answers format document.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Diagrams are not necessarily drawn to scale.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Polygons’ vertices appear in the order by which the polygon is named. For example, polygon $ABCDE$ has vertices appearing in that order.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">$\sqrt{x}$ refers to the positive square root of an integer. It is only defined for $x\geq 0$.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">$\log{x}$ is defined as $\log_{10} x$. $\ln{x}$ is defined as $\log_e x$.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">The letter $i$ is used for the imaginary unit, i.e. $i^2=-1$.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Divisors (or factors) of an integer refer to positive integer divisors only. Proper divisors of an integer are its divisors other than itself.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Prime numbers refer to positive primes only. $0$ and $1$ are not primes.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">When letters are used to represent digits, they are overlined. For example, $\overline{x}01\overline{y}$ where $x=2$ and $y=7$ refers to the number $2017$.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">All angles are measured in radians unless otherwise indicated.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">$-\frac{\pi}{2}\leq\sin^{-1}x\leq\frac{\pi}{2}$, $0\leq\cos^{-1}x\leq\pi$, $-\frac{\pi}{2}\leq\tan^{-1}x\leq\frac{\pi}{2}$.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">The sum of the elements of the empty set is $0$; the product of the elements of the empty set is $1$.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">$a^{a^a}$ denotes $a^{(a^a)}$.</li>
-            <li style="padding-left: 1rem; padding-top: 0.5rem">Computer science definitions, pseudocode conventions, and any necessary formulas are defined on the Computer Science Reference Sheet, which will be provided during the computer science individual round, team round, and computer science finals.  This will be released shortly.</li>
-        </ol>
     </div>
 
     <div class="col-12 col-md-auto">
