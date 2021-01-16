@@ -6,9 +6,9 @@ from website.managers import UserManager
 class User(AbstractUser):
     username = None
     email = models.EmailField(_('email address'), unique=True)
-    first_name = models.CharField(_('first name'), max_length=150)
-    last_name = models.CharField(_('last name'), max_length=150)
-    full_name = models.CharField(max_length=100, help_text=_('full name'))
+    first_name = models.CharField(_('first name'), blank=True, max_length=150)
+    last_name = models.CharField(_('last name'), blank=True, max_length=150)
+    full_name = models.CharField(max_length=100, blank=True, help_text=_('full name'))
     alias = models.CharField(max_length=100, blank=True, help_text=_('preferred name'))
     is_tester = models.BooleanField(default=False, help_text=_('whether they can view private contests'))
 

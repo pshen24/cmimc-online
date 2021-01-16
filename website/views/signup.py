@@ -22,5 +22,9 @@ def signup(request):
             return redirect('contest_list')
     else:
         form = UserCreationForm()
-    return render(request, 'signup.html', {'form': form})
+    context = {
+        'form': form,
+        'next': request.GET['next'],
+    }
+    return render(request, 'signup.html', context)
 

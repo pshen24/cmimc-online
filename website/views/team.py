@@ -52,6 +52,9 @@ def join_team(request, team_id, invite_code):
         else:
             team.mathletes.add(mathlete)
             return redirect('team_info', team_id=team.id)
+    else:
+        # temporary fix so that coaches don't see "Server Error 500"
+        return redirect('team_info', team_id=team.id)
 
 
 @login_required

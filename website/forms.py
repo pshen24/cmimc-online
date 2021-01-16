@@ -27,7 +27,7 @@ class UserCreationForm(DefaultUserCreationForm):
 class UserChangeForm(DefaultUserChangeForm):
     class Meta:
         model = User
-        fields = ('email', 'full_name', 'alias', 'role')
+        fields = ('email', 'first_name', 'last_name', 'full_name', 'alias', 'role')
 
 class EditorForm(forms.Form):
     text = forms.CharField(
