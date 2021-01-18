@@ -20,6 +20,7 @@ def all_problems(request, exam_id):
         for problem in problems:
             score = Score.objects.get(problem=problem, competitor=competitor)
             rank = Score.objects.filter(problem=problem, points__gt=score.points).count() + 1
+            print([ts.raw_points for ts in score.taskscores.all()])
             if exam.is_optimization:
                 task_str = ', '.join([str(round(ts.raw_points, 2)) for ts in score.taskscores.all()])
             else:

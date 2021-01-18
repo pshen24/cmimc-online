@@ -51,7 +51,7 @@ Then it is clear that the moves $ACD$, $BCD$, $ABC$ will in total flip only squa
 
 <p>We can re-use our existence result from the 10-point solution, but with the additional observation that any $2 \times 2$ square can be generated in at most $4$ moves. This allows us to partition our board into $\frac{n^2}{4}$ different $2 \times 2$ squares and resolve each in at most $4$ moves, giving a total of at most $n^2 = 10 \cdot 10^{19}$ moves.
 
-<p><b>100 points</b> &mdash; $61 \cdot 10^{19}$ moves</p>
+<p><b>100 points</b> &mdash; $6 \cdot 10^{19}$ moves</p>
 
 <p>We will use the concentric square layers setup from the 60-point solution; however, we can partition every layer into $1 \times 2$ rectangles, and if a $1 \times 2$ rectangle in the $k^\text{th}$ layer has both lightbulbs on, we can instead perform the move containing both lightbulbs and a third lightbulb in the $(k+1)^\text{st}$ layer. Thus we can turn off any $1 \times 2$ rectangle of an inner layer in at most one move, so in total we can turn off the innermost $(n-2)^2$ lightbulbs in at most $\frac{(n-2)^2}{2}$ moves. Now, each of the $4(n-1)$ squares in the outer layer can be individually turned off in $3$ moves (see the 30-point solution), so the total number of moves is at most
 $$\frac{n^2}{2} + 3 \cdot 4(n-1) = 5 \cdot 10^{19} + 12 \cdot 10^{10} - 12 < 6 \cdot 10^{19}.$$</p>

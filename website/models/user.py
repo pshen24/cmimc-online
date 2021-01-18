@@ -107,23 +107,24 @@ class User(AbstractUser):
     def can_view_leaderboard(self, exam):
         if self.is_staff:
             return True
-        if self.can_view(exam) and exam.show_leaderboard:
+        if self.can_view_exam(exam) and exam.show_leaderboard:
             return True
         return False
 
     def can_submit(self, exam):
         if self.is_mathlete:
-            if exam.is_ongoing and self.is_registered(exam.contest):
+            if exam.ongoing and self.is_registered(exam.contest):
                 return True
         return False
 
     def can_view_submission(self, submission):
+        from website.models import Competitor
         if self.is_staff:
             return True
         if self.is_coach and self == submission.competitor.team.coach:
             return True
         if self.is_mathlete:
-            comp = Competitor.objects.getCompetitor(self.problem.exam, self.mathlete)
+            comp = Competitor.objects.getCompetitor(submission.problem.exam, self.mathlete)
             if comp == submission.competitor:
                 return True
         return False
