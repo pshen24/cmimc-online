@@ -42,8 +42,13 @@ body {
 }
 
 .dropdown-menu li > a:hover {
-  background-color: #f8f9fa;
-  color: black;
+  background-color: dropdown-link-active-bg;
+  color: dropdown-link-active-color;
+}
+
+.dropdown-menu li > a:focus {
+  background-color: #b00;
+  color: white;
 }
 
 .dropdown-menu li > .active {
