@@ -15,6 +15,7 @@ class AIGrader(models.Model):
 class AIProblem(models.Model):
     code = models.TextField() # python grading code for the contest
     problem = models.ForeignKey(Problem, related_name="aiproblem", on_delete=models.CASCADE)
+    numplayers = models.IntegerField() # if numplayers == -1, the game can have a variable number of players. Otherwise, numplayers is constant
     class Meta:
         db_table = "contests_airound"
 
