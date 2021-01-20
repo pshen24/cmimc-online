@@ -70,16 +70,7 @@ class Team(models.Model):
         self.save()
 
     def has_member(self, user):
-        return user.mathlete and user.mathlete.teams.filter(pk=self.id).exists()
-
-    # whether the user has access to the team info page
-    def can_see_info(self, user):
-        if user.is_staff:
-            return True
-        if user.is_mathlete:
-            return self.has_member(user)
-        if user.is_coach:
-            return self.coach == user
+        return user.is_mathlete and user.mathlete.teams.filter(pk=self.id).exists()
 
     @property
     def mathlete_list(self):

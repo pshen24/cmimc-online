@@ -6,15 +6,28 @@ from django_ace import AceWidget
 
 
 class UserCreationForm(DefaultUserCreationForm):
+    CHOICES = [
+        (User.MATHLETE, 'Contestant'),
+        (User.COACH, 'Coach'),
+    ]
+    role = forms.ChoiceField(widget=forms.RadioSelect, choices=CHOICES, label=' ')
+    
     class Meta(DefaultUserCreationForm):
         model = User
-        fields = ('email', 'full_name', 'alias', 'role')
+        fields = ('first_name', 'last_name', 'email', 'role')
+
+    def __init__(self, *args, **kwargs):
+        super(UserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].help_text = '<ul>' \
+                '<li>8 characters minimum</li></ul>'
+        self.fields['password2'].help_text = None
+        self.fields['first_name'].widget.attrs['autofocus'] = ''
 
 
 class UserChangeForm(DefaultUserChangeForm):
     class Meta:
         model = User
-        fields = ('email', 'full_name', 'alias', 'role')
+        fields = ('email', 'first_name', 'last_name', 'full_name', 'alias', 'role')
 
 class EditorForm(forms.Form):
     text = forms.CharField(

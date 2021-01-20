@@ -8,7 +8,7 @@ from website.models import Exam, Competitor, Score
 def all_problems(request, exam_id):
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
-    if not exam.can_view(user):
+    if not user.can_view_exam(exam):
         raise PermissionDenied('You do not have access to this page')
     problems = exam.problems.order_by('problem_number')
 
@@ -20,6 +20,7 @@ def all_problems(request, exam_id):
         for problem in problems:
             score = Score.objects.get(problem=problem, competitor=competitor)
             rank = Score.objects.filter(problem=problem, points__gt=score.points).count() + 1
+            print([ts.raw_points for ts in score.taskscores.all()])
             if exam.is_optimization:
                 task_str = ', '.join([str(round(ts.raw_points, 2)) for ts in score.taskscores.all()])
             else:

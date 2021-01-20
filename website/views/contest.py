@@ -2,16 +2,19 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from website.models import Contest, User, Exam, Mathlete, Team
 from django.utils import timezone
-from website.views.team import finalize_all_teams
 
 @login_required
 def contest_list(request):
 
     if request.method == 'POST':
-       finalize_all_teams(request, request.POST['contest_id'])
+       contest = Contest.objects.get(pk=request.POST['contest_id'])
+       contest.finalize_all_teams()
 
     user = request.user
     all_contests = Contest.objects.all()
+    if not user.is_tester:
+        all_contests = all_contests.filter(is_private=False)     # hide private contests
+
     tuples = []
     for contest in all_contests:
         if user.is_mathlete:

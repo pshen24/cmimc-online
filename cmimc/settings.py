@@ -25,6 +25,8 @@ else:
 
 ALLOWED_HOSTS = [
     'cmimconline.com',
+    'cmimconline.org',
+    'www.cmimconline.org',
     'cmimcprogramming.com',
     'cmimcprogramming.org',
     'www.cmimcprogramming.org',

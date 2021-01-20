@@ -17,14 +17,23 @@ def home(request):
     hello(schedule=10, repeat=5, repeat_until=datetime.datetime.now()+datetime.timedelta(seconds=30))
     return render(request, 'general/home.html')
 
-def info(request):
-    return render(request, 'general/info.html')
+def math_info(request):
+    return render(request, 'general/math_info.html')
 
-def sample_problems(request):
-    return render(request, 'general/sample_problems.html')
+def math_sample_problems(request):
+    return render(request, 'general/math_sample_problems.html')
 
-def schedule(request):
-    return render(request, 'general/schedule.html')
+def math_schedule(request):
+    return render(request, 'general/math_schedule.html')
+
+def prog_info(request):
+    return render(request, 'general/prog_info.html')
+
+def prog_sample_problems(request):
+    return render(request, 'general/prog_sample_problems.html')
+
+def prog_schedule(request):
+    return render(request, 'general/prog_schedule.html')
 
 def reg_info(request):
     return render(request, 'general/reg_info.html')

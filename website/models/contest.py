@@ -8,24 +8,13 @@ class Contest(models.Model):
     description = models.TextField(blank=True)
     min_team_size = models.IntegerField() # if we ever need an individual contest,
     max_team_size = models.IntegerField() # set min and max team size to 1
-    reg_start_date = models.DateTimeField(help_text=_('The date that registration \
-            opens, and mathletes can start forming teams'))
     reg_end_date = models.DateTimeField(help_text=_('Teams can no longer be modified \
             after this date'))
-    end_time = models.DateTimeField() # latest end time of any exam in the contest
-    start_time = models.DateTimeField() # earliest start time of any exam in the contest
+    is_private = models.BooleanField(default=False)
+
 
     def __str__(self):
         return self.name
-
-    # TODO: update for coaches
-    # whether the user is registered for this contest
-    def is_registered(self, user):
-        if not user.is_authenticated:
-            return False
-        if not user.is_mathlete:
-            return False
-        return user.has_team(self)
 
     @cached_property
     def _now(self):
@@ -65,3 +54,12 @@ class Contest(models.Model):
     @cached_property
     def reg_ended(self):
         return self._now > self.reg_end_date
+
+    # initializes all Competitors, Scores, and TaskScores
+    # ensures exactly one score for each (problem, competitor) pair,
+    # and exactly one taskscore for each (task, score) pair
+    def finalize_all_teams(self):
+        for team in self.teams.all():
+            team.unregister() # ensure no duplicates
+            team.register()
+
