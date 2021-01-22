@@ -36,6 +36,7 @@ urlpatterns = [
     
     path('exam/<int:exam_id>', views.all_problems, name='all_problems'),
     path('exam/<int:exam_id>/leaderboard', views.leaderboard, name='leaderboard'),
+    path('exam/<int:exam_id>/leaderboard/<int:problem_id>', views.leaderboard_problem, name='leaderboard_problem'),
     path('exam/<int:exam_id>/problem/<int:problem_number>', views.view_problem, name='view_problem'),
     path('exam/<int:exam_id>/problem/<int:problem_number>/submit', views.submit, name='submit'),
     path('exam/<int:exam_id>/problem/<int:problem_number>/submit/task/<int:task_number>', views.submit, name='submit'),
