@@ -6,4 +6,4 @@ from .submit import submit, resubmit
 from .exam import all_problems
 from .submission import all_submissions, view_submission
 from .signup import signup
-from .leaderboard import leaderboard
+from .leaderboard import leaderboard, leaderboard_problem
