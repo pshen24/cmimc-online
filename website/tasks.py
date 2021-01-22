@@ -62,12 +62,12 @@ def grade_miniround(exam_id, m):
             # 7 iterations = 21 games per player
             c = 7
             for i in range(c*(m-1), c*m):
-                x = i % (n-2) + 1
+                x = (i + 1) % (n-2) + 1
                 y = n - 1 - i % (n-1)
                 if x >= y:
                     x += 1
                 # guaranteed that 1 <= x,y <= n and x =/= y
-                # loops over grid diagonally from top-left to bottom-right
+                # loops over grid diagonally from top-left to bottom-right (x shifted by 1)
                 # this ensures that you don't get matched with the same opponent
                 # at most twice in one iteration (unless n is small or c is large)
                 for j1 in range(n):
