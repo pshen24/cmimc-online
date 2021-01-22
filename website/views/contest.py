@@ -50,7 +50,15 @@ def contest_list(request):
     for user in all_users:
         all_emails.append(user.email)
 
-    c = Contest.objects.get(pk=1)
+    c = Contest.objects.get(pk=1) # programming contest
+    teams = Team.objects.filter(contest=c, is_finalized=True)
+    prog_emails = []
+    for team in teams:
+        for m in team.mathletes.all():
+            prog_emails.append(m.user.email)
+        if team.coach:
+            prog_emails.append(team.coach.email)
+
     teams = Team.objects.filter(contest=c, is_finalized=False)
     unreg_emails = []
     for team in teams:
@@ -63,6 +71,7 @@ def contest_list(request):
         'exams': all_exams,
         'emaillist': ', '.join(all_emails),
         'unreg_emails': ', '.join(unreg_emails),
+        'prog_emails': ', '.join(prog_emails),
         'ongoing': ongoing_contests,
         'upcoming': upcoming_contests,
         'past': past_contests,
