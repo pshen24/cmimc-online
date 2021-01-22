@@ -52,8 +52,10 @@ def contest_list(request):
 
     c = Contest.objects.get(pk=1) # programming contest
     teams = Team.objects.filter(contest=c, is_finalized=True)
+    member_count = [0]*10
     prog_emails = []
     for team in teams:
+        member_count[min(team.mathletes.all().count(), 9)] += 1
         for m in team.mathletes.all():
             prog_emails.append(m.user.email)
         if team.coach:
@@ -75,6 +77,7 @@ def contest_list(request):
         'ongoing': ongoing_contests,
         'upcoming': upcoming_contests,
         'past': past_contests,
+        'member_count': member_count,
     }
     return render(request, 'contest_list.html', context)
 
