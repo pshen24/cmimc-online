@@ -4,6 +4,7 @@ from ckeditor.fields import RichTextField
 from django.utils.translation import ugettext_lazy as _
 from django.core.validators import MinValueValidator
 from django.utils.functional import cached_property
+from website import problem_graders
 
 class Problem(models.Model):
     exam = models.ForeignKey(Exam, related_name='problems', on_delete=models.CASCADE)
@@ -17,10 +18,12 @@ class Problem(models.Model):
     num_tasks = models.IntegerField(null=True, blank=True, validators=[MinValueValidator(1)]) # only for optimization
     pdf_link = models.CharField(max_length=1000, null=True, blank=True)
     
+
+
+
+
     # returns an instance of the grader class defined by grader_name
-    @cached_property
     def grader(self):
-        from website import problem_graders
         class_ = getattr(problem_graders, self.grader_name)
         return class_(self)
 

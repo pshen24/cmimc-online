@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
-from website.models import Exam, Problem, Task, Competitor, Submission
+from django.utils import timezone
+from website.models import Exam, Problem, Task, Competitor, Submission, Score
 from website.forms import EditorForm
-from background_task import background
+from website.tasks import async_grade
 
 @login_required
 def submit(request, exam_id, problem_number, task_number=None):
@@ -41,11 +42,6 @@ def resubmit(request, submission_id):
         text = submission.text
         return show_form(request, exam, problem, task, text)
 
-@background(schedule=0)
-def async_grade(submission_id):
-    submission = Submission.objects.get(pk=submission_id)
-    submission.grade()
-
 
 def make_submission(request, exam, problem, task=None):
     user = request.user
@@ -70,7 +66,9 @@ def make_submission(request, exam, problem, task=None):
     )
     submission.save()
     # grade the new submission
+    print('making task')
     async_grade(submission.id)
+    print('made task')
     return redirect('view_submission', submission_id=submission.id)
 
 

@@ -24,5 +24,8 @@ class Submission(models.Model):
 
     def grade(self):
         score = Score.objects.get(problem=self.problem, competitor=self.competitor)
-        self.problem.grader.grade(self, score)
+        p = self.problem
+        g = p.grader()
+        g.grade(self, score)
+        # self.problem.grader.grade(self, score)
 
