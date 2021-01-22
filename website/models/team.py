@@ -31,11 +31,7 @@ class Team(models.Model):
         return code
 
     def __str__(self):
-        name = "Team: ["
-        for m in self.mathletes.all():
-            name += str(m) + ", "
-        name += "]"
-        return name
+        return '{0} ({1})'.format(self.team_name, self.mathlete_list)
 
     class Meta:
         unique_together = ['team_name', 'contest']
@@ -76,7 +72,6 @@ class Team(models.Model):
     def mathlete_list(self):
         if not self.mathletes.exists():
             return 'No students'
-        m = [m.user.name for m in self.mathletes.all()]
-        return ', '.join(m)
+        return ', '.join([m.user.name for m in self.mathletes.all()])
 
 

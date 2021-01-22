@@ -3,6 +3,7 @@ from website.models import Exam, Team
 from django.utils import timezone
 from website.models import AIGame, AISubmission, Submission
 from background_task.models import Task
+from datetime import timedelta
 
 @background
 def initialize_one(exam_id):
@@ -32,10 +33,11 @@ def lastSub(competitor, problem):
     else:
         return sub.text
 
+
 # miniround m is graded 5*m minutes after exam starts (1 <= n <= 36)
 @background
 def grade_miniround(exam_id, m):
-    print("Grading miniround, time = " + timezone.now())
+    print("Grading miniround, time = ", timezone.now())
     exam = Exam.objects.get(pk=exam_id)
     comps = exam.competitors.all()
     n = len(comps)
@@ -49,6 +51,7 @@ def grade_miniround(exam_id, m):
                 shift = i % (n-1) + 1
                 for j1 in range(n):
                     j2 = (j1 + shift) % n
+                    print(j1, j2)
                     g = AIGame(time=timezone.now(), numplayers=2, problem=ai_prob)
                     g.save()
                     s1 = AISubmission(game=g, seat=1, code=codes[j1], competitor=comps[j1])
@@ -59,49 +62,32 @@ def grade_miniround(exam_id, m):
             # 7 iterations = 21 games per player
             c = 7
             for i in range(c*(m-1), c*m):
-
-
+                x = i % (n-2) + 1
+                y = n - 1 - i % (n-1)
+                if x >= y:
+                    x += 1
+                # guaranteed that 1 <= x,y <= n and x =/= y
+                # loops over grid diagonally from top-left to bottom-right
+                # this ensures that you don't get matched with the same opponent
+                # at most twice in one iteration (unless n is small or c is large)
+                for j1 in range(n):
+                    j2 = (j1 + x) % n
+                    j3 = (j1 + y) % n
+                    print(j1, j2, j3)
+                    g = AIGame(time=timezone.now(), numplayers=3, problem=ai_prob)
+                    g.save()
+                    s1 = AISubmission(game=g, seat=1, code=codes[j1], competitor=comps[j1])
+                    s1.save()
+                    s2 = AISubmission(game=g, seat=2, code=codes[j2], competitor=comps[j2])
+                    s2.save()
+                    s3 = AISubmission(game=g, seat=3, code=codes[j3], competitor=comps[j3])
+                    s3.save()
         elif ai_prob.numplayers == 0:
-        # assume 2 player game, will change later
-        for i in range(n):
-            for j in range(n):
-                if i == j:
-                    continue
-                game = AIGame(time=timezone.now(), numplayers=2, problem=ai_prob)
-                game.save()
-                s1 = AISubmission(game=game, seat=1, code=codes[i], competitor=comps[i])
-                s1.save()
-                s2 = AISubmission(game=game, seat=2, code=codes[j], competitor=comps[j])
-                s2.save()
-
-'''
-def _main(strats):
-    n = len(strats)
-    scores = [0] * n 
-    assert _k <= n
-    out = []
-    for i in range(n):
-        skips = [random.randrange(1, n - 1) for _ in range(_k - 2)]
-        while len(skips) != len(set(skips)):
-            skips = [random.randrange(1, n - 1) for _ in range(_k - 2)]
-        for j1 in range(n - 1):
-            js = [j1] + [(j1 + v) % (n-1) for v in skips]
-            players = [i] + [(i + j + 1) % n for j in js]
-            scores_game, hist = _play(list(map(lambda x: strats[x], players)))
-            _print(' '.join(map(str,players)))
-            out.append(' '.join(map(lambda x:'player'+str(x), players)) + ' '
-                       + str(hist))
-            for u in range(_k):
-                scores[players[u]] += scores_game[u]
-            top_score = max(scores)
-            winner_count = 0
-            for u in range(_k):
-                if scores_game[u] == top_score:
-                    winner_count += 1
-            for u in range(_k):
-                if scores_game[u] == top_score:
-                    scores[players[u]] += 12/winner_count
-'''
+            g = AIGame(time=timezone.now(), numplayers=n, problem=ai_prob)
+            g.save()
+            for i in range(n):
+                s = AISubmission(game=g, seat=i+1, code=codes[i], competitor=comps[i])
+                s.save()
 
 
 @background(schedule=0)
@@ -114,6 +100,12 @@ def init_all_tasks():
     Task.objects.all().delete() # Clear all previous tasks
     exams = Exam.objects.all()
     for exam in exams:
-        if exam.is_ai and not exam.started:
-            waitTime = exam.start_time-timezone.now()
-            grade_miniround(exam.id, schedule=waitTime, repeat=60*5, repeat_until=exam.end_time)
+        if exam.is_ai:
+            exam_time = exam.end_time - exam.start_time
+            miniround_time = timedelta(minutes=1)
+            num_minirounds = exam_time // miniround_time 
+            print(exam_time, miniround_time, num_minirounds)
+            for i in range(1, num_minirounds+1):
+                if timezone.now() < exam.start_time + i*miniround_time:
+                    grade_miniround(exam.id, i, schedule=exam.start_time + i*miniround_time)
+                    print(i)
