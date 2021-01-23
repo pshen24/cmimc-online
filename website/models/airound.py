@@ -25,19 +25,21 @@ class AIGame(models.Model):
     0 = in queue
     1 = running
     2 = graded
+    3 = results saved to leaderboard
     """
     status = models.IntegerField(default=0)
     history = models.JSONField(null=True, blank=True) # after the game is played, gives the history output of the grader
     time = models.TimeField() # when the game should be played
     numplayers = models.IntegerField() # number of players
-    problem = models.ForeignKey(AIProblem, on_delete=models.CASCADE) # which problem to use
+    aiproblem = models.ForeignKey(AIProblem, on_delete=models.CASCADE) # which problem to use
     worker = models.ForeignKey(AIGrader, null=True, blank=True, on_delete=models.SET_NULL) # which grader was used to grade this
+    miniround = models.IntegerField()
     class Meta:
         db_table = "games_airound"
 
 
 class AISubmission(models.Model):
-    game = models.ForeignKey(AIGame, on_delete=models.CASCADE) # game that submission was made for
+    game = models.ForeignKey(AIGame, related_name="aisubmissions", on_delete=models.CASCADE) # game that submission was made for
     seat = models.IntegerField() # position the player's entry should be in for the grader
     code = models.TextField() # code of the submission
     score = models.FloatField(null=True, blank=True) # resulting score of the round for the team
