@@ -22,7 +22,7 @@ class UserAdmin(DefaultUserAdmin):
         ),
     )
     search_fields = ('email', 'first_name', 'last_name', 'full_name')
-    ordering = ('email',)
+    ordering = ('-pk',)
 
 
 class TeamAdmin(admin.ModelAdmin):

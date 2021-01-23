@@ -16,10 +16,10 @@ urlpatterns = [
     path('programming/format', views.prog_info, name='prog_info'),
     path('programming/sample-problems', views.prog_sample_problems, name='prog_sample_problems'),
     path('programming/schedule', views.prog_schedule, name='prog_schedule'),
+    path('programming/mini-events', views.general_info.mini_events, name='mini_events'),
+    path('programming/resources', views.resources, name='resources'),
     path('registration', views.reg_info, name='reg_info'),
     path('faq', views.faq, name='faq'),
-    path('resources', views.resources, name='resources'),
-    path('mini-events', views.general_info.mini_events, name='mini_events'),
 
     path('admin', admin.site.urls),
     
