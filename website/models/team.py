@@ -12,7 +12,7 @@ class Team(models.Model):
             registered team are finalized and cannot be edited'))
     coach = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, \
                               related_name='teams', on_delete=models.SET_NULL)
-    team_name = models.CharField(max_length=100)
+    team_name = models.CharField(max_length=40)
     MIN_CODE = 100000
     MAX_CODE = 999999
     invite_code = models.CharField(unique=True, max_length=15)

@@ -18,8 +18,8 @@ def leaderboard(request, exam_id):
 
     comp_info = [{
         "name": comp.name,
-        "scores": [Score.objects.get(problem=p, competitor=comp).points for p in problems],
-        "total_score": comp.total_score
+        "scores": [round(Score.objects.get(problem=p, competitor=comp).points, 1) for p in problems],
+        "total_score": round(comp.total_score, 1)
     } for comp in comps]
 
     context = {

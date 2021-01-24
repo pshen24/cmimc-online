@@ -1,9 +1,10 @@
 from background_task import background
-from website.models import Exam, Team
 from django.utils import timezone
-from website.models import AIGame, AISubmission, Submission, Score, MiniRoundScore
+from website.models import Exam, AIGame, AISubmission, Submission, Score, MiniRoundScore
 from background_task.models import Task
 from datetime import timedelta
+
+
 
 
 def lastSub(competitor, problem):
@@ -32,8 +33,6 @@ def grade_miniround(exam_id, m):
             mrs.save()
         codes = [lastSub(c, p) for c in comps]
         ai_prob = p.aiproblem.first()
-        print(p)
-        print(p.aiproblem)
         if ai_prob.numplayers == 2:
             # 10 iterations = 20 games per player
             c = 10

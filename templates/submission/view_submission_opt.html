@@ -4,7 +4,17 @@
 
 <h1 class="mb-4">Submission to <a href="{% url 'view_problem' exam.id submission.problem.problem_number %}">{{ submission.problem }}</a></h1>
 
-<h4 class="mb-3">Score: {{ submission.points }}</h4>
+<h4 class="mb-3">
+{% if submission.is_graded %}
+    {% if submission.points %}
+        Score: {{ submission.display_points }}
+    {% else %}
+        Invalid Submission! {{ submission.error_msg }}
+    {% endif %}
+{% else %}
+    Grading in progress. Refresh page to update.
+{% endif %}
+</h4>
 
 <pre class="mb-3" style="max-height: 30rem"><code class="language-none">{{ submission.text }}</pre></code>
 

@@ -17,6 +17,7 @@ class Submission(models.Model):
     submit_time = models.DateTimeField(auto_now_add=True, db_index=True)
     task = models.ForeignKey(Task, related_name="submissions", on_delete=models.CASCADE, \
             null=True, blank=True) # only for optimization
+    error_msg = models.TextField(blank=True)
     # add something for errors? (if they submit something invalid)
 
     def __str__(self):
@@ -24,7 +25,16 @@ class Submission(models.Model):
 
     def grade(self):
         score = Score.objects.get(problem=self.problem, competitor=self.competitor)
-        g = self.problem.grader()
+        g = self.problem.grader
         if g is not None:
             g.grade(self, score)
+
+    @property
+    def display_points(self):
+        g = self.problem.grader
+        if g is not None: # assumes optimization
+            return g.rawToString(self.points)
+        else:
+            return self.points
+
 

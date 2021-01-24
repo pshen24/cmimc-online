@@ -20,6 +20,7 @@ class Problem(models.Model):
     
 
     # returns an instance of the grader class defined by grader_name
+    @cached_property
     def grader(self):
         if self.grader_name == '':
             return None

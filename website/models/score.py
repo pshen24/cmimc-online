@@ -9,8 +9,7 @@ class Score(models.Model):
     points = models.FloatField(default=0.0)
 
     def __str__(self):
-        return 'Score: (' + str(self.problem) + ', ' + str(self.competitor) + ') = ' \
-                + str(self.points)
+        return '{0}, {1}, score={2}'.format(str(self.problem), self.competitor.name, str(self.points))
 
     class Meta:
         unique_together = ['problem', 'competitor']

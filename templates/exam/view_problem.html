@@ -1,7 +1,7 @@
 {% extends 'exam/exam_base.html' %}
 
 {% block exam_content %}
-<h1>Problem {{ problem.problem_number }}</h1>
+<h1>{{ problem.name }}</h1>
 <div class="problem-text mb-5 language-none">
 {{ problem.problem_text|safe }}
 </div>
@@ -21,7 +21,7 @@
     <tr>
       <th scope="row">{{ ts.task.task_number }}</th>
       <td><a href="{{ ts.task.input_file }}">Input {{ ts.task.task_number }}</a></td>
-      <td>{{ ts.raw_points }}</td>
+      <td>{{ ts.display_raw_points }}</td>
       <td><a href="{% url 'submit' exam.id problem.problem_number ts.task.task_number %}">Submit Task {{ ts.task.task_number }}</a></td>
     </tr>
   {% endfor %}
