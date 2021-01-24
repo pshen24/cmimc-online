@@ -19,6 +19,9 @@ class AIProblem(models.Model):
     class Meta:
         db_table = "contests_airound"
 
+    def __str__(self):
+        return self.problem.name
+
 
 class AIGame(models.Model):
     """
@@ -37,6 +40,9 @@ class AIGame(models.Model):
     class Meta:
         db_table = "games_airound"
 
+    def __str__(self):
+        return '{0}, MR={1}, status={2}'.format(str(self.aiproblem), str(self.miniround), str(self.status))
+
 
 class AISubmission(models.Model):
     game = models.ForeignKey(AIGame, related_name="aisubmissions", on_delete=models.CASCADE) # game that submission was made for
@@ -46,3 +52,6 @@ class AISubmission(models.Model):
     competitor = models.ForeignKey(Competitor, on_delete=models.CASCADE) # team that made the submission
     class Meta:
         db_table = "submissions_airound"
+
+    def __str__(self):
+        return '[{0}] comp={1}'.format(str(self.game), str(self.competitor))

@@ -24,10 +24,11 @@ def grade_miniround(exam_id, m):
     for p in exam.problems.all():
         # create MiniRoundScores
         for c in comps:
-            print(p)
-            print(c)
             score = Score.objects.get(problem=p, competitor=c)
-            mrs = MiniRoundScore(score=score, miniround=m)
+            mrs = MiniRoundScore.objects.filter(score=score, miniround=m).first()
+            if mrs is None:
+                mrs = MiniRoundScore(score=score, miniround=m)
+            mrs.points = 0
             mrs.save()
         codes = [lastSub(c, p) for c in comps]
         ai_prob = p.aiproblem.first()
@@ -91,10 +92,24 @@ def check_finished_games(exam_id):
     games = AIGame.objects.filter(status=2, aiproblem__problem__exam=exam)
     for g in games:
         m = g.miniround
-        for s in g.aisubmissions:
-            comp = s.competitor
-            mrs = MiniRoundScore.objects.get(score=s.score, miniround=m)
-            mrs.points = s.score
+        for aisub in g.aisubmissions.all():
+            comp = aisub.competitor
+            prob = aisub.game.aiproblem.problem
+            score = Score.objects.get(problem=prob, competitor=comp)
+            mrs = MiniRoundScore.objects.filter(score=score, miniround=m).first()
+            if mrs is None:
+                mrs = MiniRoundScore(score=score, miniround=m)
+            mrs.points += aisub.score
+            mrs.save()
+        g.status=4
+        g.save()
+
+    # update leaderboard
+    for p in exam.problems.all():
+        for c in exam.competitors.all():
+            s = Score.objects.get(problem=p, competitor=c)
+            s.points = sum([mrs.points for mrs in s.miniroundscores.all()])
+            s.save()
 
 
 def init_all_tasks():
@@ -103,10 +118,9 @@ def init_all_tasks():
     exams = Exam.objects.all()
     for exam in exams:
         if exam.is_ai:
+            check_finished_games(exam.id, repeat=10, repeat_until=exam.end_time + timedelta(minutes=1))
             exam_time = exam.end_time - exam.start_time
             num_minirounds = exam_time // exam.miniround_time 
-            print(num_minirounds)
             for i in range(1, num_minirounds+1):
                 if timezone.now() < exam.start_time + i*exam.miniround_time:
                     grade_miniround(exam.id, i, schedule=exam.start_time + i*exam.miniround_time)
-                    print(i)
