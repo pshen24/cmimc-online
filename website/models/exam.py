@@ -8,7 +8,7 @@ class Exam(models.Model):
     name = models.CharField(max_length=100, unique=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    mydur = models.IntegerField()
+    miniround_time = models.DurationField(null=True, blank=True)
 
     is_team_exam = models.BooleanField()
     
@@ -23,7 +23,6 @@ class Exam(models.Model):
         (POWER, 'Power (proof)'),
     ]
     exam_type = models.CharField(max_length=4, choices=TYPE_CHOICES, default=OPTIMIZATION)
-    # miniround_time = models.DurationField()
 
     def __str__(self):
         return self.name

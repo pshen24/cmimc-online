@@ -25,9 +25,9 @@ class Competitor(models.Model):
 
     def __str__(self):
         if self.is_team:
-            return "T Comp: " + str(self.team)
+            return "T_Comp [exam={0}]: {1}".format(str(self.exam), str(self.team))
         else:
-            return "M Comp: " + str(self.mathlete)
+            return "M_Comp [exam={0}]: {1}".format(str(self.exam), str(self.mathlete))
 
     def update_total_score(self):
         self.total_score = 0

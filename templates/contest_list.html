@@ -135,15 +135,23 @@
 <h3>Programming Contest member count</h3>
 <p>{{ member_count }}</p>
 
-<hr>
-<p>Re-register all teams in a contest (resets all competitors, scores and taskscores)</p>
+<h3>Re-register all teams in a contest</h3>
+<hr class="red_line mb-4"/>
+<p>(resets all competitors, scores and taskscores)</p>
 
-<form method="post" enctype="multipart/form-data">
+<form method="post" class="mb-4">
       {% csrf_token %}
       <div class="form-group">
-        <input type="number" class="form-contest-id" name="contest_id">
+        <input type="number" class="form-contest-id" name="finalize_all_teams">
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary">Re-register all teams</button>
+</form>
+
+<h3>Init all tasks</h3>
+<hr class="red_line mb-4"/>
+<form method="post">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary" name="init_all_tasks">Init All Tasks</button>
 </form>
 
 {% endif %}

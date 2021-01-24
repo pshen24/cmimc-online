@@ -1,7 +1,7 @@
 from background_task import background
 from website.models import Exam, Team
 from django.utils import timezone
-from website.models import AIGame, AISubmission, Submission
+from website.models import AIGame, AISubmission, Submission, Score, MiniRoundScore
 from background_task.models import Task
 from datetime import timedelta
 
@@ -19,15 +19,20 @@ def grade_miniround(exam_id, m):
     # print("Grading miniround, time = ", timezone.now())
     exam = Exam.objects.get(pk=exam_id)
     comps = exam.competitors.all()
+    time = exam.start_time + m*exam.miniround_time
     n = len(comps)
     for p in exam.problems.all():
         # create MiniRoundScores
         for c in comps:
-            score = Score.get(problem=p, competitor=c)
+            print(p)
+            print(c)
+            score = Score.objects.get(problem=p, competitor=c)
             mrs = MiniRoundScore(score=score, miniround=m)
             mrs.save()
         codes = [lastSub(c, p) for c in comps]
         ai_prob = p.aiproblem.first()
+        print(p)
+        print(p.aiproblem)
         if ai_prob.numplayers == 2:
             # 10 iterations = 20 games per player
             c = 10
@@ -36,7 +41,7 @@ def grade_miniround(exam_id, m):
                 for j1 in range(n):
                     j2 = (j1 + shift) % n
                     # print(j1, j2)
-                    g = AIGame(time=timezone.now(), numplayers=2, problem=ai_prob, miniround=m)
+                    g = AIGame(time=time, numplayers=2, aiproblem=ai_prob, miniround=m)
                     g.save()
                     s1 = AISubmission(game=g, seat=1, code=codes[j1], competitor=comps[j1])
                     s1.save()
@@ -58,7 +63,7 @@ def grade_miniround(exam_id, m):
                     j2 = (j1 + x) % n
                     j3 = (j1 + y) % n
                     # print(j1, j2, j3)
-                    g = AIGame(time=timezone.now(), numplayers=3, problem=ai_prob, miniround=m)
+                    g = AIGame(time=time, numplayers=3, aiproblem=ai_prob, miniround=m)
                     g.save()
                     s1 = AISubmission(game=g, seat=1, code=codes[j1], competitor=comps[j1])
                     s1.save()
@@ -67,7 +72,7 @@ def grade_miniround(exam_id, m):
                     s3 = AISubmission(game=g, seat=3, code=codes[j3], competitor=comps[j3])
                     s3.save()
         elif ai_prob.numplayers == 0:
-            g = AIGame(time=timezone.now(), numplayers=n, problem=ai_prob, miniround=m)
+            g = AIGame(time=time, numplayers=n, aiproblem=ai_prob, miniround=m)
             g.save()
             for i in range(n):
                 s = AISubmission(game=g, seat=i+1, code=codes[i], competitor=comps[i])
@@ -93,15 +98,15 @@ def check_finished_games(exam_id):
 
 
 def init_all_tasks():
+    print('init tasks')
     Task.objects.all().delete() # Clear all previous tasks
     exams = Exam.objects.all()
     for exam in exams:
         if exam.is_ai:
             exam_time = exam.end_time - exam.start_time
-            miniround_time = timedelta(minutes=1)
-            num_minirounds = exam_time // miniround_time 
-            # print(exam_time, miniround_time, num_minirounds)
+            num_minirounds = exam_time // exam.miniround_time 
+            print(num_minirounds)
             for i in range(1, num_minirounds+1):
-                if timezone.now() < exam.start_time + i*miniround_time:
-                    grade_miniround(exam.id, i, schedule=exam.start_time + i*miniround_time)
-                    # print(i)
+                if timezone.now() < exam.start_time + i*exam.miniround_time:
+                    grade_miniround(exam.id, i, schedule=exam.start_time + i*exam.miniround_time)
+                    print(i)

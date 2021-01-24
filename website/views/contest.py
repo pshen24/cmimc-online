@@ -2,13 +2,17 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 from website.models import Contest, User, Exam, Mathlete, Team
 from django.utils import timezone
+from website.tasks import init_all_tasks
 
 @login_required
 def contest_list(request):
 
     if request.method == 'POST':
-       contest = Contest.objects.get(pk=request.POST['contest_id'])
-       contest.finalize_all_teams()
+        if 'finalize_all_teams' in request.POST:
+            contest = Contest.objects.get(pk=request.POST['finalize_all_teams'])
+            contest.finalize_all_teams()
+        elif 'init_all_tasks' in request.POST:
+            init_all_tasks()
 
     user = request.user
     all_contests = Contest.objects.all()

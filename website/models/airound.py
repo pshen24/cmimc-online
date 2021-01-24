@@ -29,7 +29,7 @@ class AIGame(models.Model):
     """
     status = models.IntegerField(default=0)
     history = models.JSONField(null=True, blank=True) # after the game is played, gives the history output of the grader
-    time = models.TimeField() # when the game should be played
+    time = models.DateTimeField() # when the game should be played
     numplayers = models.IntegerField() # number of players
     aiproblem = models.ForeignKey(AIProblem, on_delete=models.CASCADE) # which problem to use
     worker = models.ForeignKey(AIGrader, null=True, blank=True, on_delete=models.SET_NULL) # which grader was used to grade this

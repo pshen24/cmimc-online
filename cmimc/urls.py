@@ -5,7 +5,6 @@ from website import views
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import url, include
-from website.tasks import init_all_tasks
 
 urlpatterns = [
     path('', views.home, name='home'),
@@ -48,5 +47,3 @@ urlpatterns = [
 
 ]
 
-# Initialize all tasks at their start time
-init_all_tasks()

@@ -27,6 +27,8 @@
   {% endfor %}
   </tbody>
 </table>
+{% elif exam.is_ai %}
+<a href="{% url 'submit' exam.id problem.problem_number %}">Submit</a>
 {% endif %}
 
 
