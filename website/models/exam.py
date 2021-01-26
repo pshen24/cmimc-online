@@ -136,3 +136,7 @@ class Exam(models.Model):
         else:
             return None
 
+    @property
+    def prob_list(self):
+        return self.problems.order_by('problem_number')
+

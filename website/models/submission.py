@@ -29,12 +29,13 @@ class Submission(models.Model):
         if g is not None:
             g.grade(self, score)
 
-    @property
-    def display_points(self):
+    def display_points(self, default='N/A'):
+        if self.points is None:
+            return default
         g = self.problem.grader
         if g is not None: # assumes optimization
-            return g.rawToString(self.points)
+            return g.display_raw(self.points)
         else:
-            return self.points
+            return str(self.points)
 
 

@@ -20,14 +20,14 @@
     <tr>
         <th scope="col">Team</th>
         {% for task in tasks %}
-        <th scope="col">Task {{ task.task_number }}
+        <th scope="col" style="white-space: nowrap">Task {{ task.task_number }}
         {% endfor %}
-        <th scope="col">Overall Score</th>
+        <th scope="col">Score</th>
     </tr>
     </thead>
     {% for r in rows %}
         <tr>
-            <td>{{ r.name }}</td>
+            <td style="word-wrap: break-word; max-width: 10rem;">{{ r.name }}</td>
             {% for task_score in r.scores %}
                 <td>{{ task_score }}</td>
             {% endfor %}

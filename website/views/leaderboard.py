@@ -12,18 +12,25 @@ def leaderboard(request, exam_id):
     if not user.can_view_leaderboard(exam):
         raise PermissionDenied("You do not have permission to view the "
                                "leaderboard for this exam")
-    problems = Problem.objects.filter(exam=exam)
 
-    comps = Competitor.objects.filter(exam=exam).order_by('-total_score')
+    problems = exam.prob_list
+    comps = exam.competitors.order_by('-total_score')
 
-    comp_info = [{
-        "name": comp.name,
-        "scores": [round(Score.objects.get(problem=p, competitor=comp).points, 1) for p in problems],
-        "total_score": round(comp.total_score, 1)
-    } for comp in comps]
+    rows = []
+    for comp in comps:
+        scores = []
+        for p in problems:
+            score = Score.objects.get(problem=p, competitor=comp)
+            scores.append(score.display_points)
+        rows.append({
+            "name": comp.name,
+            "scores": scores,
+            "total_score": comp.display_score,
+            "rank": len(rows)+1,
+        })
 
     context = {
-        'comp_info': comp_info,
+        'rows': rows,
         'problems': problems,
         'exam': exam,
     }
@@ -44,7 +51,7 @@ def problem_leaderboard(request, exam_id, problem_number):
         task_scores = []
         for task in tasks:
             ts = TaskScore.objects.get(task=task, score=score)
-            task_scores.append(ts.display_raw_points)
+            task_scores.append(ts.display_raw(default=''))
 
         rows.append({
             "name": score.competitor.name,

@@ -10,7 +10,8 @@ def all_problems(request, exam_id):
     exam = get_object_or_404(Exam, pk=exam_id)
     if not user.can_view_exam(exam):
         raise PermissionDenied('You do not have access to this page')
-    problems = exam.problems.order_by('problem_number')
+
+    problems = exam.prob_list
 
     prob_score_task_rank = []
     if user.is_mathlete:
@@ -22,7 +23,7 @@ def all_problems(request, exam_id):
             rank = Score.objects.filter(problem=problem, points__gt=score.points).count() + 1
             g = problem.grader
             if exam.is_optimization:
-                task_str = ', '.join([g.rawToString(ts.raw_points) for ts in score.taskscores.all()])
+                task_str = ', '.join([ts.display_raw() for ts in score.taskscores.all()])
             else:
                 task_str = ''
             score_str = score.display_points

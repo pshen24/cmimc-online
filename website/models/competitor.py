@@ -42,3 +42,7 @@ class Competitor(models.Model):
         else:
             return self.mathlete.user.name
 
+    @property
+    def display_score(self):
+        return str(round(self.total_score, 1))
+

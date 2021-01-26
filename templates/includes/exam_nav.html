@@ -8,7 +8,7 @@
         {% url 'all_problems' exam.id as all_problems %}
         <li><a href="{{ all_problems }}" class="no-color {% if request.get_full_path == all_problems %}active{% endif %}">All Problems</a></li>
 
-        {% for p in exam.problems.all %}
+        {% for p in exam.prob_list %}
             {% url 'view_problem' exam.id p.problem_number as p_link %}
             <li><a href="{{ p_link }}" class="no-color {% if request.get_full_path == p_link %}active{% endif %}">{{ p.problem_number }}. {{ p.name }}</a></li>
         {% endfor %}

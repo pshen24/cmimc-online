@@ -12,10 +12,14 @@ class TaskScore(models.Model):
     class Meta:
         unique_together = ['task', 'score']
 
-    @property
-    def display_raw_points(self):
+    def display_raw(self, default='N/A'):
+        if self.raw_points is None:
+            return default
         g = self.task.problem.grader
-        return g.rawToString(self.raw_points)
+        if g is not None: # assumes optimization
+            return g.display_raw(self.raw_points)
+        else:
+            return str(self.raw_points)
 
     def __str__(self):
         return '{0}, {1}, raw={2}, norm={3}'.format(str(self.task), str(self.score.competitor.name), str(self.raw_points), str(self.norm_points))

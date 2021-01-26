@@ -19,18 +19,20 @@
     <tr>
         <th scope="col">Team</th>
         {% for p in problems %}
-        <th scope="col">{{ p.name }}</th>
+        <th scope="col" style="white-space: nowrap">{{ p.name }}</th>
         {% endfor %}
-        <th scope="col">Total Score</th>
+        <th scope="col">Total</th>
+        <th scope="col">Rank</th>
     </tr>
     </thead>
-    {% for comp in comp_info %}
+    {% for r in rows %}
         <tr>
-            <td>{{ comp.name }}</td>
-            {% for score in comp.scores %}
+            <td style="word-wrap: break-word; max-width: 10rem">{{ r.name }}</td>
+            {% for score in r.scores %}
                 <td>{{ score }}</td>
             {% endfor %}
-            <td>{{ comp.total_score }}</td>
+            <td>{{ r.total_score }}</td>
+            <td>{{ r.rank }}</td>
         </tr>
     {% endfor %}
 </table>
