@@ -26,7 +26,7 @@ def leaderboard(request, exam_id):
             "name": comp.name,
             "scores": scores,
             "total_score": comp.display_score,
-            "rank": len(rows)+1,
+            "rank": comps.filter(total_score__gt=comp.total_score).count() + 1,
             "highlight": user.in_team(comp.team),
         })
 
