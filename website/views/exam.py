@@ -25,7 +25,7 @@ def all_problems(request, exam_id):
                 task_str = ', '.join([g.rawToString(ts.raw_points) for ts in score.taskscores.all()])
             else:
                 task_str = ''
-            score_str = str(round(score.points, 2))
+            score_str = score.display_points
             rank_str = '{0} out of {1}'.format(str(rank), str(num_comps))
             prob_score_task_rank.append((problem, score_str, task_str, rank_str))
 

@@ -1,0 +1,39 @@
+{% extends 'exam/exam_base.html' %}
+
+{% block exam_content %}
+
+<h1 class="mb-4"><a href="{% url 'view_problem' exam.id problem.id %}">{{ problem.name }}</a> Leaderboard</h1>
+
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item">
+      <a class="nav-link no-color" href="{% url 'leaderboard' exam.id %}">Overall</a>
+  </li>
+  {% for p in problems %}
+  <li class="nav-item">
+      <a class="nav-link no-color {% if p == problem %}active{% endif %}" href="{% url 'problem_leaderboard' exam.id p.problem_number %}">{{ p.name }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+<table class="table table-striped">
+    <thead class="thead-dark">
+    <tr>
+        <th scope="col">Team</th>
+        {% for task in tasks %}
+        <th scope="col">Task {{ task.task_number }}
+        {% endfor %}
+        <th scope="col">Overall Score</th>
+    </tr>
+    </thead>
+    {% for r in rows %}
+        <tr>
+            <td>{{ r.name }}</td>
+            {% for task_score in r.scores %}
+                <td>{{ task_score }}</td>
+            {% endfor %}
+            <td>{{ r.prob_score }}</td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+

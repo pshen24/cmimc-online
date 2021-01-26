@@ -3,12 +3,23 @@
 {% block exam_content %}
 <h1 class="mb-4">{{ exam.name }} Leaderboard</h1>
 
+<ul class="nav nav-tabs mb-4">
+  <li class="nav-item">
+      <a class="nav-link no-color active" href="{% url 'leaderboard' exam.id %}">Overall</a>
+  </li>
+  {% for p in problems %}
+  <li class="nav-item">
+      <a class="nav-link no-color" href="{% url 'problem_leaderboard' exam.id p.problem_number %}">{{ p.name }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
 <table class="table table-striped">
-    <thead class="thead-light">
+    <thead class="thead-dark">
     <tr>
         <th scope="col">Team</th>
         {% for p in problems %}
-        <th scope="col"><a href="{% url 'view_problem' exam.id p.problem_number %}">{{ p.name }}</a></th>
+        <th scope="col">{{ p.name }}</th>
         {% endfor %}
         <th scope="col">Total Score</th>
     </tr>

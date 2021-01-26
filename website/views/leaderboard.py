@@ -30,48 +30,33 @@ def leaderboard(request, exam_id):
     return render(request, 'exam/leaderboard.html', context)
 
 @login_required
-def leaderboard_problem(request, exam_id, problem_id):
+def problem_leaderboard(request, exam_id, problem_number):
     # Authentication
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
-    problem = get_object_or_404(Problem, pk=problem_id, exam=exam)
+    problem = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
 
-    comps = Competitor.objects.filter(exam=exam).order_by('-total_score')
+    tasks = problem.tasks.order_by('task_number')
+    scores = problem.scores.order_by('-points')
 
-    comp_info = []
-
-    tasks = Task.objects.filter(problem=problem)
-
-    for comp in comps:
+    rows = []
+    for score in scores:
         task_scores = []
         for task in tasks:
-            got_task_score = False
-            scores = Score.objects.filter(competitor=comp, problem = problem).order_by('-points')
-            for score in scores:
-                if not got_task_score:
-                    try:
-                        task_score = TaskScore.objects.get(task=task, score=score)
-                        task_scores.append(task_score.raw_points)
-                        got_task_score = True
-                    except:
-                        got_task_score = False
+            ts = TaskScore.objects.get(task=task, score=score)
+            task_scores.append(ts.display_raw_points)
 
-            if not got_task_score:
-                task_scores.append({
-                    "name": comp.name,
-                    "scores": "",
-                    "total_score": comp.total_score
-                })
-
-        comp_info.append({
-            "name": comp.name,
+        rows.append({
+            "name": score.competitor.name,
             "scores": task_scores,
-            "total_score": comp.total_score
+            "prob_score": score.display_points,
         })
 
     context = {
-        'comp_info': comp_info,
+        'rows': rows,
+        'problem': problem,
         'tasks': tasks,
         'exam': exam,
+        'problems': exam.problems.order_by('problem_number'),
     }
-    return render(request, 'exam/leaderboard_problem.html', context)
+    return render(request, 'exam/problem_leaderboard.html', context)

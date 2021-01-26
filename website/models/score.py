@@ -11,6 +11,10 @@ class Score(models.Model):
     def __str__(self):
         return '{0}, {1}, score={2}'.format(str(self.problem), self.competitor.name, str(self.points))
 
+    @property
+    def display_points(self):
+        return str(round(self.points, 1))
+
     class Meta:
         unique_together = ['problem', 'competitor']
 
