@@ -3,14 +3,15 @@ from django.contrib.auth.decorators import login_required
 from website.models import Contest, User, Exam, Mathlete, Team
 from django.utils import timezone
 from website.tasks import init_all_tasks
+from website.utils import update_competitors
 
 @login_required
 def contest_list(request):
 
     if request.method == 'POST':
-        if 'finalize_all_teams' in request.POST:
-            contest = Contest.objects.get(pk=request.POST['finalize_all_teams'])
-            contest.finalize_all_teams()
+        if 'update_competitors' in request.POST:
+            contest = Contest.objects.get(pk=request.POST['update_competitors'])
+            update_competitors(contest)
         elif 'init_all_tasks' in request.POST:
             init_all_tasks()
 
@@ -57,17 +58,22 @@ def contest_list(request):
     teams = Team.objects.filter(contest=c)
     member_count = [0]*10
     prog_emails = []
+    small_teams = []
     for team in teams:
         member_count[min(team.mathletes.all().count(), 9)] += 1
         for m in team.mathletes.all():
             prog_emails.append(m.user.email)
         if team.coach:
             prog_emails.append(team.coach.email)
+        if team.mathletes.all().count() < 3:
+            for m in team.mathletes.all():
+                small_teams.append(m.user.email)
 
     context = {
         'exams': all_exams,
         'emaillist': ', '.join(all_emails),
         'prog_emails': ', '.join(prog_emails),
+        'small_teams': ', '.join(small_teams),
         'ongoing': ongoing_contests,
         'upcoming': upcoming_contests,
         'past': past_contests,

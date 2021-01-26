@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 from website.models import Contest, Team, Mathlete
+from website.utils import update_competitors
 
 # TODO: handle error when user submits a duplicate team name
 # TODO: check registration period to see if new teams can still be made
@@ -24,6 +25,7 @@ def new_team(request, contest_id):
             team = Team.create(contest=contest, team_name=request.POST['teamName'], coach=None)
             team.save()
             team.mathletes.add(mathlete)
+            update_competitors(contest)
             return redirect('team_info', team_id=team.id)
     elif user.is_coach:
         if request.method == 'GET':
@@ -31,6 +33,7 @@ def new_team(request, contest_id):
         else:
             team = Team.create(contest=contest, team_name=request.POST['teamName'], coach=user)
             team.save()
+            update_competitors(contest)
             return redirect('team_info', team_id=team.id)
 
 
@@ -51,6 +54,7 @@ def join_team(request, team_id, invite_code):
             return redirect('contest_list')
         else:
             team.mathletes.add(mathlete)
+            update_competitors(contest)
             return redirect('team_info', team_id=team.id)
     else:
         # temporary fix so that coaches don't see "Server Error 500"
@@ -67,7 +71,7 @@ def team_info(request, team_id):
 
     if request.method == 'POST':
         if 'deleteTeam' in request.POST and can_edit:
-            team.delete()
+            team.delete() # cascade deletes for comps, scores, taskscores, MRscores
             return redirect('contest_list')
         elif 'removeMember' in request.POST:
             mathlete_id = request.POST['removeMember']
@@ -75,6 +79,7 @@ def team_info(request, team_id):
             team.mathletes.remove(ml)
             if team.mathletes.count() == 0 and team.coach == None:
                 team.delete()
+            update_competitors(contest)
             if user == ml.user: # removed yourself from the team
                 return redirect('contest_list')
             return redirect('team_info', team_id=team_id)

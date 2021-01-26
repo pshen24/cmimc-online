@@ -34,35 +34,6 @@ class Team(models.Model):
     class Meta:
         unique_together = ['team_name', 'contest']
 
-    def register(self):
-        from .competitor import Competitor
-        size = self.mathletes.count()
-        if size < self.contest.min_team_size or size > self.contest.max_team_size:
-            return
-        for exam in self.contest.exams.all():
-            if exam.is_team_exam:
-                c = Competitor.objects.filter(exam=exam, team=self, mathlete=None).first()
-                if c is None:
-                    c = Competitor(exam=exam, team=self, mathlete=None)
-                    c.save()
-                c.init_scores(exam)
-            else:
-                for m in self.mathletes.all():
-                    c = Competitor.objects.filter(exam=exam, team=self, mathlete=m).first()
-                    if c is None:
-                        c = Competitor(exam=exam, team=self, mathlete=m)
-                        c.save()
-                    c.init_scores(exam)
-
-        self.is_finalized = True
-        self.save()
-
-    def unregister(self):
-        for c in self.competitors.all():
-            c.delete()
-        self.is_finalized = False
-        self.save()
-
     def has_member(self, user):
         return user.is_mathlete and user.mathlete.teams.filter(pk=self.id).exists()
 

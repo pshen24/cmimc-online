@@ -9,6 +9,9 @@ class TaskScore(models.Model):
     raw_points = models.FloatField(null=True, blank=True)     # score from grader
     norm_points = models.FloatField(default=0.0)    # normalized score
 
+    class Meta:
+        unique_together = ['task', 'score']
+
     @property
     def display_raw_points(self):
         g = self.task.problem.grader
@@ -16,3 +19,4 @@ class TaskScore(models.Model):
 
     def __str__(self):
         return '{0}, {1}, raw={2}, norm={3}'.format(str(self.task), str(self.score.competitor.name), str(self.raw_points), str(self.norm_points))
+

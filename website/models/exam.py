@@ -8,6 +8,7 @@ class Exam(models.Model):
     name = models.CharField(max_length=100, unique=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
+    # miniround_start = models.DateTimeField()
     miniround_time = models.DurationField(null=True, blank=True)
 
     is_team_exam = models.BooleanField()

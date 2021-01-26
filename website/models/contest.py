@@ -53,11 +53,3 @@ class Contest(models.Model):
     def ongoing(self):
         return self.started and not self.ended
 
-    # initializes all Competitors, Scores, and TaskScores
-    # ensures exactly one score for each (problem, competitor) pair,
-    # and exactly one taskscore for each (task, score) pair
-    def finalize_all_teams(self):
-        for team in self.teams.all():
-            team.unregister() # ensure no duplicates
-            team.register()
-
