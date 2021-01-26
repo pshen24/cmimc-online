@@ -15,7 +15,7 @@
 </ul>
 
 <table class="table table-striped">
-    <thead class="thead-dark">
+    <thead class="table-dark">
     <tr>
         <th scope="col">Team</th>
         {% for p in problems %}
@@ -26,7 +26,7 @@
     </tr>
     </thead>
     {% for r in rows %}
-        <tr>
+        <tr {% if r.highlight %}class="table-success"{% endif %}>
             <td style="word-wrap: break-word; max-width: 10rem">{{ r.name }}</td>
             {% for score in r.scores %}
                 <td>{{ score }}</td>

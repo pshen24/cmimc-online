@@ -27,6 +27,7 @@ def leaderboard(request, exam_id):
             "scores": scores,
             "total_score": comp.display_score,
             "rank": len(rows)+1,
+            "highlight": user.in_team(comp.team),
         })
 
     context = {
@@ -57,6 +58,7 @@ def problem_leaderboard(request, exam_id, problem_number):
             "name": score.competitor.name,
             "scores": task_scores,
             "prob_score": score.display_points,
+            "highlight": user.in_team(score.competitor.team),
         })
 
     context = {

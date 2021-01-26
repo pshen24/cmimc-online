@@ -62,6 +62,14 @@ class User(AbstractUser):
         else: # staff
             return False
 
+    def in_team(self, team):
+        if self.is_mathlete:
+            return self.mathlete in team.mathletes.all()
+        elif self.is_coach:
+            return self == team.coach
+        else: # staff
+            return False
+
     # TODO: update for coaches
     # whether the user is registered for this contest
     # Do we need both is_registered and has_team?

@@ -26,7 +26,7 @@
     </tr>
     </thead>
     {% for r in rows %}
-        <tr>
+        <tr {% if r.highlight %}class="table-success"{% endif %}>
             <td style="word-wrap: break-word; max-width: 10rem;">{{ r.name }}</td>
             {% for task_score in r.scores %}
                 <td>{{ task_score }}</td>
