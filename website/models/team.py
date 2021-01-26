@@ -8,8 +8,6 @@ import random
 class Team(models.Model):
     contest = models.ForeignKey(Contest, related_name='teams', on_delete=models.CASCADE)
     mathletes = models.ManyToManyField(Mathlete, related_name='teams')
-    is_finalized = models.BooleanField(default=False, help_text=_('The members of a \
-            registered team are finalized and cannot be edited'))
     coach = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, \
                               related_name='teams', on_delete=models.SET_NULL)
     team_name = models.CharField(max_length=40)
@@ -73,5 +71,9 @@ class Team(models.Model):
         if not self.mathletes.exists():
             return 'No students'
         return ', '.join([m.user.name for m in self.mathletes.all()])
+
+    @property
+    def is_finalized(self):
+        return self.contest.locked
 
 

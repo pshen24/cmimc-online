@@ -59,7 +59,7 @@ class User(AbstractUser):
             return self.mathlete.teams.filter(contest=contest).exists()
         elif self.is_coach:
             return self.teams.filter(contest=contest).exists()
-        else:
+        else: # staff
             return False
 
     # TODO: update for coaches
@@ -132,7 +132,7 @@ class User(AbstractUser):
     def can_create_team(self, contest):
         if self.is_staff:
             return False
-        if contest.reg_ended:
+        if contest.locked:
             return False
         if contest.is_private and not self.is_tester:
             return False
