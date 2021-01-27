@@ -35,3 +35,5 @@ def mini_events(request):
 def resources(request):
     return render(request, 'general/resources.html')
 
+def updates(request):
+    return render(request, 'general/updates.html')

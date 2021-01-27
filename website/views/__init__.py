@@ -1,4 +1,4 @@
-from .general_info import home, math_info, math_sample_problems, math_schedule, prog_info, prog_sample_problems, prog_schedule, reg_info, faq, resources
+from .general_info import home, math_info, math_sample_problems, math_schedule, prog_info, prog_sample_problems, prog_schedule, reg_info, faq, resources, updates
 from .team import new_team, join_team, team_info, coach_teams
 from .contest import contest_list
 from .problem import view_problem

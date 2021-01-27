@@ -19,6 +19,7 @@ urlpatterns = [
     path('programming/resources', views.resources, name='resources'),
     path('registration', views.reg_info, name='reg_info'),
     path('faq', views.faq, name='faq'),
+    path('programming/updates', views.updates, name='updates'),
 
     path('admin', admin.site.urls),
     

@@ -21,6 +21,7 @@
 	  {% url 'faq' as url_faq %}
       {% url 'mini_events' as pme %}
 	  {% url 'resources' as pr %}
+	  {% url 'updates' as pu %}
       {% with path=request.get_full_path %}
 	  <ul class="navbar-nav mr-auto ml-md-3">
       {% if user.is_authenticated %}
@@ -39,7 +40,7 @@
         </ul>
       </li>
       <li class="nav-item dropdown">
-        <a class="nav-link no-color dropdown-toggle {% if path == pi or path == psp or path == ps or path == pme or path == pr %}active{% endif %}" href="#" id="programmingDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+        <a class="nav-link no-color dropdown-toggle {% if path == pi or path == psp or path == ps or path == pme or path == pr or path == pu %}active{% endif %}" href="#" id="programmingDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
           Programming
         </a>
         <ul class="dropdown-menu" aria-labelledby="programmingDropdown">
@@ -48,6 +49,7 @@
           <li><a class="dropdown-item no-color {% if path == ps %}active{% endif %}" href="{{ ps }}">Schedule</a></li>
           <li><a class="dropdown-item no-color {% if path == pme %}active{% endif %}" href="{{ pme }}">Mini Events</a></li>
           <li><a class="dropdown-item no-color {% if path == pr %}active{% endif %}" href="{{ pr }}">Resources</a></li>
+          <li><a class="dropdown-item no-color {% if path == pu %}active{% endif %}" href="{{ pu }}">Updates</a></li>
         </ul>
       </li>
 
