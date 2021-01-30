@@ -44,5 +44,5 @@ class Competitor(models.Model):
 
     @property
     def display_score(self):
-        return str(round(self.total_score, 1))
+        return str(round(self.total_score * 100, 2))
 

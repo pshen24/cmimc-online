@@ -8,8 +8,10 @@ class Exam(models.Model):
     name = models.CharField(max_length=100, unique=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    # miniround_start = models.DateTimeField()
+    miniround_start = models.DateTimeField()
     miniround_time = models.DurationField(null=True, blank=True)
+    display_miniround = models.IntegerField(default=0)
+    num_grace_minirounds = models.IntegerField(default=0)
 
     is_team_exam = models.BooleanField()
     
@@ -139,4 +141,21 @@ class Exam(models.Model):
     @property
     def prob_list(self):
         return self.problems.order_by('problem_number')
+
+    @property
+    def num_minirounds(self):
+        return (self.end_time - self.miniround_start) // self.miniround_time + 1
+
+    # the time that the ith miniround ends, and gets graded
+    # i is 1-indexed
+    def miniround_end_time(self, i):
+        return self.miniround_start + (i-1) * self.miniround_time
+
+    @cached_property
+    def prev_miniround(self):
+        if self._now < self.miniround_start:
+            return 0
+        return (self._now - self.miniround_start) // self.miniround_time + 1
+
+
 

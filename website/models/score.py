@@ -13,7 +13,7 @@ class Score(models.Model):
 
     @property
     def display_points(self):
-        return str(round(self.points, 1))
+        return str(round(self.points * 100, 2))
 
     class Meta:
         unique_together = ['problem', 'competitor']

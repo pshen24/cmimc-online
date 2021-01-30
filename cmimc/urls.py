@@ -38,6 +38,8 @@ urlpatterns = [
     path('exam/<int:exam_id>', views.all_problems, name='all_problems'),
     path('exam/<int:exam_id>/leaderboard', views.leaderboard, name='leaderboard'),
     path('exam/<int:exam_id>/leaderboard/<int:problem_number>', views.problem_leaderboard, name='problem_leaderboard'),
+    path('exam/<int:exam_id>/miniround-scores', views.miniround_scores, name='miniround_scores'),
+    path('exam/<int:exam_id>/matches/<int:problem_number>', views.match_results, name='match_results'),
     path('exam/<int:exam_id>/problem/<int:problem_number>', views.view_problem, name='view_problem'),
     path('exam/<int:exam_id>/problem/<int:problem_number>/submit', views.submit, name='submit'),
     path('exam/<int:exam_id>/problem/<int:problem_number>/submit/task/<int:task_number>', views.submit, name='submit'),
@@ -46,5 +48,8 @@ urlpatterns = [
     path('submission/<int:submission_id>', views.view_submission, name='view_submission'),
     path('resubmit/<int:submission_id>', views.resubmit, name='resubmit'),
 
+    path('download/match/<int:aisubmission_id>', views.match_replay, name='match_replay'),
+    path('download/starter-file/<int:aiproblem_id>', views.ai_starter_file, name='ai_starter_file'),
+    path('download/visualizer/<int:aiproblem_id>', views.ai_visualizer, name='ai_visualizer'),
 ]
 

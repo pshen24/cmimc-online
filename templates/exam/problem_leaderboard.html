@@ -4,6 +4,7 @@
 
 <h1 class="mb-4"><a href="{% url 'view_problem' exam.id problem.id %}">{{ problem.name }}</a> Leaderboard</h1>
 
+{% if exam.is_optimization %}
 <ul class="nav nav-tabs mb-4">
   <li class="nav-item">
       <a class="nav-link no-color" href="{% url 'leaderboard' exam.id %}">Overall</a>
@@ -14,6 +15,7 @@
   </li>
   {% endfor %}
 </ul>
+{% endif %}
 
 <table class="table table-striped">
     <thead class="thead-dark">

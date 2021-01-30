@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 
 from website.forms import UserCreationForm, UserChangeForm
-from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score, Task, TaskScore, AIGrader, AIProblem, AIGame, AISubmission, MiniRoundScore
+from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score, Task, TaskScore, AIGrader, AIProblem, AIGame, AISubmission, MiniRoundScore, MiniRoundQueue, MiniRoundTotal
 
 
 class UserAdmin(DefaultUserAdmin):
@@ -22,7 +22,7 @@ class UserAdmin(DefaultUserAdmin):
         ),
     )
     search_fields = ('email', 'first_name', 'last_name', 'full_name')
-    ordering = ('-pk',)
+    ordering = ('email',)
 
 
 class TeamAdmin(admin.ModelAdmin):
@@ -46,4 +46,6 @@ admin.site.register(AIProblem)
 admin.site.register(AIGame)
 admin.site.register(AISubmission)
 admin.site.register(MiniRoundScore)
+admin.site.register(MiniRoundQueue)
+admin.site.register(MiniRoundTotal)
 

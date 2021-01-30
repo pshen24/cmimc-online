@@ -48,23 +48,44 @@
 <h3>Small Teams</h3>
 <p>{{ small_teams }}</p>
 
-<h3>Update Competitors</h3>
+<h3>Update Contest</h3>
 <hr class="red_line mb-4"/>
-<p>(also updates scores, task scores, and miniround scores)</p>
+<p>(updates competitors scores, task scores, and miniround scores)</p>
 
 <form method="post" class="mb-4">
       {% csrf_token %}
       <div class="form-group">
-        <input type="number" class="form-contest-id" name="update_competitors">
+        <input type="number" class="form-contest-id" name="update_contest">
       </div>
-      <button type="submit" class="btn btn-primary">Update Competitors</button>
+      <button type="submit" class="btn btn-primary">Update Contest</button>
 </form>
+
+
+<h3>Reset Contest</h3>
+<hr class="red_line mb-4"/>
+<p>(deletes all competitors, scores, task scores, and miniround scores)</p>
+
+<form method="post" class="mb-4">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="number" class="form-contest-id" name="reset_contest">
+      </div>
+      <button type="submit" class="btn btn-primary">Reset Contest</button>
+</form>
+
 
 <h3>Init all tasks</h3>
 <hr class="red_line mb-4"/>
-<form method="post">
+<form method="post" class="mb-4">
       {% csrf_token %}
       <button type="submit" class="btn btn-primary" name="init_all_tasks">Init All Tasks</button>
+</form>
+
+<h3>Regrade Games</h3>
+<hr class="red_line mb-4"/>
+<form method="post" class="mb-4">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-primary" name="regrade_games">Regrade Games</button>
 </form>
 
 {% endif %}

@@ -1,0 +1,35 @@
+{% extends 'exam/exam_base.html' %}
+
+{% block exam_content %}
+<h1 class="mb-3">Match Results</h1>
+
+<ul class="nav nav-tabs mb-3">
+  {% for p in problems %}
+  <li class="nav-item">
+      <a class="nav-link no-color {% if p == problem %}active{% endif %}" href="{% url 'match_results' exam.id p.problem_number %}">{{ p.name }}</a>
+  </li>
+  {% endfor %}
+</ul>
+
+<p class="mb-4">To view the match replays, download and run this <a href="{% url 'ai_visualizer' aiprob.id %}">visualizer</a>.</p>
+
+<table class="table table-striped">
+    <thead class="table-dark">
+    <tr>
+        <th scope="col">Miniround</th>
+        <th scope="col">Score</th>
+        <th scope="col">Submission</th>
+        <th scope="col">Replay</th>
+    </tr>
+    </thead>
+    {% for r in rows %}
+        <tr>
+            <td>{{ r.miniround }}</td>
+            <td>{{ r.score }}</td>
+            <td>{% if r.submission %}<a href="{% url 'view_submission' r.submission.id %}">View Submission</a>{% endif %}</td>
+            <td><a href="{% url 'match_replay' r.aisub.id %}">Download Replay</a></td>
+        </tr>
+    {% endfor %}
+</table>
+{% endblock %}
+

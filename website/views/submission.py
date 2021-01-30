@@ -4,6 +4,7 @@ from website.models import Exam, Competitor, Submission
 from website.forms import ViewOnlyEditorForm
 from django.core.exceptions import PermissionDenied
 
+
 @login_required
 def all_submissions(request, exam_id):
     user = request.user
@@ -46,3 +47,5 @@ def view_submission(request, submission_id):
         return render(request, 'submission/view_submission_ai.html', context)
     else:
         return HttpResponse('Error: Only optimization and AI rounds are supported right now')
+
+

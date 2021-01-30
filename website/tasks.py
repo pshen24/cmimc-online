@@ -1,37 +1,29 @@
 from background_task import background
 from django.utils import timezone
-from website.models import Exam, AIGame, AISubmission, Submission, Score, MiniRoundScore
+from website.models import Exam, AIGame, AISubmission, Submission, Score, MiniRoundScore, MiniRoundQueue
 from background_task.models import Task
 from datetime import timedelta
+from website.utils import log, update_ai_leaderboard
 
 
-
-
-def lastSub(competitor, problem):
-    sub = competitor.submissions.filter(problem=problem).order_by("-submit_time").first()
+def lastSub(competitor, problem, time):
+    sub = competitor.submissions.filter(problem=problem, submit_time__lte=time).order_by("-submit_time").first()
     if sub is None:
         return ''
     else:
         return sub.text
 
-# miniround m is graded 5*m minutes after exam starts (1 <= n <= 36)
+
+# miniround m is graded 5*m minutes after exam starts (1 <= m <= 36)
 @background
 def grade_miniround(exam_id, m):
-    # print("Grading miniround, time = ", timezone.now())
     exam = Exam.objects.get(pk=exam_id)
     comps = exam.competitors.all()
-    time = exam.start_time + m*exam.miniround_time
+    time = exam.miniround_end_time(m)
     n = len(comps)
+    games_added = 0
     for p in exam.problems.all():
-        # create MiniRoundScores
-        for c in comps:
-            score = Score.objects.get(problem=p, competitor=c)
-            mrs = MiniRoundScore.objects.filter(score=score, miniround=m).first()
-            if mrs is None:
-                mrs = MiniRoundScore(score=score, miniround=m)
-            mrs.points = 0
-            mrs.save()
-        codes = [lastSub(c, p) for c in comps]
+        codes = [lastSub(c, p, time) for c in comps]
         ai_prob = p.aiproblem.first()
         if ai_prob.numplayers == 2:
             # 10 iterations = 20 games per player
@@ -40,13 +32,15 @@ def grade_miniround(exam_id, m):
                 shift = i % (n-1) + 1
                 for j1 in range(n):
                     j2 = (j1 + shift) % n
-                    # print(j1, j2)
-                    g = AIGame(time=time, numplayers=2, aiproblem=ai_prob, miniround=m)
+                    g = AIGame(status=-1, time=time, numplayers=2, aiproblem=ai_prob, miniround=m)
                     g.save()
                     s1 = AISubmission(game=g, seat=1, code=codes[j1], competitor=comps[j1])
                     s1.save()
                     s2 = AISubmission(game=g, seat=2, code=codes[j2], competitor=comps[j2])
                     s2.save()
+                    g.status = 0    # add to queue after submissions are made
+                    g.save()
+                    games_added += 1
         elif ai_prob.numplayers == 3:
             # 7 iterations = 21 games per player
             c = 7
@@ -62,8 +56,7 @@ def grade_miniround(exam_id, m):
                 for j1 in range(n):
                     j2 = (j1 + x) % n
                     j3 = (j1 + y) % n
-                    # print(j1, j2, j3)
-                    g = AIGame(time=time, numplayers=3, aiproblem=ai_prob, miniround=m)
+                    g = AIGame(status=-1, time=time, numplayers=3, aiproblem=ai_prob, miniround=m)
                     g.save()
                     s1 = AISubmission(game=g, seat=1, code=codes[j1], competitor=comps[j1])
                     s1.save()
@@ -71,12 +64,21 @@ def grade_miniround(exam_id, m):
                     s2.save()
                     s3 = AISubmission(game=g, seat=3, code=codes[j3], competitor=comps[j3])
                     s3.save()
+                    g.status = 0    # add to queue after submissions are made
+                    g.save()
+                    games_added += 1
         elif ai_prob.numplayers == 0:
-            g = AIGame(time=time, numplayers=n, aiproblem=ai_prob, miniround=m)
+            g = AIGame(status=-1, time=time, numplayers=n, aiproblem=ai_prob, miniround=m)
             g.save()
             for i in range(n):
                 s = AISubmission(game=g, seat=i+1, code=codes[i], competitor=comps[i])
                 s.save()
+            g.status = 0    # add to queue after submissions are made
+            g.save()
+            games_added += 1
+    mrq = MiniRoundQueue.objects.get(exam=exam, miniround=m)
+    mrq.num_games = games_added
+    mrq.save()
 
 
 @background(schedule=0)
@@ -86,40 +88,43 @@ def async_grade(submission_id):
 
 
 @background
-def check_finished_games(exam_id):
-    exam = Exam.objects.get(pk=exam_id)
-    games = AIGame.objects.filter(status=2, aiproblem__problem__exam=exam)
+def check_finished_games():
+    from website.models import MiniRoundQueue
+    games = AIGame.objects.filter(status=2)
     for g in games:
+        prob = g.aiproblem.problem
+        exam = prob.exam
         m = g.miniround
         for aisub in g.aisubmissions.all():
             comp = aisub.competitor
-            prob = aisub.game.aiproblem.problem
             score = Score.objects.get(problem=prob, competitor=comp)
             mrs = MiniRoundScore.objects.filter(score=score, miniround=m).first()
             if mrs is None:
-                mrs = MiniRoundScore(score=score, miniround=m)
-            mrs.points += aisub.score
-            mrs.save()
+                log(error='MiniRoundScore.get returned None in check_finished_games', 
+                        time=str(timezone.now()), score=str(score), miniround=m)
+            else:
+                if aisub.score is None:
+                    log(error='aisub.score is None in check_finished_games', 
+                            time=str(timezone.now()), aisub_id=str(aisub.id))
+                mrs.points += aisub.score
+                mrs.games += 1
+                mrs.save()
         g.status=4
         g.save()
-
-    # update leaderboard
-    for p in exam.problems.all():
-        for c in exam.competitors.all():
-            s = Score.objects.get(problem=p, competitor=c)
-            s.points = sum([mrs.points for mrs in s.miniroundscores.all()])
-            s.save()
+        mrq = MiniRoundQueue.objects.get(exam=exam, miniround=m)
+        mrq.num_games -= 1
+        mrq.save()
+        if mrq.num_games == 0: # only happens once, for the last game in the miniround
+            update_ai_leaderboard(exam, m)
 
 
 def init_all_tasks():
-    print('init tasks')
     Task.objects.all().delete() # Clear all previous tasks
     exams = Exam.objects.all()
+    check_finished_games(schedule=0, repeat=10)
     for exam in exams:
         if exam.is_ai:
-            check_finished_games(exam.id, repeat=10, repeat_until=exam.end_time + timedelta(minutes=1))
-            exam_time = exam.end_time - exam.start_time
-            num_minirounds = exam_time // exam.miniround_time 
-            for i in range(1, num_minirounds+1):
-                if timezone.now() < exam.start_time + i*exam.miniround_time:
-                    grade_miniround(exam.id, i, schedule=exam.start_time + i*exam.miniround_time)
+            after_end = exam.end_time + timedelta(minutes=5)
+            for i in range(1, exam.num_minirounds+1):
+                if timezone.now() < exam.miniround_end_time(i):
+                    grade_miniround(exam.id, i, schedule=exam.miniround_end_time(i))

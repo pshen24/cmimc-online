@@ -10,4 +10,4 @@ from .submission import Submission
 from .score import Score
 from .airound import AIGrader, AIProblem, AIGame, AISubmission
 from .taskscore import TaskScore
-from .miniroundscore import MiniRoundScore
+from .miniroundscore import MiniRoundScore, MiniRoundQueue, MiniRoundTotal

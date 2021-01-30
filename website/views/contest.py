@@ -3,17 +3,22 @@ from django.contrib.auth.decorators import login_required
 from website.models import Contest, User, Exam, Mathlete, Team
 from django.utils import timezone
 from website.tasks import init_all_tasks
-from website.utils import update_competitors
+from website.utils import update_contest, reset_contest, regrade_games, log
 
 @login_required
 def contest_list(request):
 
     if request.method == 'POST':
-        if 'update_competitors' in request.POST:
-            contest = Contest.objects.get(pk=request.POST['update_competitors'])
-            update_competitors(contest)
+        if 'update_contest' in request.POST:
+            contest = Contest.objects.get(pk=request.POST['update_contest'])
+            update_contest(contest)
+        elif 'reset_contest' in request.POST:
+            contest = Contest.objects.get(pk=request.POST['reset_contest'])
+            reset_contest(contest)
         elif 'init_all_tasks' in request.POST:
             init_all_tasks()
+        elif 'regrade_games' in request.POST:
+            regrade_games()
 
     user = request.user
     all_contests = Contest.objects.all()
@@ -47,36 +52,39 @@ def contest_list(request):
     
     # Get all exams
     all_exams = Exam.objects.all()
-
-    # Temporary email list (only visible to staff)
-    all_users = User.objects.all()
     all_emails = []
-    for user in all_users:
-        all_emails.append(user.email)
-
-    c = Contest.objects.get(pk=1) # programming contest
-    teams = Team.objects.filter(contest=c)
-    member_count = [0]*10
     prog_emails = []
     small_teams = []
-    for team in teams:
-        member_count[min(team.mathletes.all().count(), 9)] += 1
-        for m in team.mathletes.all():
-            prog_emails.append(m.user.email)
-        if team.coach:
-            prog_emails.append(team.coach.email)
-        if team.mathletes.all().count() < 3:
+    member_count = [0]*10
+
+    if user.is_staff:
+
+        # Temporary email list (only visible to staff)
+        all_users = User.objects.all()
+        for user in all_users:
+            all_emails.append(user.email)
+
+        c = Contest.objects.get(pk=1) # programming contest
+        teams = Team.objects.filter(contest=c)
+        for team in teams:
+            member_count[min(team.mathletes.all().count(), 9)] += 1
             for m in team.mathletes.all():
-                small_teams.append(m.user.email)
+                prog_emails.append(m.user.email)
+            if team.coach:
+                prog_emails.append(team.coach.email)
+            if team.mathletes.all().count() < 3:
+                for m in team.mathletes.all():
+                    small_teams.append(m.user.email)
 
     context = {
         'exams': all_exams,
-        'emaillist': ', '.join(all_emails),
-        'prog_emails': ', '.join(prog_emails),
-        'small_teams': ', '.join(small_teams),
         'ongoing': ongoing_contests,
         'upcoming': upcoming_contests,
         'past': past_contests,
+        # staff only
+        'emaillist': ', '.join(all_emails),
+        'prog_emails': ', '.join(prog_emails),
+        'small_teams': ', '.join(small_teams),
         'member_count': member_count,
     }
     return render(request, 'contest_list.html', context)

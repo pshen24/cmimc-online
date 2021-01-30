@@ -25,7 +25,7 @@ def new_team(request, contest_id):
             team = Team.create(contest=contest, team_name=request.POST['teamName'], coach=None)
             team.save()
             team.mathletes.add(mathlete)
-            update_competitors(contest)
+            update_competitors(team)
             return redirect('team_info', team_id=team.id)
     elif user.is_coach:
         if request.method == 'GET':
@@ -33,7 +33,7 @@ def new_team(request, contest_id):
         else:
             team = Team.create(contest=contest, team_name=request.POST['teamName'], coach=user)
             team.save()
-            update_competitors(contest)
+            update_competitors(team)
             return redirect('team_info', team_id=team.id)
 
 
@@ -54,7 +54,7 @@ def join_team(request, team_id, invite_code):
             return redirect('contest_list')
         else:
             team.mathletes.add(mathlete)
-            update_competitors(contest)
+            update_competitors(team)
             return redirect('team_info', team_id=team.id)
     else:
         # temporary fix so that coaches don't see "Server Error 500"
@@ -79,7 +79,7 @@ def team_info(request, team_id):
             team.mathletes.remove(ml)
             if team.mathletes.count() == 0 and team.coach == None:
                 team.delete()
-            update_competitors(contest)
+            update_competitors(team)
             if user == ml.user: # removed yourself from the team
                 return redirect('contest_list')
             return redirect('team_info', team_id=team_id)

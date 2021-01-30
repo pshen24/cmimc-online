@@ -1,7 +1,41 @@
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from website.models import Exam, Problem, Score, Competitor, TaskScore, Task
+from website.models import Exam, Problem, Score, Competitor, TaskScore, Task, MiniRoundTotal, MiniRoundScore
+
+
+
+def ai_leaderboard(request, exam):
+    user = request.user
+    problems = exam.prob_list
+    m = exam.display_miniround
+    mrts = MiniRoundTotal.objects.filter(competitor__exam=exam, miniround=m).order_by('-total_score')
+
+    rows = []
+    for mrt in mrts:
+        c = mrt.competitor
+        scores = []
+        for p in problems:
+            s = Score.objects.get(problem=p, competitor=c)
+            mrs = MiniRoundScore.objects.get(score=s, miniround=m)
+            scores.append('.2f'.format(mrs.weighted_avg))
+
+        rows.append({
+            "name": c.name,
+            "scores": scores,
+            "total_score": '.2f'.format(mrt.total_score),
+            "rank": mrts.filter(total_score__gt=mrt.total_score).count() + 1,
+            "highlight": user.in_team(c.team),
+        })
+
+    context = {
+        'rows': rows,
+        'problems': problems,
+        'exam': exam,
+    }
+    return render(request, 'exam/ai_leaderboard.html', context)
+
+
 
 
 @login_required
@@ -12,6 +46,9 @@ def leaderboard(request, exam_id):
     if not user.can_view_leaderboard(exam):
         raise PermissionDenied("You do not have permission to view the "
                                "leaderboard for this exam")
+
+    if exam.is_ai:
+        return ai_leaderboard(request, exam)
 
     problems = exam.prob_list
     comps = exam.competitors.order_by('-total_score')

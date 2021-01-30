@@ -8,17 +8,55 @@
 <div class="row mb-4">
     <div class="col">
         <h1>Rounds</h1>
-        <h5>AI Round</h5>
+        <h4>AI Round</h4>
         <p>
             In the AI Round, you and your team write programs which play mini games (such as tic-tac-toe) against other teams. Every 5 minutes (after a 30 minute grace period), your most recent submission will be run against the programs of the other teams, and your scores will be updated on a live leaderboard. You'll be able to view your games and update your strategies accordingly! You will have 3 hours to write and improve your code for 3 different mini games. All code should be written in Python 3.
         </p>
-        <h5>Optimization Round</h5>
+
+        <h4>Optimization Round</h4>
         <p>
             In the Optimization Round, you and your team will work on 3 optimization-based problems. These problems are not intended to be solved perfectly - instead, you will be competing against other teams to get the closest approximation to an optimal solution. These problems will have a mathy flair and require some computational tools/thinking to get a decent answer. You will have 3 hours to gradually optimize your solutions. This round will have 3 problems, each with different test cases. Your score for each problem will be determined by your best performing submission, and displayed on a live leaderboard. You can use any programming language for this round, since you will only be submitting a text output.
         </p>
         <p>For both rounds, we will provide starter code to help you get started on each of the problems.</p>
-    </div>
 
+        <h1>Detailed Rules</h1>
+        <h4>AI Round</h4>
+        <p>This is a 3 hour long round, and all submissions must be written in Python 3. You can only import modules from the Python Standard Library.</p>
+
+        <p>The first 30 minutes of the round are denoted as the grace period. You can submit during this time, and we will grade your code, but these submissions will have a weight of 0. Essentially, this means that the leaderboard will not start until after the grace period, but you will be able to download the game history and see it in the visualizer if that helps you work through the problem. This is designed so that you have time to implement your ideas and not feel rushed to just submit something to get points.</p>
+
+        <p>In general, you can submit your code at any point in the three hour period.</p>
+
+        <p>Beginning from the 30 minute mark, every 5 minutes is denoted a mini-round. This means that we will grade your most recent submission every 5 minutes. We have a scheduler implemented such that in every mini-round, your team and every other team will play each other an equal number of times regardless of the problem.</p>
+
+        <p>The problem descriptions outline the scoring formula we implement for each problem. This will compute a raw score per mini-round per each of the three games. We then sum up your scores in all mini-rounds up to that point per game with round ‘k’ contributing a weight ‘k^0.5’ to the cumulative score. We then normalize your cumulative scores per game by setting the highest score to 100. In other words, the total score is out of 300. </p>
+
+        <p>This is why you may see numbers of varying size on the leaderboard underneath each game or in each mini-round, but the total scores are always bounded by 0 and 300.</p>
+
+        <p>If you have not yet submitted code for a problem, we will implement a default strategy as described in the problem statements. The starter code comes with a simple, random strategy.</p>
+
+        <p class="font-weight-bold">How to use the starter code and visualizer:</p>
+
+        <p>The starter code is fully commented, describing the input data and format, output format, where you write your code, and how to test your bots against each other locally (you can use the default, random bot or any other bots you write). The starter code also has a built in local visualizer that will print out a text visualization of each game to your console.</p>
+
+        <p>To run the visualizer file that you download from the Match Results page, ensure that the visualizer file and the game replay history file are in the same folder. The game history is represented as a JSON file that the visualizer parses and visualizes for you. By running the visualizer file, you will be able to see what happened in a game you played in that mini round.</p>
+
+        <h4>Optimization Round</h4>
+
+        <p>This is a 3 hour round, and your code can be written in any language you want. You will submit a .txt file in the format specified for each task in each problem statement. Our graders will then read in your text file and compute a score using the scoring formula specified in the problem statements.</p>
+
+        <p>This gives you your raw score for that task. For each task, the scores are normalized to be in the range [0, 100], with the current best submission getting 100 points. This ensures that tasks are weighted equally. Your score for a problem is the average of these normalized scores for the corresponding tasks. This is what gets displayed on the leaderboard. For example, if you have the best score in one out of four tasks and have no submissions for the other three, your score for that problem would be (100+0+0+0)/4 = 25.</p>
+ 
+        <p class="font-weight-bold">How to use the starter code:</p>
+
+        <p>You can download a starter file in either Python or C++ though you may use any other language or tool that you want to solve these problems. The starter code reads in the input file that you download for each task (note that the input has to be in the same folder as the starter file, and you will need to type the name of the input file into the designated place in the starter file). The starter file also writes to a .txt output file, but it will not check that the output is in the format required by the problem statement. Also commented is the region in which you can write your own code logic to solve/approximate a solution for each task.</p>
+
+        <p class="font-weight-bold">General Philosophy for the Optimization Round:</p>
+
+        <p>You can adopt any strategy you want for these problems. This means that for the smaller tasks, you can solve the problem by hand, picture, calculator, your favorite computational tool etc. to get a feel for the problem or even to find the most optimal solution! These problems are designed to draw on some problem solving to be able to design a good algorithm for the larger test cases. This also means that you can use a different, custom strategy for each task. In particular, feel free to try out different ideas or write different code depending on the task/size of the input.</p>
+
+
+    </div>
 
     <div class="col-12 col-md-auto">
         {% include 'includes/important_dates.html' %}
