@@ -53,3 +53,4 @@ urlpatterns = [
     path('download/visualizer/<int:aiproblem_id>', views.ai_visualizer, name='ai_visualizer'),
 ]
 
+

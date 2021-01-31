@@ -64,11 +64,20 @@ def make_submission(request, exam, problem, task=None):
         text=text,
         task=task,
     )
+    if exam.is_optimization:
+        submission.status = 0       # add to grading queue
+    else:
+        submission.status = 4       # don't put in queue
     submission.save()
     # grade the new submission
-    print('making task')
-    async_grade(submission.id)
-    print('made task')
+    # async_grade(submission.id)
+    '''
+    delayed = timezone.now() + timedelta(minutes=5)
+    if delayed > exam.end_time:
+        async_grade(submission.id, schedule=delayed)
+    else:
+        async_grade(submission.id)
+    '''
     return redirect('view_submission', submission_id=submission.id)
 
 

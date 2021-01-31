@@ -118,6 +118,43 @@ def check_finished_games():
             update_ai_leaderboard(exam, m)
 
 
+@background
+def check_graded_submissions():
+    subs = AISubmission.objects.filter(status=2)
+    for sub in subs:
+        p = sub.problem
+        t = sub.task
+        c = sub.competitor
+        s = Score.objects.get(problem=p, competitor=c)
+        ts = TaskScore.objects.get(task=t, score=s)
+        g = p.grader
+        if g.better(sub.points, ts.raw_points):
+            ts.raw_points = raw_points
+            ts.save()
+
+            if self.better(raw_points, task.best_raw_points):
+                task.best_raw_points = raw_points
+                task.save()
+                for ts in task.taskscores.all():
+                    ts.norm_points = self.normalize(ts.raw_points, task.best_raw_points)
+                    ts.save()
+                    s = ts.score
+                    norms = [ts2.norm_points for ts2 in s.taskscores.all()]
+                    s.points = sum(norms)/len(norms)
+                    ts.score.save()
+                    ts.score.competitor.update_total_score()
+            else:
+                taskscore.norm_points = self.normalize(raw_points, task.best_raw_points)
+                taskscore.save()
+                norms = [ts.norm_points for ts in score.taskscores.all()]
+                score.points = sum(norms)/len(norms)
+                score.save()
+                score.competitor.update_total_score()
+
+
+
+
+
 def init_all_tasks():
     Task.objects.all().delete() # Clear all previous tasks
     exams = Exam.objects.all()

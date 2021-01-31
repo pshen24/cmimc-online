@@ -106,8 +106,8 @@ class User(AbstractUser):
     def can_view_exam(self, exam):
         if self.is_staff:
             return True
-        if exam.ended:
-            return True     # anyone can view a past contest
+        if exam.ended: # changed temporarily
+            return False     # anyone can view a past contest
         if exam.ongoing and self.has_team(exam.contest):
             return True     # you need to be registered for an ongoing contest
         return False

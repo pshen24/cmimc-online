@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from website.models import Exam, Problem, Score, Competitor, TaskScore, Task, MiniRoundTotal, MiniRoundScore
+from website.utils import log
 
 
 
@@ -18,12 +19,12 @@ def ai_leaderboard(request, exam):
         for p in problems:
             s = Score.objects.get(problem=p, competitor=c)
             mrs = MiniRoundScore.objects.get(score=s, miniround=m)
-            scores.append('.2f'.format(mrs.weighted_avg))
+            scores.append(f'{mrs.weighted_avg:.2f}')
 
         rows.append({
             "name": c.name,
             "scores": scores,
-            "total_score": '.2f'.format(mrt.total_score),
+            "total_score": f'{mrt.total_score:.2f}',
             "rank": mrts.filter(total_score__gt=mrt.total_score).count() + 1,
             "highlight": user.in_team(c.team),
         })
@@ -43,6 +44,7 @@ def leaderboard(request, exam_id):
     # Authentication
     user = request.user
     exam = get_object_or_404(Exam, pk=exam_id)
+    log(user=str(user), exam=exam_id, end=exam.ended, can_view=user.can_view_exam(exam), cvl=user.can_view_leaderboard(exam))
     if not user.can_view_leaderboard(exam):
         raise PermissionDenied("You do not have permission to view the "
                                "leaderboard for this exam")

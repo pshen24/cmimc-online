@@ -42,6 +42,9 @@
 <h3>All Emails (students and coaches with an account on this website)</h3>
 <p>{{ emaillist }}</p>
 
+<h3>Programming Contest Emails</h3>
+<p>{{ prog_emails }}</p>
+
 <h3>Programming Contest member count</h3>
 <p>{{ member_count }}</p>
 
@@ -74,6 +77,19 @@
 </form>
 
 
+<h3>Reset Exam</h3>
+<hr class="red_line mb-4"/>
+<p>(reset single exam)</p>
+
+<form method="post" class="mb-4">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="number" class="form-contest-id" name="reset_exam">
+      </div>
+      <button type="submit" class="btn btn-primary">Reset Exam</button>
+</form>
+
+
 <h3>Init all tasks</h3>
 <hr class="red_line mb-4"/>
 <form method="post" class="mb-4">
@@ -87,6 +103,28 @@
       {% csrf_token %}
       <button type="submit" class="btn btn-primary" name="regrade_games">Regrade Games</button>
 </form>
+
+<h3>Scores From CSV</h3>
+<hr class="red_line mb-4"/>
+<form method="post" class="mb-4" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" class="form-control-file mb-3" name="score_file">
+      <button type="submit" class="btn btn-primary">Submit Scores</button>
+</form>
+
+
+<h3>Recompute Leaderboard</h3>
+<hr class="red_line mb-4"/>
+<p>(enter exam id)</p>
+
+<form method="post" class="mb-4">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="number" class="form-contest-id" name="recompute_leaderboard">
+      </div>
+      <button type="submit" class="btn btn-primary">Recompute Leaderboard</button>
+</form>
+
 
 {% endif %}
 

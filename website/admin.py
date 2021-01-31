@@ -28,7 +28,17 @@ class UserAdmin(DefaultUserAdmin):
 class TeamAdmin(admin.ModelAdmin):
     list_display = ('team_name', 'mathlete_list', 'coach', 'contest', 'is_finalized',)
     list_filter = ('contest',)
-    search_fields = ('team_name',)
+    search_fields = ('team_name', 'mathletes__user__first_name', 'mathletes__user__last_name', 'mathletes__user__full_name', 'coach__first_name', 'coach__last_name', 'coach__full_name',)
+
+
+class CompetitorAdmin(admin.ModelAdmin):
+    list_display = ('team', 'exam', 'mathlete', 'total_score',)
+    list_filter = ('exam',)
+
+
+class ScoreAdmin(admin.ModelAdmin):
+    list_display = ('competitor', 'problem', 'points',)
+    list_filter = ('competitor__exam', 'problem',)
 
 admin.site.register(Contest)
 admin.site.register(Exam)
@@ -36,7 +46,7 @@ admin.site.register(Problem)
 admin.site.register(User, UserAdmin)
 admin.site.register(Mathlete)
 admin.site.register(Team, TeamAdmin)
-admin.site.register(Competitor)
+admin.site.register(Competitor, CompetitorAdmin)
 admin.site.register(Submission)
 admin.site.register(Score)
 admin.site.register(Task)

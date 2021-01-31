@@ -53,6 +53,7 @@ def update_scores(comp):
 
 
 def update_competitors(team):
+    log(update_comp_team=str(team))
     from website.models import Competitor
     for exam in team.contest.exams.all():
         # Django guarantees at most one competitor for each
@@ -75,8 +76,11 @@ def update_competitors(team):
         if exam.is_team_exam:
             c = Competitor.objects.filter(exam=exam, team=team, mathlete=None).first()
             if c is None:
+                log(BAD='did not find comp', exam_id=exam.id, team=str(team))
                 c = Competitor(exam=exam, team=team, mathlete=None)
                 c.save()
+            else:
+                log(GOOD='found comp', exam_id=exam.id, team=str(team))
             update_scores(c)
         else:
             for m in team.mathletes.all():
@@ -133,6 +137,30 @@ def reset_contest(contest):
                     t.best_raw_points = None
                     t.save()
     update_contest(contest)
+
+
+def reset_exam(exam):
+    from website.models import MiniRoundQueue
+    if exam.is_ai:
+        for p in exam.problems.all():
+            aiprob = p.aiproblem.first()
+            log(aiprob=str(aiprob), p=str(p))
+            for g in aiprob.aigames.all():
+                g.delete()
+        for i in range(exam.num_minirounds+1):
+            mrq = MiniRoundQueue.objects.get(exam=exam, miniround=i)
+            if i == 0:
+                mrq.num_games = 0
+            else:
+                mrq.num_games = -1
+            mrq.save()
+        exam.display_miniround = 0
+        exam.save()
+    if exam.is_optimization:
+        for p in exam.problems.all():
+            for t in p.tasks.all():
+                t.best_raw_points = None
+                t.save()
 
 
 
@@ -192,3 +220,68 @@ def regrade_games():
         g.status = 0
         g.history = None
         g.save()
+
+
+# temporary
+def scores_from_csv(text):
+    from website.models import Team, Problem, Competitor, Score, TaskScore
+    lines = text.splitlines()
+    data = [line.split(',') for line in lines]
+    n = len(data)
+    for i in range(n):
+        team_id, prob_name, task_num, score = data[i][0], data[i][1], data[i][2], data[i][3]
+        team_id = int(team_id)
+        log(team_id=team_id)
+        team = Team.objects.get(pk=team_id)
+        log(prob_name=prob_name)
+        prob = Problem.objects.get(name=prob_name)
+        task_num = int(task_num)
+        log(task_num=task_num)
+        task = prob.tasks.get(task_number=task_num)
+        log(exam_id=str(prob.exam), team=str(team_id))
+        comp = Competitor.objects.get(exam=prob.exam, team=team, mathlete=None)
+        if score == '':
+            score = None
+        else:
+            score = int(score)
+        log(problem=str(prob), competitor=str(comp))
+        s = Score.objects.get(problem=prob, competitor=comp)
+        log(task=str(task), score=str(s))
+        ts = TaskScore.objects.get(task=task, score=s)
+        g = prob.grader
+        if g is None:
+            log(BAD='g is None')
+        log(score=str(score), ts_raw=ts.raw_points)
+        if g.better(score, ts.raw_points):
+            log(better='')
+            ts.raw_points = score
+            ts.save()
+        else:
+            log(worse='')
+        
+
+def recompute_leaderboard(exam):
+    log(msg='start recomputing')
+    for p in exam.problems.all():
+        g = p.grader
+        for t in p.tasks.all():
+            t.best_raw_points = None        # reset
+            for ts in t.taskscores.all():
+                if g.better(ts.raw_points, t.best_raw_points):
+                    t.best_raw_points = ts.raw_points
+            t.save()
+            for ts in t.taskscores.all():
+                if ts.raw_points is not None:
+                    ts.norm_points = g.normalize(ts.raw_points, t.best_raw_points)
+                    ts.save()
+    for c in exam.competitors.all():
+        c.total_score = 0                   # reset
+        for s in c.scores.all():
+            s.points = 0                    # reset
+            for ts in s.taskscores.all():
+                s.points += ts.norm_points
+            s.points /= s.taskscores.count()
+            s.save()
+            c.total_score += s.points
+        c.save()
+    log(msg='done recomputing')

@@ -3,22 +3,35 @@ from django.contrib.auth.decorators import login_required
 from website.models import Contest, User, Exam, Mathlete, Team
 from django.utils import timezone
 from website.tasks import init_all_tasks
-from website.utils import update_contest, reset_contest, regrade_games, log
+from website.utils import update_contest, reset_contest, regrade_games, log, reset_exam, scores_from_csv, recompute_leaderboard
 
 @login_required
 def contest_list(request):
 
     if request.method == 'POST':
+        print(request.POST)
         if 'update_contest' in request.POST:
             contest = Contest.objects.get(pk=request.POST['update_contest'])
             update_contest(contest)
         elif 'reset_contest' in request.POST:
             contest = Contest.objects.get(pk=request.POST['reset_contest'])
             reset_contest(contest)
+        elif 'reset_exam' in request.POST:
+            exam = Exam.objects.get(pk=request.POST['reset_exam'])
+            reset_exam(exam)
         elif 'init_all_tasks' in request.POST:
             init_all_tasks()
         elif 'regrade_games' in request.POST:
             regrade_games()
+        elif 'score_file' in request.FILES:
+            text = request.FILES['score_file'].read().decode('utf-8')
+            scores_from_csv(text)
+        elif 'recompute_leaderboard' in request.POST:
+            print('hi')
+            exam = Exam.objects.get(pk=request.POST['recompute_leaderboard'])
+            recompute_leaderboard(exam)
+
+
 
     user = request.user
     all_contests = Contest.objects.all()

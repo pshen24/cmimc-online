@@ -10,15 +10,13 @@ class Submission(models.Model):
     competitor = models.ForeignKey(Competitor, related_name='submissions', \
             on_delete=models.CASCADE)
     points = models.FloatField(null=True, blank=True)
-    is_graded = models.BooleanField(default=False)
+    task = models.ForeignKey(Task, null=True, blank=True, related_name='submissions', on_delete=models.CASCADE)
     text = models.TextField(help_text=_('The string that the competitor submitted. \
             Its format depends on the exam (can be an integer, source code, \
             program output, etc)'))
     submit_time = models.DateTimeField(auto_now_add=True, db_index=True)
-    task = models.ForeignKey(Task, related_name="submissions", on_delete=models.CASCADE, \
-            null=True, blank=True) # only for optimization
+    status = models.IntegerField(default=0)
     error_msg = models.TextField(blank=True)
-    # add something for errors? (if they submit something invalid)
 
     def __str__(self):
         return str(self.competitor) + "'s submission to problem " + str(self.problem)
