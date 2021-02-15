@@ -1,6 +1,8 @@
 from django.shortcuts import render
 from background_task import background
 import datetime
+from .faq import general_faq, math_faq, programming_faq
+from django.template import Template, Context
 
 def home(request):
     return render(request, 'general/home.html')
@@ -26,8 +28,25 @@ def prog_schedule(request):
 def reg_info(request):
     return render(request, 'general/reg_info.html')
 
+
+def faq_entry(i, d, s):
+    return {
+        'id': f'{s}-{i}',
+        'question': d['question'],
+        'answer': Template(d['answer']).render(Context()),
+    }
+
 def faq(request):
-    return render(request, 'general/faq.html')
+    glist = [faq_entry(i,d,'general') for i,d in enumerate(general_faq)]
+    mlist = [faq_entry(i,d,'math') for i,d in enumerate(math_faq)]
+    plist = [faq_entry(i,d,'programming') for i,d in enumerate(programming_faq)]
+
+    context = {
+        'glist': glist,
+        'mlist': mlist,
+        'plist': plist,
+    }
+    return render(request, 'general/faq.html', context)
 
 def mini_events(request):
     return render(request, 'general/mini_events.html')

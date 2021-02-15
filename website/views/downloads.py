@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from website.models import Exam, Competitor, Submission, AISubmission, AIProblem
+from website.models import Exam, Competitor, Submission, AISubmission, AIProblem, Contest
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 import json
@@ -9,7 +9,7 @@ import json
 def match_replay(request, aisubmission_id):
     user = request.user
     aisub = get_object_or_404(AISubmission, pk=aisubmission_id)
-    if not user.in_team(aisub.competitor.team):
+    if not user.in_team(aisub.competitor.team) and not user.is_staff:
         raise PermissionDenied("You do not have access to view this match")
 
     gamedata = aisub.game.history
@@ -47,6 +47,26 @@ def ai_visualizer(request, aiproblem_id):
     response = HttpResponse(content, content_type='text/x-python')
     response['Content-Disposition'] = 'attachment; filename={0}_visualizer.py'.format(problem.short_name)
     return response
+
+
+@login_required
+def mailinglist(request, contest_id):
+    user = request.user
+    c = get_object_or_404(Contest, pk=contest_id)
+    if not user.is_staff:
+        raise PermissionDenied("You do not have access to this file")
+
+    emails = []
+    for team in c.teams.all():
+        for m in team.mathletes.all():
+            emails.append(m.user.email)
+        if team.coach:
+            emails.append(team.coach.email)
+    content = '\n'.join(emails)
+    response = HttpResponse(content, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename={0} mailing list.csv'.format(c.name)
+    return response
+
 
 
 

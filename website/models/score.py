@@ -6,7 +6,7 @@ from django.utils.translation import ugettext_lazy as _
 class Score(models.Model):
     problem = models.ForeignKey(Problem, related_name='scores', on_delete=models.CASCADE)
     competitor = models.ForeignKey(Competitor, related_name='scores', on_delete=models.CASCADE)
-    points = models.FloatField(default=0.0)
+    points = models.FloatField(default=0.0, db_index=True)
 
     def __str__(self):
         return '{0}, {1}, score={2}'.format(str(self.problem), self.competitor.name, str(self.points))
@@ -17,5 +17,10 @@ class Score(models.Model):
 
     class Meta:
         unique_together = ['problem', 'competitor']
+
+    @property
+    def taskscore_list(self):
+        return self.taskscores.order_by('task__task_number')
+
 
 

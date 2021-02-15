@@ -6,6 +6,7 @@ from django.utils import timezone
 from website.models import Exam, Problem, Task, Competitor, Submission, Score
 from website.forms import EditorForm
 from website.tasks import async_grade
+from website.tasks import schedule_burst
 
 @login_required
 def submit(request, exam_id, problem_number, task_number=None):
@@ -45,9 +46,23 @@ def resubmit(request, submission_id):
 
 def make_submission(request, exam, problem, task=None):
     user = request.user
+    competitor = Competitor.objects.getCompetitor(exam, user.mathlete)
     # get text
     if 'codeFile' in request.FILES:
-        text = request.FILES['codeFile'].read().decode('utf-8')
+        try:
+            text = request.FILES['codeFile'].read().decode('ascii')
+        except:
+            # Error while reading file
+            submission = Submission(
+                problem=problem,
+                competitor=competitor,
+                text='',
+                task=task,
+                status=4,
+                error_msg='Your uploaded file could not be read',
+            )
+            submission.save()
+            return redirect('view_submission', submission_id=submission.id)
     else:
         if exam.is_optimization:
             text = request.POST['codeText']
@@ -57,18 +72,16 @@ def make_submission(request, exam, problem, task=None):
         else:
             return HttpResponse('Error: Only optimization and AI rounds are supported right now')
     # create and save submission
-    competitor = Competitor.objects.getCompetitor(exam, user.mathlete)
+
     submission = Submission(
         problem=problem,
         competitor=competitor,
         text=text,
         task=task,
     )
-    if exam.is_optimization:
-        submission.status = 0       # add to grading queue
-    else:
-        submission.status = 4       # don't put in queue
     submission.save()
+    if exam.is_ai:
+        schedule_burst(submission)
     # grade the new submission
     # async_grade(submission.id)
     '''

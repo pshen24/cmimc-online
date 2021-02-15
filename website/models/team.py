@@ -41,7 +41,14 @@ class Team(models.Model):
     def mathlete_list(self):
         if not self.mathletes.exists():
             return 'No students'
-        return ', '.join([m.user.name for m in self.mathletes.all()])
+        return ', '.join([m.user.full_name for m in self.mathletes.all()])
+
+    @property
+    def email_list(self):
+        if not self.mathletes.exists():
+            return 'No students'
+        return ', '.join([m.user.email for m in self.mathletes.all()])
+
 
     @property
     def is_finalized(self):

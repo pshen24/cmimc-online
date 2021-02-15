@@ -8,7 +8,7 @@
         {% url 'all_problems' exam.id as all_problems %}
         <li><a href="{{ all_problems }}" class="no-color {% if request.get_full_path == all_problems %}active{% endif %}">All Problems</a></li>
 
-        {% for p in exam.prob_list %}
+        {% for p in exam.problem_list %}
             {% url 'view_problem' exam.id p.problem_number as p_link %}
             <li><a href="{{ p_link }}" class="no-color {% if request.get_full_path == p_link %}active{% endif %}">{{ p.problem_number }}. {{ p.name }}</a></li>
         {% endfor %}
@@ -22,8 +22,10 @@
         {% endif %}
 
         {% if exam.is_ai %}
+        {% comment %}
         {% url 'miniround_scores' exam.id as mrs %}
         <li><a href="{{ mrs }}" class="no-color {% if request.get_full_path == mrs %}active{% endif %}">Miniround Scores</a></li>
+        {% endcomment %}
 
         {% url 'match_results' exam.id 1 as matches %}
         <li><a href="{{ matches }}" class="no-color {% if request.get_full_path == matches %}active{% endif %}">Match Results</a></li>

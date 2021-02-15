@@ -53,7 +53,6 @@ def update_scores(comp):
 
 
 def update_competitors(team):
-    log(update_comp_team=str(team))
     from website.models import Competitor
     for exam in team.contest.exams.all():
         # Django guarantees at most one competitor for each
@@ -76,11 +75,8 @@ def update_competitors(team):
         if exam.is_team_exam:
             c = Competitor.objects.filter(exam=exam, team=team, mathlete=None).first()
             if c is None:
-                log(BAD='did not find comp', exam_id=exam.id, team=str(team))
                 c = Competitor(exam=exam, team=team, mathlete=None)
                 c.save()
-            else:
-                log(GOOD='found comp', exam_id=exam.id, team=str(team))
             update_scores(c)
         else:
             for m in team.mathletes.all():
@@ -95,17 +91,20 @@ def update_competitors(team):
 # and exactly one taskscore for each (task, score) pair
 def update_contest(contest):
     from website.models import MiniRoundQueue
-    for team in contest.teams.all():
-        update_competitors(team)
-    for exam in contest.exams.all():
-        if exam.is_ai:
-            for i in range(exam.num_minirounds+1):
-                mrq = MiniRoundQueue.objects.filter(exam=exam, miniround=i).first()
-                if mrq is None:
-                    mrq = MiniRoundQueue(exam=exam, miniround=i)
-                    if i == 0:
-                        mrq.num_games = 0
-                    mrq.save()
+    try:
+        for team in contest.teams.all():
+            update_competitors(team)
+        for exam in contest.exams.all():
+            if exam.is_ai:
+                for i in range(exam.num_minirounds+1):
+                    mrq = MiniRoundQueue.objects.filter(exam=exam, miniround=i).first()
+                    if mrq is None:
+                        mrq = MiniRoundQueue(exam=exam, miniround=i)
+                        if i == 0:
+                            mrq.num_games = 0
+                        mrq.save()
+    except Exception as e:
+        log(error=str(e), during='update_contest')
 
 
 
@@ -221,6 +220,16 @@ def regrade_games():
         g.history = None
         g.save()
 
+def recheck_games():
+    from website.models import AIGame
+    from website.tasks import init_all_tasks
+    games = AIGame.objects.filter(status=-1)
+    for g in games:
+        g.status = 0
+        g.save()
+    init_all_tasks()
+
+
 
 # temporary
 def scores_from_csv(text):
@@ -231,33 +240,23 @@ def scores_from_csv(text):
     for i in range(n):
         team_id, prob_name, task_num, score = data[i][0], data[i][1], data[i][2], data[i][3]
         team_id = int(team_id)
-        log(team_id=team_id)
         team = Team.objects.get(pk=team_id)
-        log(prob_name=prob_name)
         prob = Problem.objects.get(name=prob_name)
         task_num = int(task_num)
-        log(task_num=task_num)
         task = prob.tasks.get(task_number=task_num)
-        log(exam_id=str(prob.exam), team=str(team_id))
         comp = Competitor.objects.get(exam=prob.exam, team=team, mathlete=None)
         if score == '':
             score = None
         else:
             score = int(score)
-        log(problem=str(prob), competitor=str(comp))
         s = Score.objects.get(problem=prob, competitor=comp)
-        log(task=str(task), score=str(s))
         ts = TaskScore.objects.get(task=task, score=s)
         g = prob.grader
         if g is None:
             log(BAD='g is None')
-        log(score=str(score), ts_raw=ts.raw_points)
         if g.better(score, ts.raw_points):
-            log(better='')
             ts.raw_points = score
             ts.save()
-        else:
-            log(worse='')
         
 
 def recompute_leaderboard(exam):
@@ -285,3 +284,21 @@ def recompute_leaderboard(exam):
             c.total_score += s.points
         c.save()
     log(msg='done recomputing')
+
+
+def reset_problem(p):
+    for s in p.scores.all():
+        s.points = 0
+        s.save()
+        for ts in s.taskscores.all():
+            ts.raw_points = None
+            ts.norm_points = 0
+            ts.save()
+    for sub in p.submissions.all():
+        sub.points = None
+        sub.status = 0
+        sub.save()
+
+
+def per_page(n):
+    return 50

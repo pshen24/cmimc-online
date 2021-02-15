@@ -6,7 +6,7 @@ from .score import Score
 class TaskScore(models.Model):
     task = models.ForeignKey(Task, related_name="taskscores", on_delete=models.CASCADE)
     score = models.ForeignKey(Score, related_name="taskscores", on_delete=models.CASCADE)
-    raw_points = models.FloatField(null=True, blank=True)     # score from grader
+    raw_points = models.FloatField(null=True, blank=True, db_index=True)     # score from grader
     norm_points = models.FloatField(default=0.0)    # normalized score
 
     class Meta:

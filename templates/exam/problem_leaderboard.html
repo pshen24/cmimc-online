@@ -17,23 +17,30 @@
 </ul>
 {% endif %}
 
+<div class="btn-group mb-4" role="group" aria-label="Leaderboard Pages">
+  {% for p in all_pages %}
+    <a href="?page={{ p.number }}" class="btn btn-outline-dark {% if p.number == page_obj.number %}active{% endif %}">{{ p.start_index }} - {{ p.end_index }}</a>
+  {% endfor %}
+</div>
+
+
 <table class="table table-striped">
     <thead class="thead-dark">
     <tr>
         <th scope="col">Team</th>
         {% for task in tasks %}
-        <th scope="col" style="white-space: nowrap">Task {{ task.task_number }}
+        <th scope="col" class="text-center" style="white-space: nowrap">Task {{ task.task_number }}
         {% endfor %}
-        <th scope="col">Score</th>
+        <th scope="col" class="text-center">Score</th>
     </tr>
     </thead>
-    {% for r in rows %}
-        <tr {% if r.highlight %}class="table-success"{% endif %}>
-            <td style="word-wrap: break-word; max-width: 10rem;">{{ r.name }}</td>
-            {% for task_score in r.scores %}
-                <td>{{ task_score }}</td>
+    {% for s in page_obj %}
+        <tr {% if s.competitor in rel_comps %}class="table-success"{% endif %}>
+            <td style="word-wrap: break-word; max-width: 10rem;">{{ s.competitor.name }}</td>
+            {% for task_score in s.taskscore_list %}
+            <td class="text-center align-middle">{% if task_score.raw_points %}{{ task_score.display_raw }}{% endif %}</td>
             {% endfor %}
-            <td>{{ r.prob_score }}</td>
+            <td class="text-center align-middle">{{ s.display_points }}</td>
         </tr>
     {% endfor %}
 </table>

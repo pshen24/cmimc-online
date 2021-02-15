@@ -46,3 +46,7 @@ class Competitor(models.Model):
     def display_score(self):
         return f'{self.total_score:.2f}'
 
+    @property
+    def score_list(self):
+        return self.scores.order_by('problem__problem_number')
+

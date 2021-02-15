@@ -4,6 +4,7 @@ from .competitor import Competitor
 from .task import Task
 from .score import Score
 from django.utils.translation import ugettext_lazy as _
+import trueskill
 
 class Submission(models.Model):
     problem = models.ForeignKey(Problem, related_name='submissions', on_delete=models.CASCADE)
@@ -15,8 +16,10 @@ class Submission(models.Model):
             Its format depends on the exam (can be an integer, source code, \
             program output, etc)'))
     submit_time = models.DateTimeField(auto_now_add=True, db_index=True)
-    status = models.IntegerField(default=0)
+    status = models.IntegerField(default=0, db_index=True)
     error_msg = models.TextField(blank=True)
+    mu = models.FloatField(null=True, blank=True)
+    sigma = models.FloatField(null=True, blank=True)
 
     def __str__(self):
         return str(self.competitor) + "'s submission to problem " + str(self.problem)
@@ -35,5 +38,23 @@ class Submission(models.Model):
             return g.display_raw(self.points)
         else:
             return str(self.points)
+    
+    @property
+    def rating(self):
+        if self.mu is None:
+            return trueskill.Rating()
+        else:
+            return trueskill.Rating(mu=self.mu, sigma=self.sigma)
 
-
+    @property
+    def public_rating(self):
+        # trueskill mu-3*sigma ratings are usually from 0-50,
+        # so we double them to 0-100
+        return 2*trueskill.expose(self.rating)
+    
+    def update_score_from_rating(self):
+        s = Score.objects.get(problem=self.problem, competitor=self.competitor)
+        s.points = self.public_rating
+        s.save()
+        s.competitor.update_total_score()
+        

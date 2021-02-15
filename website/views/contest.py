@@ -1,15 +1,15 @@
 from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
-from website.models import Contest, User, Exam, Mathlete, Team
+from website.models import Contest, User, Exam, Mathlete, Team, Problem
 from django.utils import timezone
-from website.tasks import init_all_tasks
-from website.utils import update_contest, reset_contest, regrade_games, log, reset_exam, scores_from_csv, recompute_leaderboard
+from website.tasks import init_all_tasks, check_finished_games_real, final_ai_grading
+from website.utils import update_contest, reset_contest, regrade_games, log, reset_exam, scores_from_csv, recompute_leaderboard, recheck_games, reset_problem
 
 @login_required
 def contest_list(request):
+    
 
     if request.method == 'POST':
-        print(request.POST)
         if 'update_contest' in request.POST:
             contest = Contest.objects.get(pk=request.POST['update_contest'])
             update_contest(contest)
@@ -19,18 +19,31 @@ def contest_list(request):
         elif 'reset_exam' in request.POST:
             exam = Exam.objects.get(pk=request.POST['reset_exam'])
             reset_exam(exam)
+        elif 'reset_problem' in request.POST:
+            problem = Problem.objects.get(pk=request.POST['reset_problem'])
+            reset_problem(problem)
         elif 'init_all_tasks' in request.POST:
             init_all_tasks()
         elif 'regrade_games' in request.POST:
             regrade_games()
+        elif 'recheck_games' in request.POST:
+            recheck_games()
         elif 'score_file' in request.FILES:
             text = request.FILES['score_file'].read().decode('utf-8')
             scores_from_csv(text)
         elif 'recompute_leaderboard' in request.POST:
-            print('hi')
             exam = Exam.objects.get(pk=request.POST['recompute_leaderboard'])
             recompute_leaderboard(exam)
-
+        elif 'final_ai_grading' in request.POST:
+            exam = Exam.objects.get(pk=request.POST['final_ai_grading'])
+            final_ai_grading(exam)
+        elif 'check_finished_games' in request.POST:
+            check_finished_games_real()
+        elif 'delete_team' in request.POST:
+            team = Team.objects.get(pk=request.POST['delete_team'])
+            log(deleting_team=team.team_name)
+            team.delete()
+            log(deleted_team='')
 
 
     user = request.user
@@ -69,6 +82,7 @@ def contest_list(request):
     prog_emails = []
     small_teams = []
     member_count = [0]*10
+    member_count2 = [0]*10
 
     if user.is_staff:
 
@@ -89,6 +103,11 @@ def contest_list(request):
                 for m in team.mathletes.all():
                     small_teams.append(m.user.email)
 
+        c = Contest.objects.get(pk=2) # programming contest
+        teams = Team.objects.filter(contest=c)
+        for team in teams:
+            member_count2[min(team.mathletes.all().count(), 9)] += 1
+
     context = {
         'exams': all_exams,
         'ongoing': ongoing_contests,
@@ -99,6 +118,7 @@ def contest_list(request):
         'prog_emails': ', '.join(prog_emails),
         'small_teams': ', '.join(small_teams),
         'member_count': member_count,
+        'member_count2': member_count2,
     }
     return render(request, 'contest_list.html', context)
 

@@ -16,25 +16,31 @@
 </ul>
 {% endif %}
 
+<div class="btn-group mb-4" role="group" aria-label="Leaderboard Pages">
+  {% for p in all_pages %}
+    <a href="?page={{ p.number }}" class="btn btn-outline-dark {% if p.number == page_obj.number %}active{% endif %}">{{ p.start_index }} - {{ p.end_index }}</a>
+  {% endfor %}
+</div>
+
 <table class="table table-striped">
     <thead class="table-dark">
     <tr>
+        <th scope="col" class="text-center">Rank</th>
         <th scope="col">Team</th>
         {% for p in problems %}
-        <th scope="col" style="white-space: nowrap">{{ p.name }}</th>
+        <th scope="col" class="text-center" style="white-space: nowrap">{{ p.name }}</th>
         {% endfor %}
-        <th scope="col">Total</th>
-        <th scope="col">Rank</th>
+        <th scope="col" class="text-center">Total</th>
     </tr>
     </thead>
-    {% for r in rows %}
-        <tr {% if r.highlight %}class="table-success"{% endif %}>
-            <td style="word-wrap: break-word; max-width: 10rem">{{ r.name }}</td>
-            {% for score in r.scores %}
-                <td>{{ score }}</td>
+    {% for comp in page_obj %}
+        <tr {% if comp in rel_comps %}class="table-success"{% endif %}>
+            <td class="text-center align-middle">{{ comp.rank }}</td>
+            <td style="word-wrap: break-word; max-width: 10rem">{{ comp.name }}</td>
+            {% for score in comp.score_list %}
+                <td class="text-center align-middle">{{ score.display_points }}</td>
             {% endfor %}
-            <td>{{ r.total_score }}</td>
-            <td>{{ r.rank }}</td>
+            <td class="text-center align-middle">{{ comp.display_score }}</td>
         </tr>
     {% endfor %}
 </table>

@@ -2,12 +2,12 @@
 
 {% block exam_content %}
 <h1>{{ problem.name }}</h1>
-<div class="problem-text mb-5 language-none">
+<div class="problem-text {% if exam.is_optimization %}mb-5{% endif %} language-none">
 {{ problem.problem_text|safe }}
 </div>
 
 {% if exam.is_ai %}
-<p><a href="{% url 'ai_starter_file' aiprob.id %}">Download Starter File</a></p>
+<p>Download the starter file for {{ problem.name }} <a href="{% url 'ai_starter_file' aiprob.id %}">here</a></p>
 <a href="{% url 'submit' exam.id problem.problem_number %}" class="btn btn-primary">Submit</a>
 {% endif %}
 

@@ -2,7 +2,8 @@ from django.shortcuts import render, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from website.models import Exam, Competitor, Score, MiniRoundScore, Problem, AISubmission
-from website.utils import miniround_sub
+from website.utils import miniround_sub, per_page
+from django.core.paginator import Paginator 
 
 @login_required
 def all_problems(request, exam_id):
@@ -11,7 +12,7 @@ def all_problems(request, exam_id):
     if not user.can_view_exam(exam):
         raise PermissionDenied('You do not have access to this page')
 
-    problems = exam.prob_list
+    problems = exam.problem_list
 
     prob_score_task_rank = []
     if user.is_mathlete:
@@ -45,7 +46,7 @@ def miniround_scores(request, exam_id):
         raise PermissionDenied('You do not have access to this page')
 
     c = Competitor.objects.getCompetitor(exam=exam, mathlete=user.mathlete)
-    problems = exam.prob_list
+    problems = exam.problem_list
 
     # TODO: let coaches see all their teams' miniround pages via tabs at the top
     rows = []
@@ -75,29 +76,24 @@ def match_results(request, exam_id, problem_number):
     if not user.can_view_exam(exam) or not user.is_mathlete:
         raise PermissionDenied('You do not have access to this page')
 
-    problems = exam.prob_list
+    problems = exam.problem_list
     p = get_object_or_404(Problem, exam=exam, problem_number=problem_number)
     c = Competitor.objects.getCompetitor(exam=exam, mathlete=user.mathlete)
+    s = Score.objects.get(problem=p, competitor=c)
 
-    # this is slow when there are many games/submissions
-    aisubs = c.aisubmissions.filter(game__aiproblem__problem=p, game__status=4).order_by('-game__miniround')
-
-    rows = []
-    for aisub in aisubs:
-        g = aisub.game
-        rows.append({
-            "miniround": g.miniround,
-            "score": round(aisub.score, 2),
-            "submission": miniround_sub(aisub.competitor, p, g.miniround),
-            "aisub": aisub,
-        })
+    mrs = s.matchresults.order_by('-time_played')
+    items_per_page = per_page(mrs.count())
+    paginator = Paginator(mrs, items_per_page)
+    page_number = request.GET.get('page', default=1)
+    page_obj = paginator.get_page(page_number)
 
     context = {
-        "rows": rows,
         "exam": exam,
         "problems": problems,
         "problem": p,
         "aiprob": p.aiproblem.first(),
+        'page_obj': page_obj,
+        'all_pages': [paginator.page(i) for i in paginator.page_range]
     } 
     return render(request, 'exam/match_results.html', context)
 

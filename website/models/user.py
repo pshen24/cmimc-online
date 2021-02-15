@@ -47,6 +47,17 @@ class User(AbstractUser):
             return self.name
 
     @property
+    def long_name(self): # full_name already taken
+        if self.first_name and self.last_name:
+            return '{0} {1}'.format(self.first_name, self.last_name)
+        elif self.full_name:
+            return self.full_name
+        elif self.first_name:
+            return self.first_name
+        else:
+            return self.last_name
+
+    @property
     def is_mathlete(self):
         return self.role == self.MATHLETE
 
@@ -106,8 +117,8 @@ class User(AbstractUser):
     def can_view_exam(self, exam):
         if self.is_staff:
             return True
-        if exam.ended: # changed temporarily
-            return False     # anyone can view a past contest
+        if exam.ended:
+            return True     # anyone can view a past contest
         if exam.ongoing and self.has_team(exam.contest):
             return True     # you need to be registered for an ongoing contest
         return False
@@ -155,4 +166,28 @@ class User(AbstractUser):
         if self.is_coach and self == team.coach:
             return True
         return False
+
+    # list of teams that this user is part of
+    def rel_teams(self, contest):
+        from website.models import Team
+        if self.is_staff:
+            return Team.objects.none()
+        if self.is_mathlete:
+            return self.mathlete.teams.filter(contest=contest)
+        if self.is_coach:
+            return self.teams.filter(contest=contest)
+
+
+    def rel_comps(self, exam):
+        from website.models import Competitor
+        if self.is_staff:
+            return Competitor.objects.none()
+        teams = self.rel_teams(exam.contest)
+        if self.is_mathlete:
+            if exam.is_team_exam:
+                return Competitor.objects.filter(exam=exam, team__in=teams, mathlete=None)
+            else:
+                return Competitor.objects.filter(exam=exam, team__in=teams, mathlete=self.mathlete)
+        if self.is_coach:
+            return Competitor.objects.filter(exam=exam, team__in=teams)
 
