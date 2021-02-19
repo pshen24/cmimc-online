@@ -3,6 +3,12 @@ from .contest import Contest
 from django.utils.functional import cached_property
 from django.utils import timezone
 
+
+class ExamPair(models.Model):
+    contest = models.ForeignKey(Contest, related_name='exampairs', on_delete=models.CASCADE)
+    name = models.CharField(max_length=100, unique=True)
+
+
 class Exam(models.Model):
     contest = models.ForeignKey(Contest, related_name='exams', on_delete=models.CASCADE)
     name = models.CharField(max_length=100, unique=True)
@@ -13,6 +19,8 @@ class Exam(models.Model):
     display_miniround = models.IntegerField(default=0)
     num_grace_minirounds = models.IntegerField(default=0)
 
+    division = models.IntegerField(null=True, blank=True)
+    exampair = models.ForeignKey(ExamPair, null=True, blank=True, related_name='exams', on_delete=models.SET_NULL)
     is_team_exam = models.BooleanField()
     
     OPTIMIZATION = 'OPT'
@@ -156,6 +164,5 @@ class Exam(models.Model):
         if self._now < self.miniround_start:
             return 0
         return (self._now - self.miniround_start) // self.miniround_time + 1
-
 
 

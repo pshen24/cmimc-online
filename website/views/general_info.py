@@ -2,6 +2,7 @@ from django.shortcuts import render
 from background_task import background
 import datetime
 from .faq import general_faq, math_faq, programming_faq
+from .mini_events import math_events
 from django.template import Template, Context
 
 def home(request):
@@ -15,6 +16,12 @@ def math_sample_problems(request):
 
 def math_schedule(request):
     return render(request, 'general/math_schedule.html')
+
+def math_mini_events(request):
+    context = {
+        'math_events': math_events,
+    }
+    return render(request, 'general/math_mini_events.html', context)
 
 def prog_info(request):
     return render(request, 'general/prog_info.html')
@@ -48,8 +55,8 @@ def faq(request):
     }
     return render(request, 'general/faq.html', context)
 
-def mini_events(request):
-    return render(request, 'general/mini_events.html')
+def prog_mini_events(request):
+    return render(request, 'general/prog_mini_events.html')
 
 def resources(request):
     return render(request, 'general/resources.html')
