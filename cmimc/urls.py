@@ -10,6 +10,7 @@ urlpatterns = [
     path('', views.home, name='home'),
     path('contests', views.contest_list, name='contest_list'),
     path('math/format', views.math_info, name='math_info'),
+    path('math/rules', views.math_rules, name='math_rules'),
     path('math/sample-problems', views.math_sample_problems, name='math_sample_problems'),
     path('math/schedule', views.math_schedule, name='math_schedule'),
     path('math/mini-events', views.math_mini_events, name='math_mini_events'),

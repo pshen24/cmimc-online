@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
-from website.models import Contest, Team, Mathlete
+from website.models import Contest, Team, Mathlete, DivChoice
 from website.utils import update_competitors
 
 # TODO: handle error when user submits a duplicate team name
@@ -67,10 +67,21 @@ def team_info(request, team_id):
     team = get_object_or_404(Team, pk=team_id)
     if not user.can_view_team(team):
         return redirect('contest_list')
+
     can_edit = user.can_edit_team(team)
+    exampairs = team.contest.exampairs.all()
 
     if request.method == 'POST':
-        if 'deleteTeam' in request.POST and can_edit:
+        if 'save' in request.POST:
+            for m in team.mathletes.all():
+                for pair in exampairs:
+                    dc = DivChoice.objects.get(exampair=pair, mathlete=m)
+                    ID = f'divchoice-{dc.id}'
+                    if ID in request.POST:
+                        dc.division = request.POST[ID]
+                        dc.save()
+
+        elif 'deleteTeam' in request.POST and can_edit:
             team.delete() # cascade deletes for comps, scores, taskscores, MRscores
             return redirect('contest_list')
         elif 'removeMember' in request.POST:
@@ -84,6 +95,20 @@ def team_info(request, team_id):
                 return redirect('contest_list')
             return redirect('team_info', team_id=team_id)
 
+    rows = []
+    for m in team.mathletes.all():
+        row = []
+        for pair in exampairs:
+            dc = DivChoice.objects.filter(exampair=pair, mathlete=m).first() # TODO: update comps
+            if dc is None:
+                dc = DivChoice(exampair=pair, mathlete=m)
+                dc.save()
+            row.append(dc)
+        rows.append({
+            'mathlete': m,
+            'divchoices': row,
+        })
+
     context = {
         'team': team,
         'invite_link': request.build_absolute_uri(
@@ -92,6 +117,8 @@ def team_info(request, team_id):
         'too_large': len(team.mathletes.all()) > team.contest.max_team_size,
         'reg_permission': user != team.coach,
         'can_edit': can_edit,
+        'exampairs': exampairs,
+        'rows': rows,
     }
     return render(request, 'team/team.html', context)
 

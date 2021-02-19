@@ -11,6 +11,9 @@ def home(request):
 def math_info(request):
     return render(request, 'general/math_info.html')
 
+def math_rules(request):
+    return render(request, 'general/math_rules.html')
+
 def math_sample_problems(request):
     return render(request, 'general/math_sample_problems.html')
 

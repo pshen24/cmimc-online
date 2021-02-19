@@ -1,5 +1,5 @@
 from .contest import Contest
-from .exam import Exam, ExamPair
+from .exam import Exam, ExamPair, DivChoice
 from .problem import Problem
 from .task import Task, input_data_path
 from .user import User

@@ -1,5 +1,6 @@
 from django.db import models
 from .contest import Contest
+from .mathlete import Mathlete
 from django.utils.functional import cached_property
 from django.utils import timezone
 
@@ -7,6 +8,12 @@ from django.utils import timezone
 class ExamPair(models.Model):
     contest = models.ForeignKey(Contest, related_name='exampairs', on_delete=models.CASCADE)
     name = models.CharField(max_length=100, unique=True)
+
+
+class DivChoice(models.Model):
+    exampair = models.ForeignKey(ExamPair, related_name='divchoices', on_delete=models.CASCADE)
+    mathlete = models.ForeignKey(Mathlete, related_name='divchoices', on_delete=models.CASCADE)
+    division = models.IntegerField(null=True, blank=True)
 
 
 class Exam(models.Model):
