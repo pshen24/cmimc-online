@@ -14,6 +14,7 @@ class Team(models.Model):
     MIN_CODE = 100000
     MAX_CODE = 999999
     invite_code = models.CharField(unique=True, max_length=15)
+    wants_merge = models.BooleanField(default=False)
 
     @classmethod
     def create(cls, contest, team_name, coach):
@@ -41,7 +42,7 @@ class Team(models.Model):
     def mathlete_list(self):
         if not self.mathletes.exists():
             return 'No students'
-        return ', '.join([m.user.full_name for m in self.mathletes.all()])
+        return ', '.join([m.user.long_name for m in self.mathletes.all()])
 
     @property
     def email_list(self):

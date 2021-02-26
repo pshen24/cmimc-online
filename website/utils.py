@@ -90,6 +90,7 @@ def update_competitors(team):
 # ensures exactly one score for each (problem, competitor) pair,
 # and exactly one taskscore for each (task, score) pair
 def update_contest(contest):
+    log(starting='update_contest')
     from website.models import MiniRoundQueue
     try:
         for team in contest.teams.all():
@@ -105,6 +106,7 @@ def update_contest(contest):
                         mrq.save()
     except Exception as e:
         log(error=str(e), during='update_contest')
+    log(finished='update_contest')
 
 
 

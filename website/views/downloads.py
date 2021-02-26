@@ -56,12 +56,12 @@ def mailinglist(request, contest_id):
     if not user.is_staff:
         raise PermissionDenied("You do not have access to this file")
 
-    emails = []
+    emails = ['Email,Name,Team,Contestant/Coach']
     for team in c.teams.all():
         for m in team.mathletes.all():
-            emails.append(m.user.email)
-        if team.coach:
-            emails.append(team.coach.email)
+            emails.append(f'{m.user.email},{m.user.long_name},{team.team_name},Contestant')
+        #if team.coach:
+        #    emails.append(f'{team.coach.email},{team.coach.long_name},{team.team_name},Coach')
     content = '\n'.join(emails)
     response = HttpResponse(content, content_type='text/csv')
     response['Content-Disposition'] = 'attachment; filename={0} mailing list.csv'.format(c.name)

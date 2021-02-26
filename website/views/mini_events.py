@@ -17,7 +17,7 @@ math_events = [
     {
         'title': 'Bullet Chess', 
         'subtitle': 'Friday February 26th, 8-9pm --- Organized by Michael Chen',
-        'description': 'Play fast-paced chess games (2 minute, 1 second increment) against the other CMIMC competitors! This will be a live arena tournament, where you get matched nonstop against someone with a similar rating as soon as your last game ends. You\'ll need to create a <a href="https://www.chess.com/">Chess.com</a> account to participate.',
+        'description': 'Play fast-paced chess games (2 minute, 1 second increment) against the other CMIMC competitors! This will be a live arena tournament, where you get matched nonstop against someone with a similar rating as soon as your last game ends. Make sure to create a <a href="https://www.chess.com/">chess.com</a> account and join the <a href="https://www.chess.com/club/cmimc-math-2021" target="_blank" rel="noopener noreferrer">CMIMC club</a> in order to participate!',
     },
     {
         'title': 'Tetris Tournament', 
@@ -31,13 +31,13 @@ math_events = [
     },
     {
         'title': 'IMC Info Session and Market Making Game', 
-        'subtitle': 'Thursday February 25th, 4-5pm --- Organized by IMC',
+        'subtitle': 'Thursday February 25th, 6-7pm --- Organized by IMC',
         'description': 'IMC Trading invites you to join our CMIMC mini-event where we will be discussing life at IMC and the exciting opportunities we offer within Trading and Technology. Specifically, you’ll get to hear from several IMC Engineers and Traders as they discuss the most interesting aspects of their role, what makes working at IMC unique, as well as provide advice on how to excel within our recruiting process. You will also get the opportunity to participate in an interactive, trading activity where you will learn what it means to be a Market-Maker. We can’t wait to meet you!',
     },
     {
         'title': 'SLINGSHOT: A sneak peak into the world of CS', 
         'subtitle': 'Thursday February 25th, 8-9:30pm --- Organized by SLINGSHOT',
-        'description': 'Ever wondered what CS and tech will <span style="font-style: italic">really</span> be like after high school? Are you interested in CS but don\'t really know where to start? Are you going into college for a degree in CS and curious to learn more? <a href="https://slingshotmentoring.com/" target="_blank" rel="noopener noreferrer">SLINGSHOT</a> is offering an exclusive event for CMIMC participants where our mentors, from places like Carnegie Mellon, Apple, Palantir, will give you a sneak peak into the world of CS and tech after high school!',
+        'description': 'Ever wondered what CS and tech will <span style="font-style: italic">really</span> be like after high school? Are you interested in CS but don\'t really know where to start? Are you going into college for a degree in CS and curious to learn more? <a href="https://slingshotmentoring.com/" target="_blank" rel="noopener noreferrer">SLINGSHOT</a> is offering an exclusive event for CMIMC participants where our mentors, from places like Carnegie Mellon, Apple, Palantir, will give you a sneak peak into the world of CS and tech after high school! Fill out this <a href="http://l.slingshotmentoring.com/QHdsKW" target="_blank" rel="noopener noreferrer">Google form</a> if you\'re interested!',
     },
     {
         'title': 'CMU Student Panel', 

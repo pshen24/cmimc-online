@@ -56,9 +56,9 @@ def contest_list(request):
         if user.is_mathlete:
             if user.has_team(contest):
                 team = user.mathlete.get_team(contest)
-                tuples.append({'contest':contest, 'has_team':True, 'team':team, 'exams': contest.exams.all(), 'canjoin': contest.started})
+                tuples.append({'contest':contest, 'has_team':True, 'team':team, 'exams': contest.reg_exams(user.mathlete), 'canjoin': contest.started})
             else:
-                tuples.append({'contest':contest, 'has_team':False, 'team':None, 'exams': contest.exams.all(), 'canjoin': False})
+                tuples.append({'contest':contest, 'has_team':False, 'team':None, 'exams': contest.reg_exams(user.mathlete), 'canjoin': False})
         else:
             tuples.append({'contest':contest, 'has_team':user.has_team(contest), 'team':None, 'exams': contest.exams.all(), 'canjoin': contest.started})
     

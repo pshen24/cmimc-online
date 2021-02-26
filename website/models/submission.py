@@ -2,7 +2,6 @@ from django.db import models
 from .problem import Problem
 from .competitor import Competitor
 from .task import Task
-from .score import Score
 from django.utils.translation import ugettext_lazy as _
 import trueskill
 
@@ -25,6 +24,7 @@ class Submission(models.Model):
         return str(self.competitor) + "'s submission to problem " + str(self.problem)
 
     def grade(self):
+        from .score import Score
         score = Score.objects.get(problem=self.problem, competitor=self.competitor)
         g = self.problem.grader
         if g is not None:
@@ -53,6 +53,7 @@ class Submission(models.Model):
         return 2*trueskill.expose(self.rating)
     
     def update_score_from_rating(self):
+        from .score import Score
         s = Score.objects.get(problem=self.problem, competitor=self.competitor)
         s.points = self.public_rating
         s.save()

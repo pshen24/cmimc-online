@@ -21,14 +21,12 @@ class Exam(models.Model):
     name = models.CharField(max_length=100, unique=True)
     start_time = models.DateTimeField()
     end_time = models.DateTimeField()
-    miniround_start = models.DateTimeField()
-    miniround_time = models.DurationField(null=True, blank=True)
-    display_miniround = models.IntegerField(default=0)
-    num_grace_minirounds = models.IntegerField(default=0)
+    submit_start_time = models.DateTimeField(null=True, blank=True)
 
     division = models.IntegerField(null=True, blank=True)
     exampair = models.ForeignKey(ExamPair, null=True, blank=True, related_name='exams', on_delete=models.SET_NULL)
     is_team_exam = models.BooleanField()
+    password = models.CharField(max_length=100, blank=True)
     
     OPTIMIZATION = 'OPT'
     AI = 'AI'
@@ -52,6 +50,10 @@ class Exam(models.Model):
     @cached_property
     def is_ai(self):
         return self.exam_type == self.AI
+
+    @cached_property
+    def is_math(self):
+        return self.exam_type == self.MATH
 
     # whether to allow contestants to see the leaderboard during the exam
     @cached_property
@@ -146,6 +148,12 @@ class Exam(models.Model):
     @cached_property
     def time_remaining(self):
         return max((self.end_time - self._now).total_seconds(), 0)
+
+    # in seconds
+    @cached_property
+    def time_until_submit_start(self):
+        return max((self.submit_start_time - self._now).total_seconds(), 0)
+
 
     def time_remaining_seconds(self):
         if not self.ended:

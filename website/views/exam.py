@@ -1,9 +1,89 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
-from website.models import Exam, Competitor, Score, MiniRoundScore, Problem, AISubmission
-from website.utils import miniround_sub, per_page
+from website.models import Exam, Competitor, Score, MiniRoundScore, Problem, AISubmission, Submission
+from website.utils import miniround_sub, per_page, log
 from django.core.paginator import Paginator 
+from sympy.parsing.latex import parse_latex
+from sympy import simplify
+import signal
+
+'''
+@background
+def eq(l1, l2):
+
+
+def handler(signum, fram):
+    print('timeout in handler')
+    raise TimeoutError()
+'''
+
+def all_problems_math(request, user, exam):
+    try:
+        problems = exam.problem_list
+        if user.is_mathlete:
+            competitor = Competitor.objects.getCompetitor(exam, user.mathlete)
+
+
+        if request.method == "POST":
+            if not user.can_submit(exam):
+                raise PermissionDenied("You are not allowed to submit to this problem")
+            if 'save' in request.POST:
+                num = request.POST['save']
+                p = problems.get(problem_number=num)
+                latex = request.POST[f'input-{num}']
+                '''
+                print('latex: ', latex)
+                expr = parse_latex(latex)
+                print('sympy expr: ', expr)
+                print('ans latex: ', p.answer)
+                ans_expr = parse_latex(p.answer)
+                print('ans expr: ', ans_expr)
+                '''
+
+                '''
+                signal.signal(signal.SIGALRM, handler)
+                signal.alarm(5)
+                try:
+                    print(expr.equals(ans_expr))
+                except:
+                    print("timeout!")
+                signal.alarm(0)
+                '''
+
+                sub = Submission(problem=p, competitor=competitor, text=latex)
+                sub.save()
+                score = Score.objects.get(problem=p, competitor=competitor)
+                score.latest_sub = sub
+                score.save()
+                return redirect('all_problems', exam_id=exam.id)
+            elif 'password' in request.POST:
+                competitor.password = request.POST['password']
+                competitor.save()
+                return redirect('all_problems', exam_id=exam.id)
+
+        prob_info = []
+        for p in problems:
+            score = Score.objects.get(problem=p, competitor=competitor)
+            if score.latest_sub:
+                text = score.latest_sub.text
+            else:
+                text = None
+            prob_info.append({
+                'p': p,
+                'n': p.problem_number,
+                'latest_sub': text,
+            })
+
+        context = {
+            'exam': exam,
+            'prob_info': prob_info,
+            'can_submit': user.is_mathlete and competitor.password == exam.password,
+            'can_enter_password': user.is_mathlete and exam.password != '' and competitor.password != exam.password,
+        }
+        return render(request, 'exam/all_problems_math.html', context)
+    except Exception as e:
+        log(ERROR=str(e), during='all_problems_math')
 
 @login_required
 def all_problems(request, exam_id):
@@ -11,6 +91,9 @@ def all_problems(request, exam_id):
     exam = get_object_or_404(Exam, pk=exam_id)
     if not user.can_view_exam(exam):
         raise PermissionDenied('You do not have access to this page')
+
+    if exam.is_math:
+        return all_problems_math(request, user, exam)
 
     problems = exam.problem_list
 

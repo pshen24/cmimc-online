@@ -80,6 +80,12 @@ def team_info(request, team_id):
                     if ID in request.POST:
                         dc.division = request.POST[ID]
                         dc.save()
+            if 'merge' in request.POST:
+                team.wants_merge = True
+                team.save()
+            else:
+                team.wants_merge = False
+                team.save()
 
         elif 'deleteTeam' in request.POST and can_edit:
             team.delete() # cascade deletes for comps, scores, taskscores, MRscores
@@ -115,6 +121,7 @@ def team_info(request, team_id):
             reverse('join_team', args=[team_id, team.invite_code])
         ),
         'too_large': len(team.mathletes.all()) > team.contest.max_team_size,
+        'too_small': len(team.mathletes.all()) < team.contest.max_team_size,
         'reg_permission': user != team.coach,
         'can_edit': can_edit,
         'exampairs': exampairs,

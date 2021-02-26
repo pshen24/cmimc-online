@@ -13,6 +13,8 @@ class Contest(models.Model):
     is_private = models.BooleanField(default=False)
     locked = models.BooleanField(default=False) # either lock manually, or automatic lock
                                                 # 24 hours after the reg deadline
+    show_final_results = models.BooleanField(default=False)
+
 
 
 
@@ -43,13 +45,25 @@ class Contest(models.Model):
 
     @cached_property
     def ended(self):
-        return self.now > self.end_time
+        return timezone.localtime(self.now).date() > timezone.localtime(self.end_time).date()
 
     @cached_property
     def started(self):
-        return self.now >= self.start_time
+        return timezone.localtime(self.now).date() >= timezone.localtime(self.start_time).date()
 
     @cached_property
     def ongoing(self):
         return self.started and not self.ended
+
+    def reg_exams(self, mathlete):
+        from website.models import DivChoice
+        ret = []
+        for e in self.exams.all():
+            if e.exampair is None:
+                ret.append(e)
+            else:
+                dc = DivChoice.objects.filter(exampair=e.exampair, mathlete=mathlete).first()
+                if dc is not None and dc.division == e.division:
+                    ret.append(e)
+        return ret
 

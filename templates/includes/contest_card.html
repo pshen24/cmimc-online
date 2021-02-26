@@ -45,7 +45,11 @@
             <td>{{ e.start_time }}</td>
             <td>{{ e.end_time }}</td>
             {% if e.ended %}
-            <td><a href="{% url 'leaderboard' e.id %}?page=1">Results</a></td>
+                {% if t.contest.show_final_results %}
+                    <td><a href="{% url 'leaderboard' e.id %}?page=1">Results</a></td>
+                {% else %}
+                    <td>Finished</td>
+                {% endif %}
             {% elif e.ongoing %}
               <td><a href="{% url 'all_problems' e.id %}"
                 class="btn btn-primary">Join</a></td>

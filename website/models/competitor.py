@@ -13,6 +13,7 @@ class Competitor(models.Model):
             help_text=_('If the exam is an individual exam, this is the \
             corresponding mathlete. If the exam is a team exam, this is null'))
     total_score = models.FloatField(default=0.0, db_index=True)
+    password = models.CharField(max_length=100, blank=True)
 
     objects = CompetitorManager()
 

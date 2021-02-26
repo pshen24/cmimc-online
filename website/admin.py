@@ -27,7 +27,7 @@ class UserAdmin(DefaultUserAdmin):
 
 class TeamAdmin(admin.ModelAdmin):
     list_display = ('team_name', 'mathlete_list', 'coach', 'contest', 'email_list',)
-    list_filter = ('contest',)
+    list_filter = ('contest', 'wants_merge')
     search_fields = ('team_name', 'mathletes__user__first_name', 'mathletes__user__last_name', 'mathletes__user__full_name', 'coach__first_name', 'coach__last_name', 'coach__full_name',)
 
 

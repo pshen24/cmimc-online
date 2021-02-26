@@ -12,6 +12,7 @@
 	<div class="collapse navbar-collapse" id="mainMenu">
       {% url 'contest_list' as url_contests %}
       {% url 'math_info' as mi %}
+      {% url 'math_rules' as mr %}
       {% url 'math_sample_problems' as msp %}
 	  {% url 'math_schedule' as ms %}
       {% url 'math_mini_events' as mme %}
@@ -31,11 +32,12 @@
         </li>
       {% endif %}
       <li class="nav-item dropdown">
-          <a class="nav-link no-color dropdown-toggle {% if path == mi or path == msp or path == ms or path == mme %}active{% endif %}" href="#" id="mathDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
+          <a class="nav-link no-color dropdown-toggle {% if path == mi or path == msp or path == ms or path == mme or path == mr %}active{% endif %}" href="#" id="mathDropdown" role="button" data-toggle="dropdown" aria-expanded="false">
         Math
         </a>
         <ul class="dropdown-menu" aria-labelledby="mathDropdown">
         <li><a class="dropdown-item no-color {% if path == mi %}active{% endif %}" href="{{ mi }}">Format</a></li>
+        <li><a class="dropdown-item no-color {% if path == mr %}active{% endif %}" href="{{ mr }}">Rules</a></li>
         <li><a class="dropdown-item no-color {% if path == msp %}active{% endif %}" href="{{ msp }}">Sample Problems</a></li>
         <li><a class="dropdown-item no-color {% if path == ms %}active{% endif %}" href="{{ ms }}">Schedule</a></li>
         <li><a class="dropdown-item no-color {% if path == mme %}active{% endif %}" href="{{ mme }}">Mini Events</a></li>
