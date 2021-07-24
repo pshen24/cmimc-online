@@ -2,8 +2,11 @@
 
 {% block exam_content %}
 
-<h1 class="mb-4">{{ exam.name }}</h1>
+<h1 {% if not exam.is_team_exam or not can_submit %}style="margin-bottom: 2rem;"{% endif %}>{{ exam.name }}</h1>
 
+{% if exam.is_team_exam and can_submit %}
+<p style="margin-bottom: 2rem;">Refresh this page to see the most recent answers submitted by your teammates.</p>
+{% endif %}
 
 {% for pi in prob_info %}
 <h4>Problem {{ pi.n }}</h4>
@@ -27,7 +30,7 @@
 </div>
 {% endif %}
 
-<hr>
+<hr style="margin-bottom: 2rem; margin-top: 2rem;">
 {% endfor %}
 
 {% if can_enter_password %}
@@ -43,7 +46,7 @@
 </form>
 </div>
 {% elif can_submit %}
-<h2>Answer Formatting</h2>
+<h2 class="mb-3">Answer Formatting</h2>
 <table class="table">
     <thead class="thead-dark">
         <tr>

@@ -8,6 +8,25 @@ from sympy.parsing.latex import parse_latex
 from sympy import simplify
 import signal
 
+def all_problems_power(request, user, exam):
+    try:
+        problems = exam.problem_list
+        if user.is_mathlete:
+            competitor = Competitor.objects.getCompetitor(exam, user.mathlete)
+            password = competitor.team.invite_code
+        else:
+            password = 'N/A (You are not a contestant)'
+
+        context = {
+            'exam': exam,
+            'password': password,
+            'problems': problems,
+        }
+        return render(request, 'exam/all_problems_power.html', context)
+    except Exception as e:
+        log(ERROR=str(e), during='all_problems_power')
+
+
 '''
 @background
 def eq(l1, l2):
@@ -64,9 +83,12 @@ def all_problems_math(request, user, exam):
 
         prob_info = []
         for p in problems:
-            score = Score.objects.get(problem=p, competitor=competitor)
-            if score.latest_sub:
-                text = score.latest_sub.text
+            if user.is_mathlete:
+                score = Score.objects.get(problem=p, competitor=competitor)
+                if score.latest_sub:
+                    text = score.latest_sub.text
+                else:
+                    text = None
             else:
                 text = None
             prob_info.append({
@@ -75,11 +97,20 @@ def all_problems_math(request, user, exam):
                 'latest_sub': text,
             })
 
+        can_submit = False
+        can_enter_password = False
+        if user.is_mathlete:
+            if competitor.password == exam.password:
+                can_submit = True
+            elif exam.password != '' and competitor.password != exam.password:
+                can_enter_password = True
+
+
         context = {
             'exam': exam,
             'prob_info': prob_info,
-            'can_submit': user.is_mathlete and competitor.password == exam.password,
-            'can_enter_password': user.is_mathlete and exam.password != '' and competitor.password != exam.password,
+            'can_submit': can_submit,
+            'can_enter_password': can_enter_password,
         }
         return render(request, 'exam/all_problems_math.html', context)
     except Exception as e:
@@ -94,6 +125,8 @@ def all_problems(request, exam_id):
 
     if exam.is_math:
         return all_problems_math(request, user, exam)
+    elif exam.is_power:
+        return all_problems_power(request, user, exam)
 
     problems = exam.problem_list
 

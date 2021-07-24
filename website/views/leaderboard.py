@@ -132,6 +132,8 @@ def contest_leaderboard(request, contest_id):
         exams = list(contest.exams.all())
         max_scores = [0]*len(exams)
         for i in range(len(exams)):
+            if not (exams[i].is_optimization or exams[i].is_ai):
+                continue
             for t in teams:
                 try:
                     c = Competitor.objects.get(exam=exams[i], team=t, mathlete=None)
@@ -143,6 +145,8 @@ def contest_leaderboard(request, contest_id):
         for t in teams:
             scores = []
             for i in range(len(exams)):
+                if not (exams[i].is_optimization or exams[i].is_ai):
+                    continue
                 try:
                     c = Competitor.objects.get(exam=exams[i], team=t, mathlete=None)
                     if max_scores[i] > 0:

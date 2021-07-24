@@ -182,4 +182,7 @@ CKEDITOR_CONFIGS = {
     },
 }
 
-
+# 1-minute max run time for background tasks
+# mainly for autograding
+# doesn't seem to work though
+# MAX_RUN_TIME = 1

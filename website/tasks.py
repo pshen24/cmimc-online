@@ -286,10 +286,13 @@ def check_graded_submissions():
 def init_all_tasks():
     Task.objects.all().delete() # Clear all previous tasks
     exams = Exam.objects.all()
-    check_finished_games(schedule=0, repeat=30)
-    check_graded_submissions(schedule=0, repeat=30)
+    ongoing_ai = False
     for exam in exams:
         if exam.is_ai:
             if not exam.ended:
+                ongoing_ai = True
                 time = max(exam.start_time, timezone.now())
                 schedule_ai_games(exam.id, schedule=time, repeat=60, repeat_until=exam.end_time)
+    if ongoing_ai:
+        check_finished_games(schedule=0, repeat=30)
+        check_graded_submissions(schedule=0, repeat=30)

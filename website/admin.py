@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
 
 from website.forms import UserCreationForm, UserChangeForm
-from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score, Task, TaskScore, AIGrader, AIProblem, AIGame, AISubmission, MiniRoundScore, MiniRoundQueue, MiniRoundTotal, MatchResult, ExamPair
+from website.models import Contest, Exam, Problem, User, Mathlete, Team, Competitor, Submission, Score, Task, TaskScore, AIGrader, AIProblem, AIGame, AISubmission, MiniRoundScore, MiniRoundQueue, MiniRoundTotal, MatchResult, ExamPair, DivChoice, IndivSweepstake
 
 
 class UserAdmin(DefaultUserAdmin):
@@ -34,6 +34,7 @@ class TeamAdmin(admin.ModelAdmin):
 class CompetitorAdmin(admin.ModelAdmin):
     list_display = ('team', 'exam', 'mathlete', 'total_score',)
     list_filter = ('exam',)
+    search_fields = ('team__team_name', 'mathlete__user__first_name', 'mathlete__user__last_name', 'mathlete__user__full_name',)
 
 
 class ScoreAdmin(admin.ModelAdmin):
@@ -44,11 +45,19 @@ class ScoreAdmin(admin.ModelAdmin):
 class SubmissionAdmin(admin.ModelAdmin):
     list_display = ('problem', 'task', 'status', 'competitor')
     list_filter = ('problem', 'task', 'status')
+    autocomplete_fields = ['competitor']
 
 
 class AIGameAdmin(admin.ModelAdmin):
     list_display = ('aiproblem', 'status', 'time')
     list_filter = ('aiproblem', 'status')
+
+
+class IndivSweepstakeAdmin(admin.ModelAdmin):
+    list_display = ('mathlete', 'team', 'total_score',)
+    list_filter = ('mathlete__user__first_name', 'mathlete__user__last_name', 'mathlete__user__full_name', 'team')
+
+
 
 
 admin.site.register(Contest)
@@ -71,3 +80,5 @@ admin.site.register(MiniRoundQueue)
 admin.site.register(MiniRoundTotal)
 admin.site.register(MatchResult)
 admin.site.register(ExamPair)
+admin.site.register(DivChoice)
+admin.site.register(IndivSweepstake, IndivSweepstakeAdmin)

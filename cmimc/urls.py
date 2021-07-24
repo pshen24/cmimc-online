@@ -48,13 +48,19 @@ urlpatterns = [
     path('exam/<int:exam_id>/problem/<int:problem_number>/submit/task/<int:task_number>', views.submit, name='submit'),
     
     path('exam/<int:exam_id>/submissions', views.all_submissions, name='all_submissions'),
+    path('exam/<int:exam_id>/admin-all-submissions', views.admin_all_submissions, name='admin_all_submissions'),
     path('submission/<int:submission_id>', views.view_submission, name='view_submission'),
     path('resubmit/<int:submission_id>', views.resubmit, name='resubmit'),
+
+    path('results/contest/<int:contest_id>/sweepstakes', views.sweepstakes, name='sweepstakes'),
+    path('results/contest/<int:contest_id>/indiv-sweepstakes', views.indiv_sweepstakes, name='indiv_sweepstakes'),
+    path('results/exam/<int:exam_id>', views.exam_results, name='exam_results'),
 
     path('download/match/<int:aisubmission_id>', views.match_replay, name='match_replay'),
     path('download/starter-file/<int:aiproblem_id>', views.ai_starter_file, name='ai_starter_file'),
     path('download/visualizer/<int:aiproblem_id>', views.ai_visualizer, name='ai_visualizer'),
     path('download/mailinglist/<int:contest_id>', views.mailinglist, name='mailinglist'),
+    path('download/subs/<int:exam_id>', views.download_subs, name='download_subs'),
 ]
 
 

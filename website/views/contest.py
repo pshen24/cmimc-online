@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from website.models import Contest, User, Exam, Mathlete, Team, Problem
 from django.utils import timezone
 from website.tasks import init_all_tasks, check_finished_games_real, final_ai_grading
-from website.utils import update_contest, reset_contest, regrade_games, log, reset_exam, scores_from_csv, recompute_leaderboard, recheck_games, reset_problem
+from website.utils import update_contest, reset_contest, regrade_games, log, reset_exam, scores_from_csv, recompute_leaderboard, recheck_games, reset_problem, default_div1, exam_results_from_csv, calc_indiv_sweepstakes, calc_sweepstakes
 
 @login_required
 def contest_list(request):
@@ -44,6 +44,19 @@ def contest_list(request):
             log(deleting_team=team.team_name)
             team.delete()
             log(deleted_team='')
+        elif 'default_div1' in request.POST:
+            contest = Contest.objects.get(pk=request.POST['default_div1'])
+            default_div1(contest)
+        elif 'exam_results' in request.POST:
+            exam = Exam.objects.get(pk=request.POST['exam_results'])
+            text = request.FILES['csv_file'].read().decode('utf-8')
+            exam_results_from_csv(exam, text)
+        if 'calc_indiv_sweepstakes' in request.POST:
+            contest = Contest.objects.get(pk=request.POST['calc_indiv_sweepstakes'])
+            calc_indiv_sweepstakes(contest)
+        if 'calc_sweepstakes' in request.POST:
+            contest = Contest.objects.get(pk=request.POST['calc_sweepstakes'])
+            calc_sweepstakes(contest)
 
 
     user = request.user
@@ -75,6 +88,9 @@ def contest_list(request):
     for t in tuples:
         if t['contest'].ended:
             past_contests.append(t)
+    ongoing_contests = sorted(ongoing_contests, key=lambda d: d['contest'].start_time)
+    upcoming_contests = sorted(upcoming_contests, key=lambda d: d['contest'].start_time)
+    past_contests = sorted(past_contests, key=lambda d: d['contest'].end_time, reverse=True)
     
     # Get all exams
     all_exams = Exam.objects.all()

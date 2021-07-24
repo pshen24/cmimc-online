@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
-from website.models import Exam, Competitor, Submission, AISubmission, AIProblem, Contest
+from website.models import Exam, Competitor, Submission, AISubmission, AIProblem, Contest, Score
 from django.core.exceptions import PermissionDenied
 from django.http import HttpResponse
 import json
@@ -68,5 +68,32 @@ def mailinglist(request, contest_id):
     return response
 
 
+@login_required
+def download_subs(request, exam_id):
+    user = request.user
+    exam = get_object_or_404(Exam, pk=exam_id)
+    if not user.is_staff:
+        raise PermissionDenied("You do not have access to this file")
+
+    problems = exam.problem_list
+    lines = []
+    for c in exam.competitors.all():
+        line = c.name
+        for p in problems:
+            s = Score.objects.get(problem=p, competitor=c)
+            sub = s.latest_sub
+            if sub is not None and sub.points == 1:
+                line += ',1,'
+            else:
+                line += ',0,'
+            if sub is not None:
+                line += sub.text
+        line += ',' + c.team.team_name
+        lines.append(line)
+
+    content = '\n'.join(lines)
+    response = HttpResponse(content, content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename={0} scores.csv'.format(exam.name)
+    return response
 
 

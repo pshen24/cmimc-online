@@ -53,7 +53,7 @@ def update_scores(comp):
 
 
 def update_competitors(team):
-    from website.models import Competitor
+    from website.models import Competitor, DivChoice
     for exam in team.contest.exams.all():
         # Django guarantees at most one competitor for each
         # (exam, team, mathlete) triple, so there are no duplicates
@@ -70,6 +70,11 @@ def update_competitors(team):
                 # so delete the corresponding competitor
                 if c.mathlete not in team.mathletes.all():
                     c.delete()
+            if exam.exampair is not None:
+                dc = DivChoice.objects.filter(exampair=exam.exampair, mathlete=c.mathlete).first()
+                if dc is None or dc.division != exam.division:
+                    c.delete()
+
 
         # make sure all valid competitors exist, and call update_scores
         if exam.is_team_exam:
@@ -80,6 +85,10 @@ def update_competitors(team):
             update_scores(c)
         else:
             for m in team.mathletes.all():
+                if exam.exampair is not None:
+                    dc = DivChoice.objects.filter(exampair=exam.exampair, mathlete=m).first()
+                    if dc is None or dc.division != exam.division:
+                        continue
                 c = Competitor.objects.filter(exam=exam, team=team, mathlete=m).first()
                 if c is None:
                     c = Competitor(exam=exam, team=team, mathlete=m)
@@ -304,3 +313,127 @@ def reset_problem(p):
 
 def per_page(n):
     return 50
+
+
+def default_div1(contest):
+    from website.models import DivChoice
+    log(starting='default_div1')
+    try:
+        for team in contest.teams.all():
+            for m in team.mathletes.all():
+                for exampair in contest.exampairs.all():
+                    dc = DivChoice.objects.filter(exampair=exampair, mathlete=m).first()
+                    if dc is None:
+                        dc = DivChoice(exampair=exampair, mathlete=m, division=1)
+                        dc.save()
+                    elif dc.division is None:
+                        dc.division = 1
+                        dc.save()
+    except Exception as e:
+        log(error=str(e), during='default_div1')
+    log(finished='default_div1')
+
+
+def exam_results_from_csv(exam, text):
+    from website.models import Team, Problem, Competitor, Score, TaskScore
+    log(start='exam_results_from_csv')
+    try:
+        lines = text.splitlines()
+        data = [line.split(',') for line in lines]
+        n = len(data)
+        problems = exam.problem_list
+        if exam.is_team_exam and exam.is_math:
+            offset = 0
+        else:
+            offset = 1
+
+        for i in range(n-1):
+            team_name = data[i][0]
+            code = data[i][1]
+            if exam.is_power:
+                team = Team.objects.filter(contest=exam.contest, invite_code=code).first()
+            else:
+                team = Team.objects.filter(contest=exam.contest, team_name=team_name).first()
+            if team is None:
+                log(error=f'could not find team with name {team_name} in exam_results_from_csv')
+                continue
+            if exam.is_team_exam:
+                c = Competitor.objects.get(exam=exam, team=team, mathlete=None)
+            else:
+                name = data[i][1]
+                c = None
+                for cc in team.competitors.filter(exam=exam):
+                    names = [cc.name.lower().strip()]
+                    if cc.mathlete is not None:
+                        names += [cc.mathlete.user.full_name.lower().strip(), cc.mathlete.user.long_name.lower().strip()]
+                    if name.lower().strip() in names:
+                        if c is not None:
+                            log(duplicate_name=name, team=team_name, during='exam_results_from_csv')
+                        else:
+                            c = cc
+                if c is None:
+                    log(error=f'could not find {name} on team {team_name} in exam_results_from_csv')
+                    continue
+            for p in problems:
+                s = Score.objects.get(competitor=c, problem=p)
+                s.points = float(data[i][p.problem_number + offset])
+                s.save()
+            c.total_score = float(data[i][-1])
+            c.save()
+        if exam.is_math:
+            for p in problems:
+                p.weight = float(data[-1][p.problem_number + offset])
+                p.save()
+    except Exception as e:
+        log(error=str(e), during='exam_results_from_csv')
+    log(finished='exam_results_from_csv')
+        
+
+def calc_indiv_sweepstakes(contest):
+    from website.models import IndivSweepstake
+    log(start='calc_indiv_sweepstakes')
+    for team in contest.teams.all():
+        for mathlete in team.mathletes.all():
+            iss = IndivSweepstake.objects.filter(team=team, mathlete=mathlete).first()
+            if iss is None:
+                iss = IndivSweepstake(team=team, mathlete=mathlete)
+                iss.save()
+            iss.update_total_score()
+    log(finished='calc_indiv_sweepstakes')
+
+
+def calc_sweepstakes(contest):
+    from website.models import Sweepstake, Exam
+    from django.db.models import Max
+    log(start='calc_sweepstakes')
+    for team in contest.teams.all():
+        ss = Sweepstake.objects.filter(team=team).first()
+        if ss is None:
+            ss = Sweepstake(team=team)
+            ss.save()
+        ss.update_indiv_total()
+
+    power_exam = contest.exams.filter(is_team_exam=True, show_results=True, exam_type=Exam.POWER).first()
+    if power_exam:
+        max_power = power_exam.competitors.aggregate(m=Max('total_score'))['m']
+    team_exam = contest.exams.filter(is_team_exam=True, show_results=True, exam_type=Exam.MATH).first()
+    if team_exam:
+        max_team = team_exam.competitors.aggregate(m=Max('total_score'))['m']
+    max_indiv = Sweepstake.objects.filter(team__contest=contest).aggregate(m=Max('indiv_total'))['m']
+
+    for team in contest.teams.all():
+        ss = team.sweepstake
+        if power_exam:
+            power_comp = team.competitors.filter(exam=power_exam).first()
+            if power_comp is not None and max_power > 0:
+                ss.norm_power = power_comp.total_score / max_power * 200
+        if team_exam:
+            team_comp = team.competitors.filter(exam=team_exam).first()
+            if team_comp is not None and max_team > 0:
+                ss.norm_team = team_comp.total_score / max_team * 200
+        if max_indiv > 0:
+            ss.norm_indiv = ss.indiv_total / max_indiv * 600
+        ss.total_score = ss.norm_power + ss.norm_team + ss.norm_indiv
+        ss.save()
+    log(finished='calc_sweepstakes')
+

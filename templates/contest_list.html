@@ -188,6 +188,51 @@
 </form>
 
 
+<h3>Default Div 1</h3>
+<hr class="red_line mb-4"/>
+<p>(assigns all mathletes to division 1 if they haven't picked yet)</p>
+
+<form method="post" class="mb-4">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="number" class="form-contest-id" name="default_div1">
+      </div>
+      <button type="submit" class="btn btn-primary">Default Div 1</button>
+</form>
+
+<h3>Exam Results From CSV</h3>
+<hr class="red_line mb-4"/>
+<form method="post" class="mb-4" enctype="multipart/form-data">
+      {% csrf_token %}
+      <input type="file" class="form-control-file mb-3" name="csv_file">
+      <input type="number" name="exam_results">
+      <button type="submit" class="btn btn-primary">Save</button>
+</form>
+
+
+<h3>Calc Indiv Sweepstakes</h3>
+<hr class="red_line mb-4"/>
+
+<form method="post" class="mb-4">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="number" class="form-contest-id" name="calc_indiv_sweepstakes">
+      </div>
+      <button type="submit" class="btn btn-primary">Calc Indiv Sweepstakes</button>
+</form>
+
+
+<h3>Calc Sweepstakes</h3>
+<hr class="red_line mb-4"/>
+
+<form method="post" class="mb-4">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="number" class="form-contest-id" name="calc_sweepstakes">
+      </div>
+      <button type="submit" class="btn btn-primary">Calc Sweepstakes</button>
+</form>
+
 
 
 {% endif %}

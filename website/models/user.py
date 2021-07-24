@@ -31,15 +31,6 @@ class User(AbstractUser):
         return self.name
 
     @property
-    def name(self):
-        if self.alias:
-            return self.alias
-        elif self.full_name:
-            return self.full_name
-        else:
-            return '{0} {1}'.format(self.first_name, self.last_name)
-
-    @property
     def short_name(self):
         if self.first_name:
             return self.first_name
@@ -56,6 +47,10 @@ class User(AbstractUser):
             return self.first_name
         else:
             return self.last_name
+
+    @property
+    def name(self):
+        return self.long_name
 
     @property
     def is_mathlete(self):

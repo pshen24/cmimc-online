@@ -15,6 +15,9 @@ class DivChoice(models.Model):
     mathlete = models.ForeignKey(Mathlete, related_name='divchoices', on_delete=models.CASCADE)
     division = models.IntegerField(null=True, blank=True)
 
+    def __str__(self):
+        return f'{self.mathlete.user.name} - {self.exampair.name} Division {self.division}'
+
 
 class Exam(models.Model):
     contest = models.ForeignKey(Contest, related_name='exams', on_delete=models.CASCADE)
@@ -27,6 +30,7 @@ class Exam(models.Model):
     exampair = models.ForeignKey(ExamPair, null=True, blank=True, related_name='exams', on_delete=models.SET_NULL)
     is_team_exam = models.BooleanField()
     password = models.CharField(max_length=100, blank=True)
+    show_results = models.BooleanField(default=False, help_text="make the final results public")
     
     OPTIMIZATION = 'OPT'
     AI = 'AI'
@@ -54,6 +58,10 @@ class Exam(models.Model):
     @cached_property
     def is_math(self):
         return self.exam_type == self.MATH
+
+    @cached_property
+    def is_power(self):
+        return self.exam_type == self.POWER
 
     # whether to allow contestants to see the leaderboard during the exam
     @cached_property

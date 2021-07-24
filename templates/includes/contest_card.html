@@ -61,7 +61,7 @@
       </tbody>
     </table>
     {% if t.contest.ended %}
-      <a href="{% url 'contest_leaderboard' t.contest.id %}">Final Standings</a>
+      <a href="{% if t.contest.is_math %}{% url 'sweepstakes' t.contest.id %}{% else %}{% url 'contest_leaderboard' t.contest.id %}{% endif %}">Final Standings</a>
     {% endif %}
   {% endif %}
 </div>

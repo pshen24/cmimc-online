@@ -20,6 +20,8 @@ class Problem(models.Model):
     grader_code = models.TextField(null=True, blank=True)
     grader_filename = models.CharField(blank=True, max_length=50)
     answer = models.CharField(blank=True, max_length=200)
+    google_form_link = models.CharField(max_length=1000, null=True, blank=True)
+    weight = models.FloatField(null=True, blank=True)
     
 
     # returns an instance of the grader class defined by grader_name

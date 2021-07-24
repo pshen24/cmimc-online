@@ -14,6 +14,9 @@ class Contest(models.Model):
     locked = models.BooleanField(default=False) # either lock manually, or automatic lock
                                                 # 24 hours after the reg deadline
     show_final_results = models.BooleanField(default=False)
+    div_locked = models.BooleanField(default=False)
+    show_sweepstakes = models.BooleanField(default=False, help_text="make final results public")
+    is_math = models.BooleanField()
 
 
 
