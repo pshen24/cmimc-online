@@ -1,0 +1,24 @@
+version: '3'
+services:
+  mariadb:
+    image: mariadb:10.6
+    environment:
+      - MARIADB_ROOT_PASSWORD=your_password
+    volumes:
+      - ./mariadb:/var/lib/mysql
+    ports:
+      - 3306:3306
+  cmimc:
+    build: .
+    depends_on:
+      - mariadb
+    ports:
+      - 127.0.0.1:8000:8000
+    environment:
+      - RDS_HOSTNAME=mariadb
+      - RDS_PORT=3306
+      - RDS_DB_NAME=cmimc
+      - RDS_USERNAME=root
+      - RDS_PASSWORD=your_password
+      - DEBUG=true
+

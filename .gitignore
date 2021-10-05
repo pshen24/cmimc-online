@@ -1,6 +1,7 @@
 problem_graders/
 media/private/
 staticfiles/
+mariadb/
 
 
 # ===== Default gitignore below =====
@@ -139,3 +140,5 @@ dmypy.json
 .elasticbeanstalk/*
 !.elasticbeanstalk/*.cfg.yml
 !.elasticbeanstalk/*.global.yml
+
+*.swp
