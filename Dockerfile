@@ -9,7 +9,7 @@ RUN apt-get update && \
 
 RUN pip install --no-cache-dir pipenv
 
-COPY Pipfile Pipfile.lock .
+COPY Pipfile Pipfile.lock ./
 RUN pipenv install
 
 COPY . .
