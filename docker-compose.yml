@@ -3,7 +3,7 @@ services:
   mariadb:
     image: mariadb:10.6
     environment:
-      - MARIADB_ROOT_PASSWORD=your_password
+      - MARIADB_ROOT_PASSWORD=${DOCKER_RDS_PASSWORD}
     volumes:
       - ./mariadb:/var/lib/mysql
     ports:
@@ -17,10 +17,10 @@ services:
     ports:
       - 127.0.0.1:8000:8000
     environment:
-      - RDS_HOSTNAME=mariadb
+      - RDS_HOSTNAME=${DOCKER_RDS_HOSTNAME}
       - RDS_PORT=3306
       - RDS_DB_NAME=cmimc
-      - RDS_USERNAME=root
-      - RDS_PASSWORD=your_password
+      - RDS_USERNAME=${DOCKER_RDS_USERNAME}
+      - RDS_PASSWORD=${DOCKER_RDS_PASSWORD}
       - DEBUG=true
 
