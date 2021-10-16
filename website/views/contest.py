@@ -94,6 +94,7 @@ def contest_list(request):
     
     # Get all exams
     all_exams = Exam.objects.all()
+    '''
     all_emails = []
     prog_emails = []
     small_teams = []
@@ -123,18 +124,21 @@ def contest_list(request):
         teams = Team.objects.filter(contest=c)
         for team in teams:
             member_count2[min(team.mathletes.all().count(), 9)] += 1
+    '''
 
     context = {
         'exams': all_exams,
         'ongoing': ongoing_contests,
         'upcoming': upcoming_contests,
         'past': past_contests,
-        # staff only
-        'emaillist': ', '.join(all_emails),
-        'prog_emails': ', '.join(prog_emails),
-        'small_teams': ', '.join(small_teams),
-        'member_count': member_count,
-        'member_count2': member_count2,
     }
+    # staff only
+    '''
+    'emaillist': ', '.join(all_emails),
+    'prog_emails': ', '.join(prog_emails),
+    'small_teams': ', '.join(small_teams),
+    'member_count': member_count,
+    'member_count2': member_count2,
+    '''
     return render(request, 'contest_list.html', context)
 
