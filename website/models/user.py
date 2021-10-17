@@ -16,8 +16,8 @@ class User(AbstractUser):
     STAFF = 'ST'
     COACH = 'CO'
     role_CHOICES = [
-        (MATHLETE, 'Contestant'),
         (STAFF, 'CMU Student'),
+        (MATHLETE, 'Contestant'),
         (COACH, 'Coach'),
     ]
     role = models.CharField(max_length=2, choices=role_CHOICES, default=MATHLETE)
@@ -185,4 +185,3 @@ class User(AbstractUser):
                 return Competitor.objects.filter(exam=exam, team__in=teams, mathlete=self.mathlete)
         if self.is_coach:
             return Competitor.objects.filter(exam=exam, team__in=teams)
-
