@@ -1,7 +1,9 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h2>Upload</h2>
+<h2>Download Waiver</h2>
+<p>Click <a href="https://drive.google.com/uc?export=download&id=1TmXiSWRIakw2X6WD7H8MaOACds16AD0D">here</a> to download waiver.</p>
+<h2>Upload Waiver</h2>
   <form method="post" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="file" name="document">
