@@ -57,9 +57,6 @@ class IndivSweepstakeAdmin(admin.ModelAdmin):
     list_display = ('mathlete', 'team', 'total_score',)
     list_filter = ('mathlete__user__first_name', 'mathlete__user__last_name', 'mathlete__user__full_name', 'team')
 
-
-
-
 admin.site.register(Contest)
 admin.site.register(Exam)
 admin.site.register(Problem)
