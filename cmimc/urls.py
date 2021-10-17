@@ -63,6 +63,7 @@ urlpatterns = [
     path('download/visualizer/<int:aiproblem_id>', views.ai_visualizer, name='ai_visualizer'),
     path('download/mailinglist/<int:contest_id>', views.mailinglist, name='mailinglist'),
     path('download/subs/<int:exam_id>', views.download_subs, name='download_subs'),
-]
 
+    path("upload", views.upload, name="upload")
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
