@@ -19,32 +19,8 @@
 
 <div class="card cardlink no-hover">
     <div class="card-body">
-      {% block content %}  
-         
-              <div class="container">
-      
-                <!--Simple Form-->
-                <h2 class="my-4">Upload Waiver</h2>
-                <form method="post" enctype="multipart/form-data">
-                  {% csrf_token %}
-                      <input type="file" name="upload" accept=".doc, .docx, .pdf, .txt">
-                      <br>
-                      <button class="btn btn-dark my-4" type="submit">Submit</button>
-                </form>
-      
-                <!--See File Uploaded-->
-                <h2 class="my-4">Waiver</h2>
-                <div class="row">
-                  {% if uploaded_file_url %}
-                  <div class="col-lg-4 col-md-6 col-sm-12 pb-4">
-                    <p>Uploaded to:<a href="{{ uploaded_file_url }}">{{ uploaded_file_url }}</a></p>
-                    <a class="btn btn-dark my-4" href="/">Return to Homepage</a>
-                  {% else %}
-                  <p>No form added.</p>
-                  {% endif %}
-                </div>
-      
-              </div>
-      {% endblock %}
+        <h2 class="card-title">Forms to Complete</h2>
+                <p class="card-text">Fill out <a href="https://drive.google.com/uc?export=download&id=1TmXiSWRIakw2X6WD7H8MaOACds16AD0D">this waiver</a> and submit it via<br>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLScfpAsNWhReh-JsWDQ7M8k8490jzyC65cv5h4_R9YiQ-KzBng/viewform" target='_blank' rel='noopener noreferrer'>this form</a> before February 23rd.</p>
     </div>
 </div>

@@ -186,7 +186,3 @@ CKEDITOR_CONFIGS = {
 # mainly for autograding
 # doesn't seem to work though
 # MAX_RUN_TIME = 1
-
-MEDIA_URL = '/media/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
